@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\gmowery\\source\\repos\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj",
+      "projectUniqueName": "C:\\Users\\gmowery\\Source\\Repos\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj",
       "projectName": "ZuulRemake",
-      "projectPath": "C:\\Users\\gmowery\\source\\repos\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj",
+      "projectPath": "C:\\Users\\gmowery\\Source\\Repos\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj",
       "packagesPath": "C:\\Users\\gmowery\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\gmowery\\source\\repos\\ZuulRemake\\ZuulRemake\\obj\\",
+      "outputPath": "C:\\Users\\gmowery\\Source\\Repos\\CS410\\ZuulRemake\\ZuulRemake\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
