@@ -29,8 +29,8 @@ namespace ZuulRemake.Classes
         }
         public string tostring()
         {
-            return getLongDescription() + "\n" + getRoomItems() + "\n" +
-                getRoomMonsters();
+            return GetLongDescription() + "\n" + GetRoomItems() + "\n" +
+                GetRoomMonsters();
         }
         /**
          * Define the exits of this room.  Every direction either leads
@@ -40,7 +40,7 @@ namespace ZuulRemake.Classes
          */
         public void setExit(string direction, Room neighbor)
         {
-            exits.put(direction, neighbor);
+            exits[(direction, neighbor)];
         }
         /**
          * Define the exits of this room.  Every direction either leads
@@ -48,9 +48,9 @@ namespace ZuulRemake.Classes
          * @param neighbor the room in the given direction
          * @param direction the direction of the exit
          */
-        public void setExit(string direction, Room neighbor, bool isLocked)
+        public void SetExit(string direction, Room neighbor, bool isLocked)
         {
-            exits.put(direction, neighbor);
+            exits[direction, neighbor];
             locked = isLocked;
         }
         public bool checkLocked()
@@ -58,26 +58,26 @@ namespace ZuulRemake.Classes
             return locked;
         }
 
-        public Room getExit(string direction)
+        public Room GetExit(string direction)
         {
-            return exits.get(direction);
+            return exits[direction];
         }
         /**
          * return a description of the rooms exits,
          * for ecample, "exits: north west".
          * @return A description of the available exits.
          */
-        public string getExitstring()
+        public string GetExitstring()
         {
             string returnstring = "Exits from this room:";
-            Set<string> keys = exits.keySet();
+            set<string> keys = exits.keySet();
             for (string exit : keys)
             {
                 returnstring += " " + exit;
             }
             return returnstring;
         }
-        public string getRoomItems()
+        public string GetRoomItems()
         {
             string returnstring = "Items in this room:";
             Set<string> keys = items.keySet();
@@ -91,7 +91,7 @@ namespace ZuulRemake.Classes
             }
             return returnstring;
         }
-        public string getRoomMonsters()
+        public string GetRoomMonsters()
         {
             string returnstring = "monsters in room:";
             Set<string> keys = monsters.keySet();
@@ -108,7 +108,7 @@ namespace ZuulRemake.Classes
         /**
          * @return The description of the room.
          */
-        public string getShortDescription()
+        public string GetShortDescription()
         {
             return description;
         }
@@ -118,52 +118,52 @@ namespace ZuulRemake.Classes
          *  Exits: north west
          * @return a long description of this room
          */
-        public string getLongDescription()
+        public string GetLongDescription()
         {
-            return "You are " + description + ".\n" + getExitstring();
+            return "You are " + description + ".\n" + GetExitstring();
         }
         /**
          * puts the item in the room
          */
-        public void setItem(string itemName, Item item)
+        public void SetItem(string itemName, Item item)
         {
             items.put(itemName, item);
         }
         /**
          * gets the item from the room
          */
-        public Item getItem(string name)
+        public Item GetItem(string name)
         {
-            return items.get(name);
+            return items.(name);
         }
         /**
          * removes the item from the room
          */
-        public Item removeItem(string name)
+        public void RemoveItem(string name)
         {
-            return items.remove(name);
+            items.Remove(name);
         }
         /**
          * adds item to list
          */
-        public Item addItem(string name, Item item)
+        public Item AddItem(string name, Item item)
         {
             return items.put(name, item);
         }
         /**
          * adds monster to room
          */
-        public Monster setMonster(string name, Monster monster)
+        public Monster SetMonster(string name, Monster monster)
         {
             return monsters.put(name, monster);
         }
-        public Monster getMonster(string name)
+        public Monster GetMonster(string name)
         {
             return monsters.get(name);
         }
-        public Monster removeMonster(string name)
+        public Monster RemoveMonster(string name)
         {
-            return monsters.remove(name);
+            return monsters.Remove(name);
         }
     }
 }

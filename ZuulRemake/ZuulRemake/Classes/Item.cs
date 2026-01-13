@@ -9,9 +9,9 @@ namespace ZuulRemake.Classes
     internal class Item
     {
         // instance variables - replace the example below with your own
-        private String description;
-        private int weight;
-        private String name;
+        private String description { get; set; }
+        private int weight { get; set; }
+        private String name { get; set; }
 
         /**
          * Constructor for objects of class Item
@@ -28,34 +28,6 @@ namespace ZuulRemake.Classes
             return "name: " + name + "\ndescription: " + description + "\nweight: " + weight;
         }
 
-        public void setDescription()
-        {
-
-        }
-
-        public String getDescription()
-        {
-            return description;
-        }
-
-        public String getName()
-        {
-            return name;
-        }
-
-        public void setName()
-        {
-
-        }
-
-        public int getWeight()
-        {
-            return weight;
-        }
-
-        public void setWeight()
-        {
-
-        }
+        
     }
 }

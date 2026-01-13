@@ -110,11 +110,11 @@ namespace ZuulRemake.Classes
                 }
                 if (player.getCurrentRoom() == exit)
                 {
-                    System.out.println();
+                    Console.WriteLine();
                     finished = true;
                 }
             }
-            System.out.println("Thank you for playing.  Good bye.");
+            Console.WriteLine("Thank you for playing.  Good bye.");
         }
 
         /**
@@ -122,14 +122,14 @@ namespace ZuulRemake.Classes
          */
         private void printWelcome()
         {
-            System.out.println();
-            System.out.println("Welcome to the World of Zuul!\n");
-            System.out.println("you wake up in a very dark castle,\n" +
+            Console.WriteLine();
+            Console.WriteLine("Welcome to the World of Zuul!\n");
+            Console.WriteLine("you wake up in a very dark castle,\n" +
                 "you dont know how you got here and the front door is \n locked, you " +
                 "need to find the key to get out of here");
-            System.out.println("Type 'help' if you need help.");
-            System.out.println();
-            System.out.println(player.getCurrentRoom());
+            Console.WriteLine("Type 'help' if you need help.");
+            Console.WriteLine();
+            Console.WriteLine(player.getCurrentRoom());
         }
 
 
@@ -138,14 +138,14 @@ namespace ZuulRemake.Classes
          */
         private void printGameOver()
         {
-            System.out.println("\nYou have died, please try again!");
+            Console.WriteLine("\nYou have died, please try again!");
         }
         /**
          * prints a victory message when the player leaves the castle.
          */
         private void printWon()
         {
-            System.out.println("\nYou won, you defeated the dragon and escaped the castle!");
+            Console.WriteLine("\nYou won, you defeated the dragon and escaped the castle!");
         }
 
         /**
@@ -162,7 +162,7 @@ namespace ZuulRemake.Classes
             switch (commandWord)
             {
                 case UNKNOWN:
-                    System.out.println("I don't know what you mean...");
+                    Console.WriteLine("I don't know what you mean...");
                     break;
 
                 case HELP:
@@ -229,10 +229,10 @@ namespace ZuulRemake.Classes
          */
         private void printHelp()
         {
-            System.out.println("You are lost. You are alone. You wander");
-            System.out.println("around the castle.");
-            System.out.println();
-            System.out.println("Your command words are:");
+            Console.WriteLine("You are lost. You are alone. You wander");
+            Console.WriteLine("around the castle.");
+            Console.WriteLine();
+            Console.WriteLine("Your command words are:");
             parser.showCommands();
         }
 
@@ -245,11 +245,11 @@ namespace ZuulRemake.Classes
             if (!command.hasSecondWord())
             {
                 // if there is no second word, we don't know where to go...
-                System.out.println("Go where?");
+                Console.WriteLine("Go where?");
                 return;
             }
             String direction = command.getSecondWord();
-            System.out.println(player.goNewRoom(direction));
+            Console.WriteLine(player.goNewRoom(direction));
         }
 
         /**
@@ -259,12 +259,12 @@ namespace ZuulRemake.Classes
         {
             if (command.hasSecondWord())
             {
-                System.out.println("Back where?");
+                Console.WriteLine("Back where?");
                 return;
             }
             else
             {
-                System.out.println(player.goBack());
+                Console.WriteLine(player.goBack());
             }
         }
 
@@ -273,7 +273,7 @@ namespace ZuulRemake.Classes
          */
         private void look(Command command)
         {
-            System.out.println(player.getRoomDescription());
+            Console.WriteLine(player.getRoomDescription());
         }
 
         /**
@@ -283,11 +283,11 @@ namespace ZuulRemake.Classes
         {
             if (!command.hasSecondWord())
             {
-                System.out.println("what would you like to take?");
+                Console.WriteLine("what would you like to take?");
                 return;
             }
             String name = command.getSecondWord();
-            System.out.println(player.takeItem(name));
+            Console.WriteLine(player.takeItem(name));
         }
 
         /**
@@ -298,7 +298,7 @@ namespace ZuulRemake.Classes
         {
             if (!command.hasSecondWord())
             {
-                System.out.println("what item would you like to use?");
+                Console.WriteLine("what item would you like to use?");
             }
             String item = command.getSecondWord();
 
@@ -306,39 +306,39 @@ namespace ZuulRemake.Classes
             {
                 if (player.getInventoryString().contains("key") && player.getCurrentRoom() == entryway)
                 {
-                    System.out.println("you unlocked the door, go south to leave");
+                    Console.WriteLine("you unlocked the door, go south to leave");
                     entryway.setExit("south", exit);
                 }
                 else
                 {
-                    System.out.println("you cannot use key here");
+                    Console.WriteLine("you cannot use key here");
                 }
             }
             if (item.equals("lantern"))
             {
                 if (player.getInventoryString().contains("lantern") && player.getCurrentRoom() == kitchen)
                 {
-                    System.out.println("you are in a nasty kitchen and see a sword lying on the ground");
+                    Console.WriteLine("you are in a nasty kitchen and see a sword lying on the ground");
                     kitchen.setItem("sword", sword);
                 }
                 else
                 {
-                    System.out.println("you cannot use the lantern here");
+                    Console.WriteLine("you cannot use the lantern here");
                 }
             }
             if (item.equals("armour"))
             {
                 player.equipItem();
                 player.removeFromBackpack("armour");
-                System.out.println("you are now wearing the armour, this will help you last longer when fighting enemies.");
-                System.out.println(player.getInventoryString());
+                Console.WriteLine("you are now wearing the armour, this will help you last longer when fighting enemies.");
+                Console.WriteLine(player.getInventoryString());
             }
             if (item.equals("potion"))
             {
                 player.equipItem();
                 player.removeFromBackpack("potion");
-                System.out.println("you took the potion and have increased your health");
-                System.out.println(player.getInventoryString());
+                Console.WriteLine("you took the potion and have increased your health");
+                Console.WriteLine(player.getInventoryString());
             }
         }
 
@@ -350,21 +350,21 @@ namespace ZuulRemake.Classes
         {
             if (!command.hasSecondWord())
             {
-                System.out.println("what are you attacking?");
+                Console.WriteLine("what are you attacking?");
                 return;
             }
             String name = command.getSecondWord();
 
-            System.out.println(player.attack(name));
+            Console.WriteLine(player.attack(name));
             if (!dragon.isAlive())
             {
                 dungeon.setItem("key", key);
-                System.out.println("\nthe dragon has been slain! take the key and escape!");
+                Console.WriteLine("\nthe dragon has been slain! take the key and escape!");
             }
             if (!ghoul.isAlive())
             {
                 bathroom.setItem("potion", potion);
-                System.out.println("\nyou killed the ghoul, take the potion to increase your health.\n");
+                Console.WriteLine("\nyou killed the ghoul, take the potion to increase your health.\n");
             }
         }
         /**
@@ -374,13 +374,13 @@ namespace ZuulRemake.Classes
         {
             if (!command.hasSecondWord())
             {
-                System.out.println("what item would you like to drop?");
+                Console.WriteLine("what item would you like to drop?");
                 return;
             }
 
             String name = command.getSecondWord();
 
-            System.out.println(player.dropItem(name));
+            Console.WriteLine(player.dropItem(name));
         }
 
         /**
@@ -389,13 +389,13 @@ namespace ZuulRemake.Classes
         private void eat(Command command)
         {
             if(!command.hasSecondWord()) {
-                System.out.println("what item do you want to eat?");
+                Console.WriteLine("what item do you want to eat?");
                 return;
             }
             
             String name = command.getSecondWord();
             
-            System.out.println(player.eatCookie(name));
+            Console.WriteLine(player.eatCookie(name));
             
         }
         */
@@ -405,7 +405,7 @@ namespace ZuulRemake.Classes
          */
         private void inventory()
         {
-            System.out.println("you are currently holding: " + player.getInventoryString());
+            Console.WriteLine("you are currently holding: " + player.GetInventoryString());
 
         }
 
@@ -419,7 +419,7 @@ namespace ZuulRemake.Classes
 
         private void charge()
         {
-            System.out.println(player.beamerCharge());
+            Console.WriteLine(player.beamerCharge());
         }
 
         /** action to fire beamer.
@@ -428,7 +428,7 @@ namespace ZuulRemake.Classes
 
         private void fire()
         {
-            System.out.println(player.beamerFire());
+            Console.WriteLine(player.beamerFire());
         }
 
         /** 
@@ -436,11 +436,11 @@ namespace ZuulRemake.Classes
          * whether we really quit the game.
          * @return true, if this command quits the game, false otherwise.
          */
-        private boolean quit(Command command)
+        private bool quit(Command command)
         {
             if (command.hasSecondWord())
             {
-                System.out.println("Quit what?");
+                Console.WriteLine("Quit what?");
                 return false;
             }
             else

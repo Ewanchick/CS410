@@ -10,9 +10,9 @@ namespace ZuulRemake.Classes
     internal class Player
     {
         // instance variables - replace the example below with your own
-        private String name;
+        private string name;
         private Room currentRoom;
-        private Backpack backpack;
+        private BackPack backpack;
         private int maximumWeight;
         private Stack<Room> previousRoom;
         private int turns = 0;
@@ -23,18 +23,18 @@ namespace ZuulRemake.Classes
         /**
          * Constructor for objects of class Player
          */
-        public Player(String name)
+        public Player(string name)
         {
-            backpack = new Backpack();
+            backpack = new BackPack();
             this.name = name;
             maximumWeight = 2;
             previousRoom = new Stack<Room>();
         }
 
-        public String exitsAvailable()
+        public string exitsAvailable()
         {
-            String returnString = "";
-            returnString += currentRoom.getExitString();
+            string returnString = "";
+            returnString += currentRoom.GetExitString();
             return returnString;
         }
 
@@ -50,9 +50,9 @@ namespace ZuulRemake.Classes
          * takes item out of room and places it into the backpack as long as
          * you can carry it.
          */
-        public boolean addToBackPack(Item item)
+        public bool AddToBackPack(Item item)
         {
-            if (canCarry(item))
+            if (CanCarry(item))
             {
                 currentRoom.removeItem(item.getName());
                 backpack.addItem(item);
@@ -67,13 +67,13 @@ namespace ZuulRemake.Classes
         /**
          * this returns the current room that you are in.
          */
-        public String enterRoom(Room nextRoom)
+        public string EnterRoom(Room nextRoom)
         {
             turns++;
-            String returnString = "";
+            string returnString = "";
             currentRoom = nextRoom;
 
-            returnString += currentRoom.toString();
+            returnString += currentRoom.ToString();
             return returnString;
         }
 
@@ -82,10 +82,10 @@ namespace ZuulRemake.Classes
          * commandword go and the direction you want to go to depending on the 
          * given exits. then it pushes the room in the stack.
          */
-        public String goNewRoom(String direction)
+        public string GoNewRoom(string direction)
         {
             // Try to leave current room.
-            String returnString = "";
+            string returnString = "";
             Room nextRoom = currentRoom.getExit(direction);
             if (nextRoom == null)
             {
@@ -94,9 +94,9 @@ namespace ZuulRemake.Classes
 
             else
             {
-                previousRoom.push(currentRoom);
+                previousRoom.Push(currentRoom);
                 enterRoom(nextRoom);
-                returnString += currentRoom.toString();
+                returnString += currentRoom.ToString();
             }
             return returnString;
         }
@@ -104,7 +104,7 @@ namespace ZuulRemake.Classes
         /**
          * checks player inventory for key
          
-        public boolean checkForKey()
+        public bool checkForKey()
         {
             return backpack.keyCheck();
         }
@@ -112,9 +112,9 @@ namespace ZuulRemake.Classes
         /**
          * displays the toString from the room class.
          */
-        public String getRoomDescription()
+        public string GetRoomDescription()
         {
-            return currentRoom.toString();
+            return currentRoom.ToString();
         }
 
         /**
@@ -122,17 +122,17 @@ namespace ZuulRemake.Classes
          * will take the item. if not the game will tell the player it is too
          * heavy.
          */
-        public String takeItem(String name)
+        public string takeItem(string name)
         {
-            String returnString = "";
-            Item item = currentRoom.getItem(name);
+            string returnString = "";
+            Item item = currentRoom.GetItem(name);
             if (item == null)
             {
                 returnString += "that item isnt in the room";
             }
             else
             {
-                if (addToBackPack(item))
+                if (AddToBackPack(item))
                 {
                     returnString += "took: " + item;
                 }
@@ -147,12 +147,12 @@ namespace ZuulRemake.Classes
         /**
          * if the player is able to eat the item then the player will increase their maximum weight.
          */
-        public String eatCookie(String name)
+        public string eatCookie(string name)
         {
             Item cookie = backpack.getItem(name);
 
-            String returnString = "";
-            if (name.equals("cookie"))
+            string returnString = "";
+            if (name == "cookie")
             {
 
                 if (cookie == null)
@@ -175,9 +175,9 @@ namespace ZuulRemake.Classes
          * empty, it will tell you, otherwise it will remove the item from
          * the backpack and add it to the room.
          */
-        public String dropItem(String name)
+        public string dropItem(string name)
         {
-            String returnString = "";
+            string returnString = "";
             Item itemRemove = getItemFromBackpack(name);
 
             if (itemRemove == null)
@@ -196,7 +196,7 @@ namespace ZuulRemake.Classes
         /**
          * removes the item from the backpack.
          */
-        public void removeFromBackpack(String itemRemove)
+        public void removeFromBackpack(string itemRemove)
         {
             backpack.removeItem(itemRemove);
         }
@@ -204,7 +204,7 @@ namespace ZuulRemake.Classes
         /**
          * returns an item from the backpack if it is available.
          */
-        public Item getItemFromBackpack(String item)
+        public Item getItemFromBackpack(string item)
         {
             return backpack.getItem(item);
         }
@@ -227,23 +227,23 @@ namespace ZuulRemake.Classes
          * is no previous room it will tell you that you cant go back.
          * 
          */
-        public String goBack()
+        public string goBack()
         {
-            String returnString = "";
+            string returnString = "";
 
-            if (previousRoom.isEmpty())
+            if (previousRoom == null)
             {
                 returnString += "There is no turning back!";
             }
             else
             {
-                Room lastRoom = previousRoom.pop();
+                Room lastRoom = previousRoom.Pop();
                 enterRoom(lastRoom);
-                returnString += currentRoom.toString();
+                returnString += currentRoom.ToString();
             }
             return returnString;
         }
-        //public String getCookie()
+        //public string getCookie()
         //{
 
         //}
@@ -253,9 +253,9 @@ namespace ZuulRemake.Classes
          * then the player can pick up the item. if not the player is unable
          * to.
          */
-        private boolean canCarry(Item item)
+        private bool CanCarry(Item item)
         {
-            boolean canCarry = true;
+            bool canCarry = true;
             int totalWeight = backpack.getTotalWeight() + item.getWeight();
             if (totalWeight > maximumWeight)
             {
@@ -264,9 +264,9 @@ namespace ZuulRemake.Classes
             return canCarry;
         }
 
-        public void equipItem()
+        public void EquipItem()
         {
-            String returnString = "";
+            string returnString = "";
             hp += 101;
             returnString += hp;
         }
@@ -274,24 +274,24 @@ namespace ZuulRemake.Classes
         /**
          * determines if the player got hit
          */
-        public int gotHit()
+        public int GotHit()
         {
             if (currentRoom.getMonster(name).isAlive())
             {
                 return hp -= 100;
             }
-            return gotHit();
+            return GotHit();
         }
 
-        public String attack(String name)
+        public string attack(string name)
         {
-            String returnString = "";
+            string returnString = "";
             Monster monster = currentRoom.getMonster(name);
             if (monster == null)
             {
                 returnString += "that monster is no monster in this room";
             }
-            else if (getInventoryString().contains("sword"))
+            else if (GetInventoryString().contains("sword"))
             {
                 hp -= 100;
                 returnString += "\nyou attacked the monster" + "\nmonster HP: " + monster.getHp();
@@ -311,7 +311,7 @@ namespace ZuulRemake.Classes
          * checks to see if there are any turns left. if there arent then it
          * is game over.
          */
-        public boolean gameOver()
+        public bool gameOver()
         {
             return hp == 0;
         }
@@ -319,39 +319,39 @@ namespace ZuulRemake.Classes
         /**
          * returns items displayed in the inventory
          */
-        public String getInventoryString()
+        public string GetInventorystring()
         {
             int totalWeight = backpack.getTotalWeight();
-            return backpack.inventoryToString() + "\nweight: " + totalWeight + "/" + maximumWeight + "\nHP:" + hp;
+            return backpack.inventoryTostring() + "\nweight: " + totalWeight + "/" + maximumWeight + "\nHP:" + hp;
         }
 
         /**
          * charges the beamer to memorize the current room
          */
-        public String beamerCharge()
+        public string BeamerCharge()
         {
-            String returnString = "";
+            string returnstring = "";
             chargeRoom = currentRoom;
-            returnString += "charged beamer";
-            return returnString;
+            returnstring += "charged beamer";
+            return returnstring;
         }
 
         /**
          * fires the beamer to take you to the charge room
          */
-        public String beamerFire()
+        public string BeamerFire()
         {
-            String returnString = "";
+            string returnstring = "";
             if (chargeRoom != null)
             {
                 enterRoom(chargeRoom);
-                returnString += "fired beamer:" + "\n" + getRoomDescription();
+                returnstring += "fired beamer:" + "\n" + getRoomDescription();
             }
             else
             {
-                returnString += "you have to charge the beamer first";
+                returnstring += "you have to charge the beamer first";
             }
-            return returnString;
+            return returnstring;
         }
     }
 }
