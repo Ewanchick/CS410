@@ -11,45 +11,45 @@ namespace ZuulRemake.Classes
     {
         // instance variables - replace the example below with your own
 
-        public string name { get; set; }
-        public int attack { get; set; }
-        public int hp { get; set; }
+        public string Name { get; set; }
+        public int Attack { get; set; }
+        public int Hp { get; set; }
         private Item? item { get; set; }
         /**
          * Constructor for objects of class monster
          */
         public Monster(string name, int hp)
         {
-            this.name = name;
-            this.hp = hp;
+            this.Name = name;
+            this.Hp = Hp;
         }
         
         
 
         public string toString()
         {
-            return "name: " + name + "\nAttack: " + attack + "\nHP: " + hp;
+            return "name: " + Name + "\nAttack: " + Attack + "\nHP: " + Hp;
         }
         /**
          * determines if the monster is still alive
          */
         public bool isAlive()
         {
-            return hp > 0;
+            return Hp > 0;
         }
 
         public int gotAttacked()
         {
             if (isAlive())
             {
-                hp -= 50;
+                Hp -= 50;
             }
-            return hp;
+            return Hp;
         }
 
         
 
-        public void Attack(Player player)
+        public void Attacking(Player player)
         {
             if (isAlive())
             {

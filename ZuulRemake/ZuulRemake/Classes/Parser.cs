@@ -21,7 +21,7 @@ namespace ZuulRemake.Classes
         /**
          * @return The next command from the user.
          */
-        public Command getCommand()
+        public Command GetCommand()
         {
             string inputLine;   // will hold the full input line
             string word1 = null;
@@ -31,12 +31,18 @@ namespace ZuulRemake.Classes
 
             inputLine = Console.ReadLine();
 
-            if (!string.IsNullOrWhiteSpace(inputLine)) {
+            if (!string.IsNullOrWhiteSpace(inputLine))
+            {
                 string[] words = inputLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            // Now check whether this word is known. If so, create a command
-            // with it. If not, create a "null" command (for unknown command).
-            return new Command(commands.getCommandWord(word1), word2);
+                if (words.Length > 0)
+                    word1 = words[0];
+                if (words.Length > 1)
+
+                    word2 = words[1];
             }
+            return new Command(commands.GetCommandWord(word1), word2);
+        }
+            
     /**
      * print out a list of valid command words.
      */

@@ -30,7 +30,7 @@ namespace ZuulRemake.Classes
          * command was not understood, the result is null.
          * @return The command word.
          */
-        public CommandWord getCommandWord()
+        public CommandWord GetCommandWord()
         {
             return commandWord;
         }
@@ -39,7 +39,7 @@ namespace ZuulRemake.Classes
          * @return The second word of this command. Returns null if there was no
          * second word.
          */
-        public string getSecondWord()
+        public string GetSecondWord()
         {
             return secondWord;
         }
@@ -47,7 +47,7 @@ namespace ZuulRemake.Classes
         /**
          * @return true if this command was not understood.
          */
-        public bool isUnknown()
+        public bool IsUnknown()
         {
             return (commandWord == CommandWord.UNKNOWN);
         }
@@ -55,7 +55,7 @@ namespace ZuulRemake.Classes
         /**
          * @return true if the command has a second word.
          */
-        public bool hasSecondWord()
+        public bool HasSecondWord()
         {
             return (secondWord != null);
         }

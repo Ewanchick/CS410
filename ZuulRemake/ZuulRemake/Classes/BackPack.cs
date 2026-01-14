@@ -10,7 +10,7 @@ namespace ZuulRemake.Classes
     internal class BackPack
     {
         // instance variables - replace the example below with your own
-        private HashMap<string, Item> inventory;
+        private Dictionary<string, Item> inventory;
 
         /**
          * Constructor for objects of class Inventory

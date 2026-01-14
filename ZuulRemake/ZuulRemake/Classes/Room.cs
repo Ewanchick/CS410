@@ -10,9 +10,10 @@ namespace ZuulRemake.Classes
     internal class Room
     {
         private string description;
-        private Dictionary<string, Room> exits;
-        private Dictionary<string, Item> items;
-        private Dictionary<string, Monster> monsters;
+        private Dictionary<string, Room> exits = new (StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, bool> lockedExits = new(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, Item> items = new (StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, Monster> monsters = new(StringComparer.OrdinalIgnoreCase);
         private bool locked;
         /**
          * Create a room described "description". Initially, it has
@@ -27,7 +28,7 @@ namespace ZuulRemake.Classes
             items = new Dictionary<string, Item>();
             monsters = new Dictionary<string, Monster>();
         }
-        public string tostring()
+        override public string ToString()
         {
             return GetLongDescription() + "\n" + GetRoomItems() + "\n" +
                 GetRoomMonsters();
@@ -38,9 +39,11 @@ namespace ZuulRemake.Classes
          * @param neighbor the room in the given direction
          * @param direction the direction of the exit
          */
-        public void setExit(string direction, Room neighbor)
+        public void SetExit(string direction, Room neighbor)
         {
-            exits[(direction, neighbor)];
+            if (string.IsNullOrWhiteSpace(direction)) throw new ArgumentException("direction required");
+            exits[direction] = neighbor ?? throw new ArgumentNullException(nameof(neighbor));
+            lockedExits[direction] = false;
         }
         /**
          * Define the exits of this room.  Every direction either leads
@@ -50,60 +53,57 @@ namespace ZuulRemake.Classes
          */
         public void SetExit(string direction, Room neighbor, bool isLocked)
         {
-            exits[direction, neighbor];
-            locked = isLocked;
+            if (string.IsNullOrWhiteSpace(direction)) throw new ArgumentException("direction required");
+            exits[direction] = neighbor?? throw new ArgumentNullException(nameof(neighbor));
+            lockedExits[direction] = isLocked;
         }
-        public bool checkLocked()
+        public bool IsExitLocked(string direction)
         {
-            return locked;
+            return lockedExits.TryGetValue(direction, out var locked) && locked;
         }
 
-        public Room GetExit(string direction)
+        public bool TryGetExit(string direction, out Room nextRoom)
         {
-            return exits[direction];
+            nextRoom = null;
+
+            if (!exits.TryGetValue(direction, out var room))
+                return false;
+
+
+            if (IsExitLocked(direction))
+                return false;
+
+            nextRoom = room;
+            return true;
+        }
+
+        public Room GetExitRaw(string direction)
+        {
+            exits.TryGetValue(direction, out var room);
+            return room;
         }
         /**
          * return a description of the rooms exits,
          * for ecample, "exits: north west".
          * @return A description of the available exits.
          */
-        public string GetExitstring()
+        public string GetExitString()
         {
-            string returnstring = "Exits from this room:";
-            set<string> keys = exits.keySet();
-            for (string exit : keys)
-            {
-                returnstring += " " + exit;
-            }
-            return returnstring;
+            if (exits.Count == 0) return "Exits from this room:";
+            var parts = exits.Keys
+                .Select(d => IsExitLocked(d) ? $"{d} (locked)" : d);
+
+            return "Exits from this room: " + string.Join(", ", parts);
         }
         public string GetRoomItems()
         {
-            string returnstring = "Items in this room:";
-            HashSet<string> keys = items.keySet();
-            if (keys.isEmpty())
-            {
-                return "There are no items in this room!";
-            }
-            for (string item : keys)
-            {
-                returnstring += " " + item;
-            }
-            return returnstring;
+            if (items.Count == 0) return "There are no items in this room!";
+            return "Items in this room: " + string.Join (", ", items.Keys);
         }
         public string GetRoomMonsters()
         {
-            string returnstring = "monsters in room:";
-            HashSet<string> keys = monsters.keySet();
-            if (keys.Count = null)
-            {
-                return "\nThere are no monsters in here in this room!\n";
-            }
-            for (string item : keys)
-            {
-                returnstring += " " + item;
-            }
-            return returnstring;
+            if (items.Count == 0) return "There are no Monsters in this room!";
+            return "Monsters in this room: " + string.Join(", ", items.Keys);
         }
         /**
          * @return The description of the room.
@@ -120,21 +120,23 @@ namespace ZuulRemake.Classes
          */
         public string GetLongDescription()
         {
-            return "You are " + description + ".\n" + GetExitstring();
+            return "You are " + description + ".\n" + GetExitString();
         }
         /**
          * puts the item in the room
          */
         public void SetItem(string itemName, Item item)
         {
-            items.put(itemName, item);
+            if (string.IsNullOrWhiteSpace(itemName)) throw new ArgumentException("itemName required");
+            items[itemName] = item ?? throw new ArgumentNullException(nameof(item));
         }
         /**
          * gets the item from the room
          */
         public Item GetItem(string name)
         {
-            return items.(name);
+            items.TryGetValue(name, out var item);
+            return item;
         }
         /**
          * removes the item from the room
@@ -148,20 +150,23 @@ namespace ZuulRemake.Classes
          */
         public Item AddItem(string name, Item item)
         {
-            return items[(name, item)];
+            SetItem(name, item);
+            return item;
         }
         /**
          * adds monster to room
          */
-        public Monster SetMonster(string name, Monster monster)
+        public void SetMonster(string name, Monster monster)
         {
-            return monsters[name, monster];
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("name required");
+            monsters[name] = monster ?? throw new ArgumentNullException(nameof(monster));
         }
         public Monster GetMonster(string name)
         {
-            return monsters.name.get();
+            monsters.TryGetValue(name, out var monster);
+            return monster;
         }
-        public Monster RemoveMonster(string name)
+        public bool RemoveMonster(string name)
         {
             return monsters.Remove(name);
         }

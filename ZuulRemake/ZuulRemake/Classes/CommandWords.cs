@@ -18,7 +18,7 @@ namespace ZuulRemake.Classes
          */
         public CommandWords()
         {
-            validCommands = new HashMap<>();
+            
             for (CommandWord command : CommandWord.values())
             {
                 if (command != CommandWord.UNKNOWN)
@@ -34,7 +34,7 @@ namespace ZuulRemake.Classes
          * @return The CommandWord correspondng to commandWord, or UNKNOWN
          *         if it is not a valid command word.
          */
-        public CommandWord getCommandWord(string commandWord)
+        public CommandWord GetCommandWord(string commandWord)
         {
             CommandWord command = validCommands.get(commandWord);
             if (command != null)
@@ -51,7 +51,7 @@ namespace ZuulRemake.Classes
          * Check whether a given String is a valid command word. 
          * @return true if it is, false if it isn't.
          */
-        public boolean isCommand(String aString)
+        public bool isCommand(String aString)
         {
             return validCommands.containsKey(aString);
         }

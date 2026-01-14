@@ -16,9 +16,10 @@ namespace ZuulRemake.Classes
         private Room entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit;
         private Item sword, lantern, armour, key, potion;
         private Monster dragon, ghoul;
-        public static void main(String[] args)
+        public static void Main(string[] args)
         {
-
+            var game = new Game();
+            game.play();
         }
         /**
          * Create the game and initialise its internal map.
@@ -47,18 +48,18 @@ namespace ZuulRemake.Classes
             exit = new Room("You made it, you escaped the castle and are now free!");
 
             // initialise room exits
-            entryway.setExit("north", dininghall);
-            entryway.setExit("east", kitchen);
-            entryway.setExit("west", bedroom);
-            entryway.setExit("down", dungeon);
-            dininghall.setExit("east", ballroom);
-            dininghall.setExit("south", entryway);
-            ballroom.setExit("west", dininghall);
-            kitchen.setExit("west", entryway);
-            dungeon.setExit("up", entryway);
-            bedroom.setExit("east", entryway);
-            bedroom.setExit("south", bathroom);
-            bathroom.setExit("north", bedroom);
+            entryway.SetExit("north", dininghall);
+            entryway.SetExit("east", kitchen);
+            entryway.SetExit("west", bedroom);
+            entryway.SetExit("down", dungeon);
+            dininghall.SetExit("east", ballroom);
+            dininghall.SetExit("south", entryway);
+            ballroom.SetExit("west", dininghall);
+            kitchen.SetExit("west", entryway);
+            dungeon.SetExit("up", entryway);
+            bedroom.SetExit("east", entryway);
+            bedroom.SetExit("south", bathroom);
+            bathroom.SetExit("north", bedroom);
 
             //create the items
             sword = new Item("sword", "heavy sword, might be used to kill the dragon", 1);
@@ -70,18 +71,18 @@ namespace ZuulRemake.Classes
             new Item("spellbook", "enchant your sword to increase its damage", 0);
 
             //initialize items
-            dininghall.setItem("lantern", lantern);
-            ballroom.setItem("armour", armour);
+            dininghall.SetItem("lantern", lantern);
+            ballroom.SetItem("armour", armour);
 
-            player.enterRoom(entryway);  // start game in the entryway of castle
+            player.EnterRoom(entryway);  // start game in the entryway of castle
 
 
             //create the monsters
             dragon = new Monster("dragon", 100);
             ghoul = new Monster("ghoul", 50);
 
-            dungeon.setMonster("dragon", dragon);
-            bathroom.setMonster("ghoul", ghoul);
+            dungeon.SetMonster("dragon", dragon);
+            bathroom.SetMonster("ghoul", ghoul);
 
             return entryway;
         }
@@ -98,17 +99,17 @@ namespace ZuulRemake.Classes
             // Enter the main command loop.  Here we repeatedly read commands and
             // execute them until the game is over.
 
-            boolean finished = false;
+            bool finished = false;
             while (!finished)
             {
-                Command command = parser.getCommand();
+                Command command = parser.GetCommand();
                 finished = processCommand(command);
                 if (player.gameOver())
                 {
                     printGameOver();
                     finished = true;
                 }
-                if (player.getCurrentRoom() == exit)
+                if (player.GetCurrentRoom() == exit)
                 {
                     Console.WriteLine();
                     finished = true;
@@ -129,7 +130,7 @@ namespace ZuulRemake.Classes
                 "need to find the key to get out of here");
             Console.WriteLine("Type 'help' if you need help.");
             Console.WriteLine();
-            Console.WriteLine(player.getCurrentRoom());
+            Console.WriteLine(player.GetCurrentRoom());
         }
 
 
@@ -153,47 +154,47 @@ namespace ZuulRemake.Classes
          * @param command The command to be processed.
          * @return true If the command ends the game, false otherwise.
          */
-        private boolean processCommand(Command command)
+        private bool processCommand(Command command)
         {
-            boolean wantToQuit = false;
+            bool wantToQuit = false;
 
-            CommandWord commandWord = command.getCommandWord();
+            CommandWord commandWord = command.GetCommandWord();
 
             switch (commandWord)
             {
-                case UNKNOWN:
+                case CommandWord.UNKNOWN:
                     Console.WriteLine("I don't know what you mean...");
                     break;
 
-                case HELP:
+                case CommandWord.HELP:
                     printHelp();
                     break;
 
-                case GO:
+                case CommandWord.GO:
                     goRoom(command);
                     break;
 
-                case QUIT:
+                case CommandWord.QUIT:
                     wantToQuit = quit(command);
                     break;
 
-                case LOOK:
+                case CommandWord.LOOK:
                     look(command);
                     break;
 
-                case TAKE:
+                case CommandWord.TAKE:
                     take(command);
                     break;
 
-                case INVENTORY:
+                case CommandWord.INVENTORY:
                     inventory();
                     break;
 
-                case BACK:
+                case CommandWord.BACK:
                     goBack(command);
                     break;
 
-                case DROP:
+                case CommandWord.DROP:
                     drop(command);
                     break;
 
@@ -209,11 +210,11 @@ namespace ZuulRemake.Classes
                 // fire();
                 // break;
 
-                case USE:
+                case CommandWord.USE:
                     useItem(command);
                     break;
 
-                case ATTACK:
+                case CommandWord.ATTACK:
                     attack(command);
                     break;
             }
@@ -242,14 +243,14 @@ namespace ZuulRemake.Classes
          */
         private void goRoom(Command command)
         {
-            if (!command.hasSecondWord())
+            if (!command.HasSecondWord())
             {
                 // if there is no second word, we don't know where to go...
                 Console.WriteLine("Go where?");
                 return;
             }
-            String direction = command.getSecondWord();
-            Console.WriteLine(player.goNewRoom(direction));
+            string direction = command.GetSecondWord();
+            Console.WriteLine(player.GoNewRoom(direction));
         }
 
         /**
@@ -257,7 +258,7 @@ namespace ZuulRemake.Classes
          */
         private void goBack(Command command)
         {
-            if (command.hasSecondWord())
+            if (command.HasSecondWord())
             {
                 Console.WriteLine("Back where?");
                 return;
@@ -273,7 +274,7 @@ namespace ZuulRemake.Classes
          */
         private void look(Command command)
         {
-            Console.WriteLine(player.getRoomDescription());
+            Console.WriteLine(player.GetRoomDescription());
         }
 
         /**
@@ -281,12 +282,12 @@ namespace ZuulRemake.Classes
          */
         private void take(Command command)
         {
-            if (!command.hasSecondWord())
+            if (!command.HasSecondWord())
             {
                 Console.WriteLine("what would you like to take?");
                 return;
             }
-            String name = command.getSecondWord();
+            string name = command.GetSecondWord();
             Console.WriteLine(player.takeItem(name));
         }
 
@@ -296,49 +297,49 @@ namespace ZuulRemake.Classes
          */
         private void useItem(Command command)
         {
-            if (!command.hasSecondWord())
+            if (!command.HasSecondWord())
             {
                 Console.WriteLine("what item would you like to use?");
             }
-            String item = command.getSecondWord();
+            string item = command.GetSecondWord();
 
-            if (item.equals("key"))
+            if (item.Equals("key", StringComparison.OrdinalIgnoreCase))
             {
-                if (player.getInventoryString().contains("key") && player.getCurrentRoom() == entryway)
+                if (player.GetInventoryString().Contains("key") && player.GetCurrentRoom() == entryway)
                 {
                     Console.WriteLine("you unlocked the door, go south to leave");
-                    entryway.setExit("south", exit);
+                    entryway.SetExit("south", exit);
                 }
                 else
                 {
                     Console.WriteLine("you cannot use key here");
                 }
             }
-            if (item.equals("lantern"))
+            if (item.Equals("lantern"))
             {
-                if (player.getInventoryString().contains("lantern") && player.getCurrentRoom() == kitchen)
+                if (player.GetInventoryString().Contains("lantern") && player.GetCurrentRoom() == kitchen)
                 {
                     Console.WriteLine("you are in a nasty kitchen and see a sword lying on the ground");
-                    kitchen.setItem("sword", sword);
+                    kitchen.SetItem("sword", sword);
                 }
                 else
                 {
                     Console.WriteLine("you cannot use the lantern here");
                 }
             }
-            if (item.equals("armour"))
+            if (item.Equals("armour"))
             {
-                player.equipItem();
-                player.removeFromBackpack("armour");
+                player.EquipItem();
+                player.RemoveFromBackpack("armour");
                 Console.WriteLine("you are now wearing the armour, this will help you last longer when fighting enemies.");
-                Console.WriteLine(player.getInventoryString());
+                Console.WriteLine(player.GetInventoryString());
             }
-            if (item.equals("potion"))
+            if (item.Equals("potion"))
             {
-                player.equipItem();
-                player.removeFromBackpack("potion");
+                player.EquipItem();
+                player.RemoveFromBackpack("potion");
                 Console.WriteLine("you took the potion and have increased your health");
-                Console.WriteLine(player.getInventoryString());
+                Console.WriteLine(player.GetInventoryString());
             }
         }
 
@@ -348,22 +349,22 @@ namespace ZuulRemake.Classes
          */
         private void attack(Command command)
         {
-            if (!command.hasSecondWord())
+            if (!command.HasSecondWord())
             {
                 Console.WriteLine("what are you attacking?");
                 return;
             }
-            String name = command.getSecondWord();
+            string name = command.GetSecondWord();
 
             Console.WriteLine(player.attack(name));
             if (!dragon.isAlive())
             {
-                dungeon.setItem("key", key);
+                dungeon.SetItem("key", key);
                 Console.WriteLine("\nthe dragon has been slain! take the key and escape!");
             }
             if (!ghoul.isAlive())
             {
-                bathroom.setItem("potion", potion);
+                bathroom.SetItem("potion", potion);
                 Console.WriteLine("\nyou killed the ghoul, take the potion to increase your health.\n");
             }
         }
@@ -372,13 +373,13 @@ namespace ZuulRemake.Classes
          */
         private void drop(Command command)
         {
-            if (!command.hasSecondWord())
+            if (!command.HasSecondWord())
             {
                 Console.WriteLine("what item would you like to drop?");
                 return;
             }
 
-            String name = command.getSecondWord();
+            string name = command.GetSecondWord();
 
             Console.WriteLine(player.dropItem(name));
         }
@@ -419,7 +420,7 @@ namespace ZuulRemake.Classes
 
         private void charge()
         {
-            Console.WriteLine(player.beamerCharge());
+            Console.WriteLine(player.BeamerCharge());
         }
 
         /** action to fire beamer.
@@ -428,7 +429,7 @@ namespace ZuulRemake.Classes
 
         private void fire()
         {
-            Console.WriteLine(player.beamerFire());
+            Console.WriteLine(player.BeamerFire());
         }
 
         /** 
@@ -438,7 +439,7 @@ namespace ZuulRemake.Classes
          */
         private bool quit(Command command)
         {
-            if (command.hasSecondWord())
+            if (command.HasSecondWord())
             {
                 Console.WriteLine("Quit what?");
                 return false;

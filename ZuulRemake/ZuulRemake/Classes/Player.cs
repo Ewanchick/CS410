@@ -14,7 +14,7 @@ namespace ZuulRemake.Classes
         private Room currentRoom;
         private BackPack backpack;
         private int maximumWeight;
-        private Stack<Room> previousRoom;
+        private Stack<Room> previousRoom = new();
         private int turns = 0;
         private int turnsLeft = 20;
         private Room chargeRoom;
@@ -31,7 +31,7 @@ namespace ZuulRemake.Classes
             previousRoom = new Stack<Room>();
         }
 
-        public string exitsAvailable()
+        public string ExitsAvailable()
         {
             string returnString = "";
             returnString += currentRoom.GetExitString();
@@ -41,7 +41,7 @@ namespace ZuulRemake.Classes
         /**
          * returns the current room that you are in.
          */
-        public Room getCurrentRoom()
+        public Room GetCurrentRoom()
         {
             return currentRoom;
         }
@@ -54,7 +54,7 @@ namespace ZuulRemake.Classes
         {
             if (CanCarry(item))
             {
-                currentRoom.RemoveItem(item.name.get());
+                currentRoom.RemoveItem(item.Name);
                 backpack.addItem(item);
                 return true;
             }
@@ -84,21 +84,12 @@ namespace ZuulRemake.Classes
          */
         public string GoNewRoom(string direction)
         {
+            if (!currentRoom.TryGetExit(direction, out Room nextRoom)) return "there is no door (or it is locked).";
             // Try to leave current room.
-            string returnString = "";
-            Room nextRoom = currentRoom.getExit(direction);
-            if (nextRoom == null)
-            {
-                returnString += "There is no door!";
-            }
-
-            else
-            {
-                previousRoom.Push(currentRoom);
-                enterRoom(nextRoom);
-                returnString += currentRoom.ToString();
-            }
-            return returnString;
+            previousRoom.Push(currentRoom);
+            currentRoom = nextRoom;
+            return currentRoom.ToString();
+           
         }
 
         /**
@@ -157,14 +148,15 @@ namespace ZuulRemake.Classes
 
                 if (cookie == null)
                 {
-                    cookie = currentRoom.removeItem(name);
+                    cookie = currentRoom.RemoveItem(name);
                     returnString += "could not eat" + cookie;
                 }
                 else
                 {
                     maximumWeight++;
                     returnString += "you ate the cookie, you have become stronger";
-                    removeFromBackpack(name);
+                    RemoveFromBackpack(name);
+                  
                 }
             }
             return returnString;
@@ -178,7 +170,7 @@ namespace ZuulRemake.Classes
         public string dropItem(string name)
         {
             string returnString = "";
-            Item itemRemove = getItemFromBackpack(name);
+            Item itemRemove = GetItemFromBackpack(name);
 
             if (itemRemove == null)
             {
@@ -186,8 +178,8 @@ namespace ZuulRemake.Classes
             }
             else
             {
-                removeFromBackpack(name);
-                currentRoom.setItem(name, itemRemove);
+                RemoveFromBackpack(name);
+                currentRoom.SetItem(name, itemRemove);
                 returnString += name + " dropped";
             }
             return returnString;
@@ -196,7 +188,7 @@ namespace ZuulRemake.Classes
         /**
          * removes the item from the backpack.
          */
-        public void removeFromBackpack(string itemRemove)
+        public void RemoveFromBackpack(string itemRemove)
         {
             backpack.removeItem(itemRemove);
         }
@@ -204,7 +196,7 @@ namespace ZuulRemake.Classes
         /**
          * returns an item from the backpack if it is available.
          */
-        public Item getItemFromBackpack(string item)
+        public Item GetItemFromBackpack(string item)
         {
             return backpack.getItem(item);
         }
@@ -212,7 +204,7 @@ namespace ZuulRemake.Classes
         /**
          * displays player hp
          */
-        public int getHp()
+        public int GetHp()
         {
             return hp;
         }
@@ -238,7 +230,7 @@ namespace ZuulRemake.Classes
             else
             {
                 Room lastRoom = previousRoom.Pop();
-                enterRoom(lastRoom);
+                EnterRoom(lastRoom);
                 returnString += currentRoom.ToString();
             }
             return returnString;
@@ -256,7 +248,7 @@ namespace ZuulRemake.Classes
         private bool CanCarry(Item item)
         {
             bool canCarry = true;
-            int totalWeight = backpack.getTotalWeight() + item.getWeight();
+            int totalWeight = backpack.getTotalWeight() + item.Weight;
             if (totalWeight > maximumWeight)
             {
                 canCarry = false;
@@ -276,7 +268,7 @@ namespace ZuulRemake.Classes
          */
         public int GotHit()
         {
-            if (currentRoom.getMonster(name).isAlive())
+            if (currentRoom.GetMonster(name).isAlive())
             {
                 return hp -= 100;
             }
@@ -286,15 +278,15 @@ namespace ZuulRemake.Classes
         public string attack(string name)
         {
             string returnString = "";
-            Monster monster = currentRoom.getMonster(name);
+            Monster monster = currentRoom.GetMonster(name);
             if (monster == null)
             {
                 returnString += "that monster is no monster in this room";
             }
-            else if (GetInventoryString().contains("sword"))
+            else if (GetInventoryString().Contains("sword"))
             {
                 hp -= 100;
-                returnString += "\nyou attacked the monster" + "\nmonster HP: " + monster.getHp();
+                returnString += "\nyou attacked the monster" + "\nmonster HP: " + monster.Hp;
                 returnString += "\nthe monster hit you back";
                 monster.gotAttacked();
                 returnString += "\n" + "your HP: " + hp;
@@ -319,10 +311,10 @@ namespace ZuulRemake.Classes
         /**
          * returns items displayed in the inventory
          */
-        public string GetInventorystring()
+        public string GetInventoryString()
         {
             int totalWeight = backpack.getTotalWeight();
-            return backpack.inventoryTostring() + "\nweight: " + totalWeight + "/" + maximumWeight + "\nHP:" + hp;
+            return backpack.inventoryToString() + "\nweight: " + totalWeight + "/" + maximumWeight + "\nHP:" + hp;
         }
 
         /**
@@ -344,8 +336,8 @@ namespace ZuulRemake.Classes
             string returnstring = "";
             if (chargeRoom != null)
             {
-                enterRoom(chargeRoom);
-                returnstring += "fired beamer:" + "\n" + getRoomDescription();
+                EnterRoom(chargeRoom);
+                returnstring += "fired beamer:" + "\n" + GetRoomDescription();
             }
             else
             {
