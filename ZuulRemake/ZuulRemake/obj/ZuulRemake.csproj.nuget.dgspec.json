@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\gmowery\\Source\\Repos\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj": {}
+    "C:\\Users\\ewanchic\\Documents\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj": {}
   },
   "projects": {
-    "C:\\Users\\gmowery\\Source\\Repos\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj": {
+    "C:\\Users\\ewanchic\\Documents\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gmowery\\Source\\Repos\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj",
+        "projectUniqueName": "C:\\Users\\ewanchic\\Documents\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj",
         "projectName": "ZuulRemake",
-        "projectPath": "C:\\Users\\gmowery\\Source\\Repos\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj",
-        "packagesPath": "C:\\Users\\gmowery\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gmowery\\Source\\Repos\\CS410\\ZuulRemake\\ZuulRemake\\obj\\",
+        "projectPath": "C:\\Users\\ewanchic\\Documents\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj",
+        "packagesPath": "C:\\Users\\ewanchic\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ewanchic\\Documents\\CS410\\ZuulRemake\\ZuulRemake\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\gmowery\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ewanchic\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
