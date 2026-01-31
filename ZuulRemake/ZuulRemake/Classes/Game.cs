@@ -22,6 +22,7 @@ namespace ZuulRemake.Classes
             var game = new Game();
             game.Play();
         }
+
         /**
          * Create the game and initialise its internal map. :3
          */
@@ -32,10 +33,23 @@ namespace ZuulRemake.Classes
             CreateRooms();
         }
 
+        // attack monster goes here -> deal damage and take damage methods
+        // move these / reorganize methods
+
+        public void AttackMonster()
+        {
+            // fix
+            Monster monster = CurrentRoom.GetRoomMonsters([1]);
+            int level = player.Level;
+            player.DealAttack(monster); ;
+            monster.TakeDamage(player.Level);
+        }
+
+
+
         /**
          * Create all the rooms and link their exits together as well as monsters and items in the rooms.
          */
-        
         private  Room CreateRooms()
         {
 
@@ -91,10 +105,8 @@ namespace ZuulRemake.Classes
         /**
          *  Main play routine.  Loops until end of play.
          */
-
         public void Play()
         {
-
             PrintWelcome();
 
             // Enter the main command loop.  Here we repeatedly read commands and
@@ -126,28 +138,33 @@ namespace ZuulRemake.Classes
         {
             Console.WriteLine();
             Console.WriteLine("Welcome to the World of Zuul!\n");
-            Console.WriteLine("you wake up in a very dark castle,\n" +
-                "you dont know how you got here and the front door is \n locked, you " +
-                "need to find the key to get out of here");
-            Console.WriteLine("Type 'help' if you need help.");
+            Console.WriteLine("Please enter your name: ");
+            player.Name = Console.ReadLine();
+            Console.WriteLine("Greetings, " + player.Name);
+            Console.WriteLine("You wake up in a very dark castle. \n" +
+                              "You dont know how you got here and the front door is locked. \n" +
+                              "You need to find the key to get out of here.");
+            Console.WriteLine("Type 'help' to display commands.");
             Console.WriteLine();
             Console.WriteLine(player.GetCurrentRoom());
         }
 
+        // We can probably get rid of these two methods and just do an if-then + console.writeline in the game loop
 
         /**
-         * printd a game over message when the player takes too many turns.
+         * Print a game over message.
          */
         private void PrintGameOver()
         {
-            Console.WriteLine("\nYou have died, please try again!");
+            Console.WriteLine("You have died, please try again!");
         }
+
         /**
-         * prints a victory message when the player leaves the castle.
+         * Print a victory message when the player leaves the castle.
          */
         private void PrintWon()
         {
-            Console.WriteLine("\nYou won, you defeated the dragon and escaped the castle!");
+            Console.WriteLine("You won, you defeated the dragon and escaped the castle!");
         }
 
         /**
@@ -339,6 +356,7 @@ namespace ZuulRemake.Classes
             {
                 player.EquipItem();
                 player.RemoveFromBackpack("potion");
+                // do the actual health increase
                 Console.WriteLine("you took the potion and have increased your health");
                 Console.WriteLine(player.GetInventoryString());
             }
@@ -359,11 +377,15 @@ namespace ZuulRemake.Classes
 
             Console.WriteLine(player.attack(name));
 
-            if (!ghoul.isAlive())
+            
+            
+
+            if (!ghoul.IsAlive())
             {
                 bathroom.SetItem("potion", potion);
                 Console.WriteLine("\nyou killed the ghoul, take the potion to increase your health.\n");
-            } else if (!dragon.isAlive())
+            } 
+            else if (!dragon.IsAlive())
             {
                 dungeon.SetItem("key", key);
                 Console.WriteLine("\nthe dragon has been slain! take the key and escape!");

@@ -1,27 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    internal class Player(string name)
+    internal class Player
     {
-        // instance variables - replace the example below with your own
-        private readonly string name = name;
-        private Room currentRoom;
+        public string Name { get; set; } = "?";
+        public int HP { get; set; } = 100;
+        public int CarryWeight { get; set; } = 0;
+        public int MaxWeight { get; set; } = 2;
+        public int Level { get; set; } = 10;
+
+        private Room CurrentRoom { get; set; }
+        private Room? chargeRoom { get; set; }
+
         private readonly BackPack backpack = new BackPack();
         private readonly int maximumWeight = 2;
         private readonly Stack<Room> previousRoom = new Stack<Room>();
-        private Room? chargeRoom;
-        private int hp = 100;
+
+        public Player(string name)
+        {
+            Name = name;
+        }
+
 
         public string ExitsAvailable()
         {
             string returnString = "";
-            returnString += currentRoom.GetExitString();
+            returnString += CurrentRoom.GetExitString();
             return returnString;
         }
 
@@ -30,7 +41,7 @@ namespace ZuulRemake.Classes
          */
         public Room GetCurrentRoom()
         {
-            return currentRoom;
+            return CurrentRoom;
         }
 
         /**
@@ -39,9 +50,9 @@ namespace ZuulRemake.Classes
          */
         public bool AddToBackPack(Item item)
         {
-            if (CanCarry(item))
+            if (item.Weight + CarryWeight <= MaxWeight)
             {
-                currentRoom.RemoveItem(item.Name);
+                CurrentRoom.RemoveItem(item.Name);
                 backpack.AddItem(item);
                 return true;
             }
@@ -57,9 +68,9 @@ namespace ZuulRemake.Classes
         public string EnterRoom(Room nextRoom)
         {
             string returnString = "";
-            currentRoom = nextRoom;
+            CurrentRoom = nextRoom;
 
-            returnString += currentRoom.ToString();
+            returnString += CurrentRoom.ToString();
             return returnString;
         }
 
@@ -70,12 +81,11 @@ namespace ZuulRemake.Classes
          */
         public string GoNewRoom(string direction)
         {
-            if (!currentRoom.TryGetExit(direction, out Room nextRoom)) return "there is no door (or it is locked).";
+            if (!CurrentRoom.TryGetExit(direction, out Room nextRoom)) return "there is no door (or it is locked).";
             // Try to leave current room.
-            previousRoom.Push(currentRoom);
-            currentRoom = nextRoom;
-            return currentRoom.ToString();
-           
+            previousRoom.Push(CurrentRoom);
+            CurrentRoom = nextRoom;
+            return CurrentRoom.ToString();           
         }
 
         /**
@@ -91,7 +101,7 @@ namespace ZuulRemake.Classes
          */
         public string GetRoomDescription()
         {
-            return currentRoom.ToString();
+            return CurrentRoom.ToString();
         }
 
         /**
@@ -99,10 +109,12 @@ namespace ZuulRemake.Classes
          * will take the item. if not the game will tell the player it is too
          * heavy.
          */
+        // Player should not be able to type in name of item if not in room
+        // Make yes or no prompt instead
         public string TakeItem(string name)
         {
             string returnString = "";
-            Item item = currentRoom.GetItem(name);
+            Item item = CurrentRoom.GetItem(name);
             if (item == null)
             {
                 returnString += "that item isnt in the room";
@@ -138,7 +150,7 @@ namespace ZuulRemake.Classes
             else
             {
                 RemoveFromBackpack(name);
-                currentRoom.SetItem(name, itemRemove);
+                CurrentRoom.SetItem(name, itemRemove);
                 returnString += name + " dropped";
             }
             return returnString;
@@ -161,16 +173,18 @@ namespace ZuulRemake.Classes
         }
 
         /**
-         * displays player hp
+         * displays player HP
          */
-        public int GetHp()
+        public int GetHP()
         {
-            return hp;
+            return HP;
         }
+
+
         //public void setCurrentRoom(Room newRoom)
         //{
-        //    previousRoom.push(currentRoom);
-        //    currentRoom = newRoom;
+        //    previousRoom.push(CurrentRoom);
+        //    CurrentRoom = newRoom;
         //}
 
         /**
@@ -182,7 +196,7 @@ namespace ZuulRemake.Classes
         {
             string returnString = "";
 
-            if (previousRoom == null)
+            if (previousRoom.Count == 0)
             {
                 returnString += "There is no turning back!";
             }
@@ -190,14 +204,11 @@ namespace ZuulRemake.Classes
             {
                 Room lastRoom = previousRoom.Pop();
                 EnterRoom(lastRoom);
-                returnString += currentRoom.ToString();
+                returnString += CurrentRoom.ToString();
             }
             return returnString;
         }
-        //public string getCookie()
-        //{
 
-        //}
         /**
          * if the weight of the backpack is less than the maximum weight
          * and the item is less than the remaining weight available
@@ -218,37 +229,60 @@ namespace ZuulRemake.Classes
         public void EquipItem()
         {
             string returnString = "";
-            hp += 101;
-            returnString += hp;
+            HP += 101;
+            returnString += HP;
         }
 
         /**
-         * determines if the player got hit
+         * Reduces HP of the Player based on damage taken.
          */
-        public int GotHit()
+        public int TakeDamage(int damage)
         {
-            if (currentRoom.GetMonster(name).isAlive())
-            {
-                return hp -= 100;
-            }
-            return GotHit();
+            HP -= damage;
+            if (HP < 0) HP = 0;
+            return HP;
         }
 
+        /**
+         * Increases Player Level (damage dealt)
+         */
+        public void LevelUp(int levels)
+        {
+            Level += levels;
+        }
+
+        /**
+         * Deals damage to a monster based on current level
+         */
+        public int DealAttack(Monster monster)
+        {            
+            return Level;
+        }
+
+
+        // simplified ^
+        
+        // Player level determines damage dealt to monster
+        // All player does is deal damage
+        // weapons increase level
+
+
+        // MOVE LOTS OF THIS LOGIC TO GAME CLASS
         public string attack(string name)
         {
             string returnString = "";
-            Monster monster = currentRoom.GetMonster(name);
+            Monster monster = CurrentRoom.GetMonster(name);
             if (monster == null)
             {
                 returnString += "that monster is no monster in this room";
             }
             else if (GetInventoryString().Contains("sword"))
             {
-                hp -= 100;
-                returnString += "\nyou attacked the monster" + "\nmonster HP: " + monster.Hp;
+                HP -= 100;
+                returnString += "\nyou attacked the monster" + "\nmonster HP: " + monster.HP;
                 returnString += "\nthe monster hit you back";
-                monster.gotAttacked();
-                returnString += "\n" + "your HP: " + hp;
+                monster.TakeDamage();
+                returnString += "\n" + "your HP: " + HP;
             }
             else
             {
@@ -258,31 +292,31 @@ namespace ZuulRemake.Classes
             return returnString;
         }
 
+        // MOVE TO GAME CLASS
         /**
-         * checks to see if there are any turns left. if there arent then it
-         * is game over.
+         * Ends the game if player HP reaches 0
          */
         public bool gameOver()
         {
-            return hp == 0;
+            return HP == 0;
         }
 
         /**
-         * returns items displayed in the inventory
+         * Returns items in the inventory
          */
         public string GetInventoryString()
         {
             int totalWeight = backpack.GetTotalWeight();
-            return backpack.InventoryToString() + "\nweight: " + totalWeight + "/" + maximumWeight + "\nHP:" + hp;
+            return backpack.InventoryToString() + "\nweight: " + totalWeight + "/" + maximumWeight + "\nHP:" + HP;
         }
 
         /**
-         * charges the beamer to memorize the current room
+         * Charges the beamer to memorize the current room
          */
         public string BeamerCharge()
         {
             string returnstring = "";
-            chargeRoom = currentRoom;
+            chargeRoom = CurrentRoom;
             returnstring += "charged beamer";
             return returnstring;
         }

@@ -1,8 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "RNWDiGf9dRI=",
+  "dgSpecHash": "5j1Mt8Pkjkk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\George\\Source\\Repos\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\0735z\\Documents\\GitHub\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\0735z\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.23\\microsoft.windowsdesktop.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\0735z\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.23\\microsoft.netcore.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\0735z\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.23\\microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\0735z\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.23\\microsoft.netcore.app.host.win-x64.8.0.23.nupkg.sha512"
+  ],
   "logs": []
 }
