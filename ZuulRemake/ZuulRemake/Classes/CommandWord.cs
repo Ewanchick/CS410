@@ -7,7 +7,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    internal enum CommandWord
+    public enum CommandWord
     {
         GO,
         HELP,

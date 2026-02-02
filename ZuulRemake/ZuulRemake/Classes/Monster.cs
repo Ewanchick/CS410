@@ -8,7 +8,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    internal class Monster
+    public class Monster
     {
         public string Name { get; set; }
         public int HP { get; set; } = 50;

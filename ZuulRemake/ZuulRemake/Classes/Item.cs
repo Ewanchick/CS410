@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ZuulRemake.Classes
 {
-    internal class Item(string name, string description, int weight)
+    public class Item(string name, string description, int weight)
     {
         public string Description { get; set; } = description;
         public int Weight { get; set; } = weight;

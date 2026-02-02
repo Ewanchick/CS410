@@ -7,7 +7,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    internal class Room(string description)
+    public class Room(string description)
     {
         private readonly string description = description;
         private readonly Dictionary<string, Room> exits = [];

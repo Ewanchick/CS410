@@ -7,7 +7,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    internal class Command(CommandWord commandWord, string? secondWord)
+    public class Command(CommandWord commandWord, string? secondWord)
     {
         private readonly CommandWord commandWord = commandWord;
         private readonly string? secondWord = secondWord;

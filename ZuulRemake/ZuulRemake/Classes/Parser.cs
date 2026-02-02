@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ZuulRemake.Classes
 {
-    internal class Parser
+    public class Parser
     {
         private readonly CommandWords commands;  // holds all valid command words
         

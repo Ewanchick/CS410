@@ -8,7 +8,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    internal class Player
+    public class Player
     {
         public string Name { get; set; } = "?";
         public int HP { get; set; } = 100;
@@ -281,7 +281,7 @@ namespace ZuulRemake.Classes
                 HP -= 100;
                 returnString += "\nyou attacked the monster" + "\nmonster HP: " + monster.HP;
                 returnString += "\nthe monster hit you back";
-                monster.TakeDamage();
+                monster.TakeDamage(50);
                 returnString += "\n" + "your HP: " + HP;
             }
             else

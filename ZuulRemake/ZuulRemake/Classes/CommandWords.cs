@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ZuulRemake.Classes
 {
-    internal class CommandWords
+    public class CommandWords
     {
         // A mapping between a command word and the CommandWord
         // associated with it.

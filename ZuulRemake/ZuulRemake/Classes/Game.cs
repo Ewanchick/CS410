@@ -10,7 +10,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    internal class Game
+    public class Game
     {
         private readonly Parser parser;
         private readonly Player player;
@@ -36,14 +36,34 @@ namespace ZuulRemake.Classes
         // attack monster goes here -> deal damage and take damage methods
         // move these / reorganize methods
 
-        public void AttackMonster()
+        public void AttackMonster(string monsterName)
         {
             // fix
-            Monster monster = CurrentRoom.GetRoomMonsters([1]);
-            int level = player.Level;
-            player.DealAttack(monster); ;
-            monster.TakeDamage(player.Level);
+            Monster monster = player.GetCurrentRoom().GetMonster(monsterName);
+            if (monster == null)
+            {
+                Console.WriteLine("There is no such monster here.");
+                return;
+            }
+            int damage = player.DealAttack(monster);
+            monster.TakeDamage(damage);
+
+            Console.WriteLine($"You attack the {monster.Name} for {damage} damage");
+            Console.WriteLine($"{monster.Name} hp: {monster.HP}");
+
+            if (!monster.IsAlive)
+            {
+                Console.WriteLine($"You defeated the {monster.Name}!");
+
+                if (monster.Drop != null)
+                {
+                    player.GetCurrentRoom().SetItem(monster.Drop.Name.ToLower(), monster.Drop);
+                    Console.WriteLine($"{monster.Name} dropped a {monster.Drop.Name}!");
+                }
+                player.GetCurrentRoom().RemoveMonster(monsterName);
+            }
         }
+
 
 
 
@@ -93,8 +113,8 @@ namespace ZuulRemake.Classes
 
 
             //create the monsters
-            dragon = new Monster("dragon", 100);
-            ghoul = new Monster("ghoul", 50);
+            dragon = new Monster("Dragon", 100,10,potion);
+            ghoul = new Monster("Ghoul", 50,100,key);
 
             dungeon.SetMonster("dragon", dragon);
             bathroom.SetMonster("ghoul", ghoul);
@@ -373,19 +393,19 @@ namespace ZuulRemake.Classes
                 Console.WriteLine("what are you attacking?");
                 return;
             }
-            string name = command.GetSecondWord();
+#pragma warning disable CS8604 // Possible null reference argument.
+            AttackMonster(command.GetSecondWord());
+#pragma warning restore CS8604 // Possible null reference argument.
 
-            Console.WriteLine(player.attack(name));
 
-            
-            
 
-            if (!ghoul.IsAlive())
+
+            if (ghoul.HP == 0)
             {
                 bathroom.SetItem("potion", potion);
                 Console.WriteLine("\nyou killed the ghoul, take the potion to increase your health.\n");
             } 
-            else if (!dragon.IsAlive())
+            else if (dragon.HP == 0)
             {
                 dungeon.SetItem("key", key);
                 Console.WriteLine("\nthe dragon has been slain! take the key and escape!");
