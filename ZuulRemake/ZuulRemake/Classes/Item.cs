@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ZuulRemake.Classes
 {
-    public class Item(string name, string description, int weight)
+    public class Item(string name, string description, int weight, int? buff)
     {
         public string Description { get; set; } = description;
         public int Weight { get; set; } = weight;
         public string Name { get; set; } = name;
-        public int StatIncrease { get; set; } = 0;
+        public int? StatIncrease { get; set; } = buff;
 
 
         /**
@@ -27,13 +28,14 @@ namespace ZuulRemake.Classes
                    $"{Description}\n" +
                    $"Weight: {Weight}\n";
 
-            if (Name == "Potion")
+            switch (Name)
             {
-                ReturnString += $"Health Increase: {StatIncrease}";
-            }
-            else
-            {
-                ReturnString += $"Buff: {StatIncrease}";
+                case "Potion":
+                    ReturnString += $"Health Increase: {StatIncrease}";
+                    break;
+                default:
+                    ReturnString += $"Buff: {StatIncrease}";
+                    break;
             }
 
             return ReturnString;
