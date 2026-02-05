@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading;
@@ -72,10 +73,25 @@ namespace ZuulRemake.Classes
          */
         public void Battle(Monster m, Player p)
         {
+            Console.WriteLine("The " + m.Name + " is hostile! Attack or be attacked!");
+
             while (m.IsAlive) 
             {
-                Console.WriteLine("The " + m.Name + " is hostile! Attack or be attacked!");
-                
+                Console.WriteLine("What will you do? ");
+                string? action = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(action) || !action.Contains("attack", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("You have chosen not to attack. The " + m.Name + " attacks instead!");
+                }
+                else
+                {
+                    m.TakeDamage(p.Level);
+                    Console.WriteLine("You have attacked the " + m.Name + "! \n" +
+                                      "The " + m.Name + "attacks back!");                   
+                }
+
+                p.TakeDamage(m.Level);
+                Console.WriteLine("You have been injured! Your HP is now " + p.HP + ".");
             }
 
             Console.WriteLine($"You defeated the {m.Name}!");
@@ -208,7 +224,7 @@ namespace ZuulRemake.Classes
                               "Upon attempting to leave, you find that the front door is locked. \n" +
                               "You need to find its key in order to escape this place... but beware! \n" +
                               "Danger lurks around every corner.");
-            Console.WriteLine("(Type 'help' to display commands.)");
+            Console.WriteLine("(Type 'help' at any time to display available commands.)");
             Console.WriteLine();
             Console.WriteLine(player.GetCurrentRoom());
         }
@@ -311,8 +327,7 @@ namespace ZuulRemake.Classes
          */
         private void PrintHelp()
         {
-            Console.WriteLine("You are lost. You are alone. You wander");
-            Console.WriteLine("around the castle.");
+            Console.WriteLine("You are lost. You are alone. You wander around the castle.");
             Console.WriteLine();
             Console.WriteLine("Your command words are:");
             parser.ShowCommands();
