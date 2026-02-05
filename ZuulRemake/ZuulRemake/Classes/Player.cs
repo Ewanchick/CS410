@@ -16,7 +16,7 @@ namespace ZuulRemake.Classes
         public int MaxWeight { get; set; } = 2;
         public int Level { get; set; } = 10;
 
-        private Room CurrentRoom { get; set; }
+        private Room? CurrentRoom { get; set; }
         private Room? chargeRoom { get; set; }
 
         private readonly BackPack backpack = new BackPack();
@@ -250,15 +250,6 @@ namespace ZuulRemake.Classes
         {
             Level += levels;
         }
-
-        /**
-         * Deals damage to a monster based on current level
-         */
-        public int DealAttack(Monster monster)
-        {            
-            return Level;
-        }
-
 
         // simplified ^
         

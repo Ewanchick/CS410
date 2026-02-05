@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -29,7 +30,7 @@ namespace ZuulRemake.Classes
         public Game()
         {
             parser = new Parser();
-            player = new Player("Player1");
+            player = new Player("Player");
             CreateRooms();
         }
 
@@ -45,11 +46,12 @@ namespace ZuulRemake.Classes
                 Console.WriteLine("There is no such monster here.");
                 return;
             }
-            int damage = player.DealAttack(monster);
-            monster.TakeDamage(damage);
+            
+            monster.TakeDamage(player.Level);
 
-            Console.WriteLine($"You attack the {monster.Name} for {damage} damage");
-            Console.WriteLine($"{monster.Name} hp: {monster.HP}");
+            Console.WriteLine($"You attack the {monster.Name}!");
+            Console.WriteLine($"{monster.Name} HP: {monster.HP}");
+
 
             if (!monster.IsAlive)
             {
@@ -63,6 +65,34 @@ namespace ZuulRemake.Classes
                 player.GetCurrentRoom().RemoveMonster(monsterName);
             }
         }
+
+        /**
+         * Initiates a battle between player and monster, continously prompting for input and 
+         * returning with attacks until the monster or player is dead.
+         */
+        public void Battle(Monster m, Player p)
+        {
+            while (m.IsAlive) 
+            {
+                Console.WriteLine("The " + m.Name + " is hostile! Attack or be attacked!");
+                
+            }
+
+            Console.WriteLine($"You defeated the {m.Name}!");
+
+            if (m.Drop != null)
+            {
+                player.GetCurrentRoom().SetItem(m.Drop.Name.ToLower(), m.Drop);
+                Console.WriteLine($"{m.Name} dropped a {m.Drop.Name}!");
+            }
+            player.GetCurrentRoom().RemoveMonster(m.Name);
+        }
+
+
+
+
+
+
 
 
 
@@ -99,22 +129,23 @@ namespace ZuulRemake.Classes
             bathroom.SetExit("north", bedroom);
 
             //create the items
-            sword = new Item("sword", "heavy sword, might be used to kill the dragon", 1);
-            lantern = new Item("lantern", "used to light the dark rooms of the castle", 1);
-            armour = new Item("armour", "protect yourself from the mighty dragon", 1);
-            potion = new Item("Potion", "use this to increase your health!", 1);
-            key = new Item("key", "used to unlock the way out", 0);
+            sword = new Item("sword", "heavy sword, might be used to kill the dragon", 1, 10);
+            lantern = new Item("lantern", "used to light the dark rooms of the castle", 1, 0);
+            armour = new Item("armour", "protect yourself from the mighty dragon", 1, 20);
+            potion = new Item("Potion", "use this to increase your health!", 1, 50);
+            key = new Item("key", "used to unlock the way out", 0, 0);
 
             //initialize items
             dininghall.SetItem("lantern", lantern);
             ballroom.SetItem("armour", armour);
 
-            player.EnterRoom(entryway);  // start game in the entryway of castle
+            // start game in the entryway of castle
+            player.EnterRoom(entryway);  
 
 
             //create the monsters
-            dragon = new Monster("Dragon", 100,10,potion);
-            ghoul = new Monster("Ghoul", 50,100,key);
+            dragon = new Monster("Dragon", 100, 10, potion);
+            ghoul = new Monster("Ghoul", 50, 100, key);
 
             dungeon.SetMonster("dragon", dragon);
             bathroom.SetMonster("ghoul", ghoul);
@@ -158,18 +189,27 @@ namespace ZuulRemake.Classes
         {
             Console.WriteLine();
             Console.WriteLine("Welcome to the World of Zuul!\n");
-            Console.WriteLine("Please enter your name: ");
-            player.Name = Console.ReadLine();
+            Console.Write("Please enter your name: ");
+            string? name = Console.ReadLine();
+            do
+            {
+                Console.Write("Invalid input. Please enter your name: ");
+                name = Console.ReadLine();
+            } while (string.IsNullOrWhiteSpace(name));
+
+            player.Name = name;
+
             Console.WriteLine("Greetings, " + player.Name);
-            Console.WriteLine("You wake up in a very dark castle. \n" +
-                              "You dont know how you got here and the front door is locked. \n" +
-                              "You need to find the key to get out of here.");
-            Console.WriteLine("Type 'help' to display commands.");
+            Console.WriteLine("You have awoken in a very dark castle with no memory of how you got here. \n" +
+                              "Upon attempting to leave, you find that the front door is locked. \n" +
+                              "You need to find its key in order to escape this place... but beware! \n" +
+                              "Danger lurks around every corner.");
+            Console.WriteLine("(Type 'help' to display commands.)");
             Console.WriteLine();
             Console.WriteLine(player.GetCurrentRoom());
         }
 
-        // We can probably get rid of these two methods and just do an if-then + console.writeline in the game loop
+        // We can probably get rid of these two methods and just do an if-then in the game loop
 
         /**
          * Print a game over message.
