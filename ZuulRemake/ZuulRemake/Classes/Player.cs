@@ -16,7 +16,7 @@ namespace ZuulRemake.Classes
         public int MaxWeight { get; set; } = 2;
         public int Level { get; set; } = 10;
 
-        private Room CurrentRoom { get; set; }
+        private Room? CurrentRoom { get; set; }
         private Room? chargeRoom { get; set; }
 
         private readonly BackPack backpack = new BackPack();
@@ -50,17 +50,21 @@ namespace ZuulRemake.Classes
          */
         public bool AddToBackPack(Item item)
         {
-            if (item.Weight + CarryWeight <= MaxWeight)
+            // check if the item can be carried
+            if (item.Weight + CarryWeight > MaxWeight)
             {
-                CurrentRoom.RemoveItem(item.Name);
-                backpack.AddItem(item);
-                return true;
+                return false; // too heavy
             }
-            else
-            {
-                return false;
-            }
+
+            // remove from current room
+            CurrentRoom.RemoveItem(item.Name);
+
+            // add to backpack
+            backpack.AddItem(item);
+
+            return true;
         }
+
 
         /**
          * this returns the current room that you are in.
@@ -250,15 +254,6 @@ namespace ZuulRemake.Classes
         {
             Level += levels;
         }
-
-        /**
-         * Deals damage to a monster based on current level
-         */
-        public int DealAttack(Monster monster)
-        {            
-            return Level;
-        }
-
 
         // simplified ^
         
