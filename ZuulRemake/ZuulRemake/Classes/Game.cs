@@ -160,23 +160,27 @@ namespace ZuulRemake.Classes
         {
             PrintWelcome();
 
-            // Enter the main command loop.  Here we repeatedly read commands and
-            // execute them until the game is over.
-
-            bool finished = false;
-            while (!finished)
+            while (true)
             {
                 Command command = parser.GetCommand();
-                finished = ProcessCommand(command);
+
+                bool quitRequested = ProcessCommand(command);
+
+                if (quitRequested)
+                {
+                    break;
+                }
+
                 if (player.gameOver())
                 {
-                    PrintGameOver();
-                    finished = true;
+                    GameOver();
+                    break;
                 }
+
                 if (player.GetCurrentRoom() == exit)
                 {
-                    Console.WriteLine();
-                    finished = true;
+                    PrintWon();
+                    break;
                 }
             }
             Console.WriteLine("Thank you for playing.  Good bye.");
@@ -214,7 +218,7 @@ namespace ZuulRemake.Classes
         /**
          * Print a game over message.
          */
-        private void PrintGameOver()
+        private void GameOver()
         {
             Console.WriteLine("You have died, please try again!");
         }
@@ -234,47 +238,43 @@ namespace ZuulRemake.Classes
          */
         private bool ProcessCommand(Command command)
         {
-            bool wantToQuit = false;
-
-            CommandWord commandWord = command.GetCommandWord();
-
-            switch (commandWord)
+            
+            switch (command.GetCommandWord())
             {
                 case CommandWord.UNKNOWN:
                     Console.WriteLine("I don't know what you mean...");
-                    break;
+                    return false;
 
                 case CommandWord.HELP:
                     PrintHelp();
-                    break;
+                    return false;
 
                 case CommandWord.GO:
                     GoRoom(command);
-                    break;
+                    return false;
 
                 case CommandWord.QUIT:
-                    wantToQuit = Quit(command);
-                    break;
+                    return Quit(command);
 
                 case CommandWord.LOOK:
                     Look(command);
-                    break;
+                    return false;
 
                 case CommandWord.TAKE:
                     Take(command);
-                    break;
+                    return false;
 
                 case CommandWord.INVENTORY:
                     Inventory();
-                    break;
+                    return false;
 
                 case CommandWord.BACK:
                     GoBack(command);
-                    break;
+                    return false;
 
                 case CommandWord.DROP:
                     Drop(command);
-                    break;
+                    return false;
 
                 // case EAT:
                 //     eat(command);
@@ -290,13 +290,16 @@ namespace ZuulRemake.Classes
 
                 case CommandWord.USE:
                     UseItem(command);
-                    break;
+                    return false;
 
                 case CommandWord.ATTACK:
                     Attack(command);
-                    break;
+                    return false;
+
+                default:
+                    return false;
             }
-            return wantToQuit;
+           
         }
 
         // implementations of user commands:
