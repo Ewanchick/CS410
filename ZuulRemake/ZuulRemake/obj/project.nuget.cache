@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "QfJNDdTJ55I=",
+  "dgSpecHash": "0p+nCXtnuHE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\George\\source\\repos\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\ewanchic\\Documents\\CS410\\ZuulRemake\\ZuulRemake\\ZuulRemake.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ewanchic\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.22.1\\microsoft.visualstudio.azure.containers.tools.targets.1.22.1.nupkg.sha512"
+  ],
   "logs": []
 }

@@ -333,6 +333,59 @@ namespace ZuulRemake.Classes
          * uses the items in the inventory, if the player has a key they can unlock the door, if they have a lantern they will light the room in the kitchen
          * if they have a potion or armour they can increase their health.
          */
+        private void UseItem2(Command command)
+        {
+            if (!command.HasSecondWord())
+            {
+                Console.WriteLine("what item would you like to use?");
+            }
+            string item = command.GetSecondWord();
+            //To standardize player input
+            switch (item.ToLower())
+            {
+                case "key":
+                    if (player.GetInventoryString().Contains("key") && player.GetCurrentRoom() == entryway)
+                    {
+                        Console.WriteLine("you unlocked the door, go south to leave");
+                        entryway.SetExit("south", exit);
+                    }
+                    else
+                    {
+                        Console.WriteLine("you cannot use key here");
+                    }
+                    break;
+                case "lantern":
+                    if (player.GetInventoryString().Contains("lantern") && player.GetCurrentRoom() == kitchen)
+                    {
+                        Console.WriteLine("you are in a nasty kitchen and see a sword lying on the ground");
+                        kitchen.SetItem("sword", sword);
+                    }
+                    else
+                    {
+                        Console.WriteLine("you cannot use the lantern here");
+                    }
+                    break;
+                case "armour":
+                    {
+                        player.EquipItem();
+                        player.RemoveFromBackpack("armour");
+                        Console.WriteLine("you are now wearing the armour, this will help you last longer when fighting enemies.");
+                        Console.WriteLine(player.GetInventoryString());
+                    }
+                    break;
+                case "potion":
+                    {
+                        player.EquipItem();
+                        player.RemoveFromBackpack("potion");
+                        // do the actual health increase
+                        Console.WriteLine("you took the potion and have increased your health");
+                        Console.WriteLine(player.GetInventoryString());
+                    }
+                    break;
+                    //Could also add logic to check incase a non command word is used
+            }
+        }
+      
         private void UseItem(Command command)
         {
             if (!command.HasSecondWord())
@@ -340,6 +393,8 @@ namespace ZuulRemake.Classes
                 Console.WriteLine("what item would you like to use?");
             }
             string item = command.GetSecondWord();
+            //To standardize player input
+            item = item.ToLower();
 
             if (item.Equals("key", StringComparison.OrdinalIgnoreCase))
             {

@@ -151,6 +151,7 @@ namespace ZuulRemake.Classes
             {
                 RemoveFromBackpack(name);
                 CurrentRoom.SetItem(name, itemRemove);
+                //Could potentally add the name of the room where the item was dropped to make it easier to find
                 returnString += name + " dropped";
             }
             return returnString;
