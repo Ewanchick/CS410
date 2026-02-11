@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ZuulRemake")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8ec2c581a27648db5e10cab6ba45e975d9d131d8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+51d27a68f4b02eab5dc9108326f199b01a5475e7")]
 [assembly: System.Reflection.AssemblyProductAttribute("ZuulRemake")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ZuulRemake")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
