@@ -52,7 +52,7 @@ namespace ZuulRemake.Classes
 
         {
             if (inventory.Count == 0)
-                return "backpack is empty";
+                return "Backpack is empty";
 
             return string.Join(", ", inventory.Keys);
         }

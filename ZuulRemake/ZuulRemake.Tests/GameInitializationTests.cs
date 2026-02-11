@@ -49,7 +49,7 @@ namespace ZuulRemake.Tests
             Assert.Equal(2, player.MaxWeight);
             Assert.Equal(0, player.CarryWeight);
             Assert.Equal(10, player.Level);
-            Assert.Empty(player.GetInventoryString().Contains("backpack is empty") ? "" : player.GetInventoryString());
+            Assert.Empty(player.GetInventoryString().Contains("Backpack is empty") ? "" : player.GetInventoryString());
         }
     }
 }
