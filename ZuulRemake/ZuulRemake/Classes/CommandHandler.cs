@@ -243,8 +243,8 @@ namespace ZuulRemake.Classes
             Console.WriteLine($"{monster.Name} hp: {monster.HP}");
 
             //Player takes damage
-            player.TakeDamage(monster.Damage);
-            Console.WriteLine($"You take {monster.Damage} damage");
+            player.TakeDamage(monster.Level);
+            Console.WriteLine($"You take {monster.Level} damage");
             Console.WriteLine($"Your HP: {player.HP}");
             
 

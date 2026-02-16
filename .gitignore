@@ -3,3 +3,5 @@
 ################################################################################
 
 /ZuulRemake/.vs/ZuulRemake
+/ZuulRemake/ZuulRemake/obj/Debug
+/ZuulRemake/ZuulRemake.Tests/obj/Debug

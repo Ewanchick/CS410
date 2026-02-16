@@ -20,11 +20,10 @@ namespace ZuulRemake.Classes
         /**
          * Constructor for objects of class Monster
          */
-        public Monster(string name, int hp, int damage, int lvl, Item? drop)
+        public Monster(string name, int hp, int lvl, Item? drop)
         {
             Name = name;
             HP = hp;
-            Damage = damage; 
             Level = lvl;
             Drop = drop;
         }
