@@ -90,7 +90,7 @@ namespace ZuulRemake.Classes
                                       "The " + m.Name + "attacks back!");                   
                 }
 
-                p.TakeDamage(m.Level);
+               p.TakeDamage(m.Level);
                 Console.WriteLine("You have been injured! Your HP is now " + p.HP + ".");
             }
 
@@ -398,45 +398,49 @@ namespace ZuulRemake.Classes
                 Console.WriteLine("what item would you like to use?");
             }
             string item = command.GetSecondWord();
-
-            if (item.Equals("key", StringComparison.OrdinalIgnoreCase))
+            //To standardize player input
+            switch (item.ToLower())
             {
-                if (player.GetInventoryString().Contains("key") && player.GetCurrentRoom() == entryway)
-                {
-                    Console.WriteLine("you unlocked the door, go south to leave");
-                    entryway.SetExit("south", exit);
-                }
-                else
-                {
-                    Console.WriteLine("you cannot use key here");
-                }
-            }
-            if (item.Equals("lantern"))
-            {
-                if (player.GetInventoryString().Contains("lantern") && player.GetCurrentRoom() == kitchen)
-                {
-                    Console.WriteLine("you are in a nasty kitchen and see a sword lying on the ground");
-                    kitchen.SetItem("sword", sword);
-                }
-                else
-                {
-                    Console.WriteLine("you cannot use the lantern here");
-                }
-            }
-            if (item.Equals("armour"))
-            {
-                player.EquipItem();
-                player.RemoveFromBackpack("armour");
-                Console.WriteLine("you are now wearing the armour, this will help you last longer when fighting enemies.");
-                Console.WriteLine(player.GetInventoryString());
-            }
-            if (item.Equals("potion"))
-            {
-                player.EquipItem();
-                player.RemoveFromBackpack("potion");
-                // do the actual health increase
-                Console.WriteLine("you took the potion and have increased your health");
-                Console.WriteLine(player.GetInventoryString());
+                case "key":
+                    if (player.GetInventoryString().Contains("key") && player.GetCurrentRoom() == entryway)
+                    {
+                        Console.WriteLine("you unlocked the door, go south to leave");
+                        entryway.SetExit("south", exit);
+                    }
+                    else
+                    {
+                        Console.WriteLine("you cannot use key here");
+                    }
+                    break;
+                case "lantern":
+                    if (player.GetInventoryString().Contains("lantern") && player.GetCurrentRoom() == kitchen)
+                    {
+                        Console.WriteLine("you are in a nasty kitchen and see a sword lying on the ground");
+                        kitchen.SetItem("sword", sword);
+                    }
+                    else
+                    {
+                        Console.WriteLine("you cannot use the lantern here");
+                    }
+                    break;
+                case "armour":
+                    {
+                        player.EquipItem();
+                        player.RemoveFromBackpack("armour");
+                        Console.WriteLine("you are now wearing the armour, this will help you last longer when fighting enemies.");
+                        Console.WriteLine(player.GetInventoryString());
+                    }
+                    break;
+                case "potion":
+                    {
+                        player.EquipItem();
+                        player.RemoveFromBackpack("potion");
+                        // do the actual health increase
+                        Console.WriteLine("you took the potion and have increased your health");
+                        Console.WriteLine(player.GetInventoryString());
+                    }
+                    break;
+                    //Could also add logic to check incase a non command word is used
             }
         }
 
