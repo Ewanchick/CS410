@@ -8,9 +8,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    public class Player
+    public class Player(string name)
     {
-        public string Name { get; set; } = "?";
+        public string Name { get; set; } = name;
         public int HP { get; set; } = 100;
         public int CarryWeight { get; set; } = 0;
         public int MaxWeight { get; set; } = 2;
@@ -22,12 +22,6 @@ namespace ZuulRemake.Classes
         private readonly BackPack backpack = new BackPack();
         private readonly int maximumWeight = 2;
         private readonly Stack<Room> previousRoom = new Stack<Room>();
-
-        public Player(string name)
-        {
-            Name = name;
-        }
-
 
         public string ExitsAvailable()
         {
@@ -171,7 +165,7 @@ namespace ZuulRemake.Classes
         /**
          * returns an item from the backpack if it is available.
          */
-        public Item GetItemFromBackpack(string item)
+        public Item? GetItemFromBackpack(string item)
         {
             return backpack.GetItem(item);
         }
@@ -230,12 +224,8 @@ namespace ZuulRemake.Classes
             return canCarry;
         }
 
-        public void EquipItem()
-        {
-            string returnString = "";
-            HP += 101;
-            returnString += HP;
-        }
+        public void EquipItem() => HP += 101;
+        
 
         /**
          * Reduces HP of the Player based on damage taken.
