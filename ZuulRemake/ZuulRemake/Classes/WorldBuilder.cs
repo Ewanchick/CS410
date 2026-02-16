@@ -55,10 +55,10 @@ namespace ZuulRemake.Classes
             // initialize items
             dininghall.SetItem("lantern", lantern);
             ballroom.SetItem("armour", armour);
-
+            
             // create the monsters
-            var dragon = new Monster("dragon", 100, 10, key);
-            var ghoul = new Monster("ghoul", 50, 100, potion);
+            var dragon = new Monster("dragon", 100, 20, 10, key);
+            var ghoul = new Monster("ghoul", 50, 10, 100, potion);
 
             dungeon.SetMonster("dragon", dragon);
             bathroom.SetMonster("ghoul", ghoul);

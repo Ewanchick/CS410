@@ -15,14 +15,16 @@ namespace ZuulRemake.Classes
         public Item? Drop { get; set; }
         public int Level { get; set; } = 50;
         public bool IsAlive => HP > 0;
+        public int Damage;
 
         /**
          * Constructor for objects of class Monster
          */
-        public Monster(string name, int hp, int lvl, Item? drop)
+        public Monster(string name, int hp, int damage, int lvl, Item? drop)
         {
             Name = name;
             HP = hp;
+            Damage = damage; 
             Level = lvl;
             Drop = drop;
         }

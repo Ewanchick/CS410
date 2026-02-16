@@ -48,11 +48,7 @@ namespace ZuulRemake.Classes
 
 
 
-        /**
-         * Create all the rooms and link their exits together as well as monsters and items in the rooms.
-         */
-
-
+       
         /**
          *  Main play routine.  Loops until end of play.
          */

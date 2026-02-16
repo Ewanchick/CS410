@@ -16,7 +16,7 @@ namespace ZuulRemake.Classes
         public int MaxWeight { get; set; } = 2;
         public int Level { get; set; } = 10;
 
-        private Room CurrentRoom { get; set; }
+        private Room? CurrentRoom { get; set; }
         private Room? chargeRoom { get; set; }
 
         private readonly BackPack backpack = new BackPack();

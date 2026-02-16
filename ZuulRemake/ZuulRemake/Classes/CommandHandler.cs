@@ -175,8 +175,9 @@ namespace ZuulRemake.Classes
             }
             string item = command.GetSecondWord()!;
 
-            if (item.Equals("key", StringComparison.OrdinalIgnoreCase))
-            {
+            switch (item.ToLower())
+            { 
+            case "key":
                 if (player.GetItemFromBackpack("key") != null && player.GetCurrentRoom() == entryway)
                 {
                     Console.WriteLine("you unlocked the door, go south to leave");
@@ -186,44 +187,40 @@ namespace ZuulRemake.Classes
                 {
                     Console.WriteLine("you cannot use key here");
                 }
-            }
-            if (item.Equals("lantern", StringComparison.OrdinalIgnoreCase))
-            {
+                break;
+            case "lantern":
                 if (player.GetItemFromBackpack("lantern") != null && player.GetCurrentRoom() == kitchen)
                 {
                     Console.WriteLine("you are in a nasty kitchen and see a sword lying on the ground");
-                    var sword = new Item("sword","heavy sword, might be used to kill the dragon",1);
-                    kitchen.SetItem("sword", sword);
+                        var sword = new Item("sword","heavy sword, might be used to kill the dragon",1);
+                        kitchen.SetItem("sword", sword);
                 }
                 else
                 {
                     Console.WriteLine("you cannot use the lantern here");
                 }
-            }
-            if (item.Equals("armour", StringComparison.OrdinalIgnoreCase))
-            {
-                if (player.GetItemFromBackpack("armour") == null)
+                break;
+            case "armour":
+                    {
+                        if (player.GetItemFromBackpack("armour") == null)
+                        {
+                            player.EquipItem();
+                            player.RemoveFromBackpack("armour");
+                            Console.WriteLine("you are now wearing the armour, this will help you last longer when fighting enemies.");
+                            Console.WriteLine(player.GetInventoryString());
+                        }
+                    }
+                break;
+            case "potion":
                 {
-                    Console.WriteLine("you do not have armour");
-                    return;
+                    player.EquipItem();
+                    player.RemoveFromBackpack("potion");
+                    // do the actual health increase
+                    Console.WriteLine("you took the potion and have increased your health");
+                    Console.WriteLine(player.GetInventoryString());
                 }
-                player.EquipItem();
-                player.RemoveFromBackpack("armour");
-                Console.WriteLine("you are now wearing the armour, this will help you last longer when fighting enemies.");
-                Console.WriteLine(player.GetInventoryString());
-            }
-            if (item.Equals("potion", StringComparison.OrdinalIgnoreCase))
-            {
-                if (player.GetItemFromBackpack("potion") == null)
-                {
-                    Console.WriteLine("you do not have a potion");
-                    return;
-                }
-                player.EquipItem();
-                player.RemoveFromBackpack("potion");
-                // do the actual health increase
-                Console.WriteLine("you took the potion and have increased your health");
-                Console.WriteLine(player.GetInventoryString());
+                break;
+                //Could also add logic to check incase a non command word is used
             }
         }
 
@@ -236,12 +233,22 @@ namespace ZuulRemake.Classes
                 Console.WriteLine("There is no such monster here.");
                 return;
             }
+
+            //Monster takes damage
             int damage = player.DealAttack(monster);
             monster.TakeDamage(damage);
+
 
             Console.WriteLine($"You attack the {monster.Name} for {damage} damage");
             Console.WriteLine($"{monster.Name} hp: {monster.HP}");
 
+            //Player takes damage
+            player.TakeDamage(monster.Damage);
+            Console.WriteLine($"You take {monster.Damage} damage");
+            Console.WriteLine($"Your HP: {player.HP}");
+            
+
+            //If monster has an item they drop it when they die
             if (!monster.IsAlive)
             {
                 Console.WriteLine($"You defeated the {monster.Name}!");
@@ -285,31 +292,13 @@ namespace ZuulRemake.Classes
 
             Console.WriteLine(player.DropItem(name));
         }
-
-        /**
-         * 
-         
-        private void eat(Command command)
-        {
-            if(!command.hasSecondWord()) {
-                Console.WriteLine("what item do you want to eat?");
-                return;
-            }
-            
-            String name = command.getSecondWord();
-            
-            Console.WriteLine(player.eatCookie(name));
-            
-        }
+        /*
+            * displays the items in the inventory of the player class using the
+            * tostring in the player class.
         */
-        /**
-         * displays the items in the inventory of the player class using the
-         * tostring in the player class.
-         */
         private void Inventory()
         {
             Console.WriteLine("you are currently holding: " + player.GetInventoryString());
-
         }
 
 
