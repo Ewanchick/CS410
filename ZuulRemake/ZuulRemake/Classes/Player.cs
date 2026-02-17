@@ -8,7 +8,12 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    public class Player
+    /**
+     * This class represents the Player and inherits from the Entity class. The Player has 
+     * these unique attributes: BackPack Backpack, Room CurrentRoom, Room ChargeRoom, 
+     * int CarryWeight, and int MaxWeight.
+     */
+    public class Player : Entity
     {
         private readonly BackPack Backpack = new BackPack();
 
@@ -16,27 +21,12 @@ namespace ZuulRemake.Classes
         private Room? CurrentRoom { get; set; }
         private Room? ChargeRoom { get; set; }
 
-        public string Name { get; } = "Player";
-        public int HP { get; private set; } = 100;
-        public int Level { get; private set; } = 10;
         public int CarryWeight { get; private set; } = 0;
         public int MaxWeight { get; private set; } = 2;
 
-        public Player(string name)
+        public Player(string name) : base(name, hp: 100, level: 10)
         {
-            Name = name;
-        }
 
-        /* ------------------------------ HP ------------------------------ */
-        public void TakeDamage(int damage)
-        {
-            HP -= damage;
-            if (HP < 0) { HP = 0; }
-        }
-
-        public void AddHP(int hp)
-        {
-            HP += hp;
         }
 
         /* ------------------------------ LEVEL ------------------------------ */
@@ -66,7 +56,7 @@ namespace ZuulRemake.Classes
             MaxWeight -= weight;
         }
 
-        /* ------------------------------ ROOM NAVIGATION ------------------------------ */
+        /* -------------------------- ROOM NAVIGATION -------------------------- */
         
         /**
          * Return the current room. If it is null, throw an exception.
@@ -171,11 +161,12 @@ namespace ZuulRemake.Classes
         /* ------------------------------ INVENTORY ------------------------------ */
 
 
+        /** Inventory logic can be moved to Backpack class. Also, we should probably 
+         * rename all instances of backpack to Inventory, especially because there 
+         * are usages of BackPack and Backpack. 
+         */
 
 
-
-
-        // everything below here still needs worked on
 
         /**
          * takes item out of room and places it into the Backpack as long as
@@ -198,40 +189,6 @@ namespace ZuulRemake.Classes
             return true;
         }
 
-
-        /**
-         * this returns the current room that you are in.
-         */
-        public string EnterRoom(Room nextRoom)
-        {
-            string returnString = "";
-            CurrentRoom = nextRoom;
-
-            returnString += CurrentRoom.ToString();
-            return returnString;
-        }
-
-        /**
-         * if the next room isnt empty or locked it takes you to the next room using
-         * commandword go and the direction you want to go to depending on the 
-         * given exits. then it pushes the room in the stack.
-         */
-        public string GoNewRoom(string direction)
-        {
-            if (!CurrentRoom.TryGetExit(direction, out Room nextRoom)) return "there is no door (or it is locked).";
-            // Try to leave current room.
-            PreviousRooms.Push(CurrentRoom);
-            CurrentRoom = nextRoom;
-            return CurrentRoom.ToString();           
-        }
-
-        /**
-         * displays the toString from the room class.
-         */
-        public string GetRoomDescription()
-        {
-            return CurrentRoom.ToString();
-        }
 
         /**
          * if the player is able to add the item to the Backpack then the player
@@ -326,31 +283,6 @@ namespace ZuulRemake.Classes
             returnString += HP;
         }
 
-        /**
-         * Reduces HP of the Player based on damage taken.
-         */
-        public int TakeDamage(int damage)
-        {
-            HP -= damage;
-            if (HP < 0) HP = 0;
-            return HP;
-        }
-
-        /**
-         * Increases Player Level (damage dealt)
-         */
-        public void LevelUp(int levels)
-        {
-            Level += levels;
-        }
-
-        // simplified ^
-        
-        // Player level determines damage dealt to monster
-        // All player does is deal damage
-        // weapons increase level
-
-
         // MOVE LOTS OF THIS LOGIC TO GAME CLASS
         public string attack(string name)
         {
@@ -392,35 +324,6 @@ namespace ZuulRemake.Classes
         {
             int totalWeight = Backpack.GetTotalWeight();
             return Backpack.InventoryToString() + "\nweight: " + totalWeight + "/" + MaxWeight + "\nHP:" + HP;
-        }
-
-        /**
-         * Charges the beamer to memorize the current room
-         */
-        public string BeamerCharge()
-        {
-            string returnstring = "";
-            ChargeRoom = CurrentRoom;
-            returnstring += "charged beamer";
-            return returnstring;
-        }
-
-        /**
-         * fires the beamer to take you to the charge room
-         */
-        public string BeamerFire()
-        {
-            string returnstring = "";
-            if (ChargeRoom != null)
-            {
-                EnterRoom(ChargeRoom);
-                returnstring += "fired beamer:" + "\n" + GetRoomDescription();
-            }
-            else
-            {
-                returnstring += "you have to charge the beamer first";
-            }
-            return returnstring;
         }
     }
 }

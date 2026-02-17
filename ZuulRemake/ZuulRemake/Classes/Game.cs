@@ -156,7 +156,7 @@ namespace ZuulRemake.Classes
             ballroom.SetItem("armour", armour);
 
             // start game in the entryway of castle
-            player.EnterRoom(entryway);  
+            player.GoNewRoom(entryway);  
 
 
             //create the monsters
