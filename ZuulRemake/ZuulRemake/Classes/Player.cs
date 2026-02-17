@@ -28,11 +28,14 @@ namespace ZuulRemake.Classes
         }
 
         /* ------------------------------ HP ------------------------------ */
-        public void TakeDamage(int damage)
+      /**
+      *public void TakeDamage(int damage)
         {
             HP -= damage;
             if (HP < 0) { HP = 0; }
         }
+      */
+        
 
         public void AddHP(int hp)
         {
@@ -40,6 +43,9 @@ namespace ZuulRemake.Classes
         }
 
         /* ------------------------------ LEVEL ------------------------------ */
+                /**
+         * Increases Player Level (damage dealt)
+         */
         public void LevelUp(int lvl)
         {
             Level += lvl;
@@ -336,19 +342,6 @@ namespace ZuulRemake.Classes
             return HP;
         }
 
-        /**
-         * Increases Player Level (damage dealt)
-         */
-        public void LevelUp(int levels)
-        {
-            Level += levels;
-        }
-
-        // simplified ^
-        
-        // Player level determines damage dealt to monster
-        // All player does is deal damage
-        // weapons increase level
 
 
         // MOVE LOTS OF THIS LOGIC TO GAME CLASS
@@ -424,3 +417,4 @@ namespace ZuulRemake.Classes
         }
     }
 }
+
