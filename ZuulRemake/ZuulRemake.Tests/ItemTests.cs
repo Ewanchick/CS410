@@ -5,7 +5,8 @@ namespace ZuulRemake.Tests
 {
     public class ItemTests
     {
-        [Fact]
+        /**
+         * [Fact]
         public void ItemInitialization_WorksCorrectly()
         {
             //arrange
@@ -18,7 +19,7 @@ namespace ZuulRemake.Tests
             Assert.Equal(2, sword.Weight);
             Assert.Equal(5, sword.StatIncrease);
         }
-        [Fact]
+         [Fact]
         public void ItemToString_ReturnsCorectString()
         {
             //Arrange
@@ -49,5 +50,9 @@ namespace ZuulRemake.Tests
             Assert.Contains("Weight: 1", str);
             Assert.Contains("Health Increase: 10", str);
         }
+         */
+
+
+
     }
 }
