@@ -8,7 +8,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copy the .csproj and restore dependencies
-COPY ["ZuulRemake/ZuulRemake.csproj", "."]
+COPY ["ZuulRemake/ZuulRemake/ZuulRemake.csproj", "."]
 RUN dotnet restore "ZuulRemake.csproj"
 
 # Copy all other files and build
