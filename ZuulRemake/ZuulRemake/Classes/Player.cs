@@ -284,7 +284,7 @@ namespace ZuulRemake.Classes
         }
 
         // MOVE LOTS OF THIS LOGIC TO GAME CLASS
-        public string attack(string name)
+        public string Attack(string name)
         {
             string returnString = "";
             Monster monster = CurrentRoom.GetMonster(name);

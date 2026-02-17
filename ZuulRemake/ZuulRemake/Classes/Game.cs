@@ -27,6 +27,7 @@ namespace ZuulRemake.Classes
 
         /**
          * Create the game and initialise its internal map. :3
+         * I like turtles a lot
          */
         public Game()
         {
@@ -217,7 +218,7 @@ namespace ZuulRemake.Classes
                 name = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(name));
 
-            player.Name = name;
+              name = player.Name;
 
             Console.WriteLine("Greetings, " + player.Name);
             Console.WriteLine("You have awoken in a very dark castle with no memory of how you got here. \n" +
