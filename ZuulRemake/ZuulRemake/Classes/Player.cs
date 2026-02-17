@@ -75,14 +75,13 @@ namespace ZuulRemake.Classes
          * If the Player is already in a room, push this room onto the Stack 
          * of previous rooms before updating Player's location.
          */
-        public void GoNewRoom(Room newRoom)
+        public string GoNewRoom(string direction)
         {
-            if (CurrentRoom != null)
-            {
-                PreviousRooms.Push(CurrentRoom);
-            }
-
-            CurrentRoom = newRoom;
+            if (!CurrentRoom.TryGetExit(direction, out Room nextRoom)) return "there is no door (or it is locked).";
+            // Try to leave current room.
+            CurrentRoom = nextRoom;
+            return CurrentRoom.ToString();
+           
         }
 
         /**
@@ -129,22 +128,6 @@ namespace ZuulRemake.Classes
         {
             return ChargeRoom != null;
         }
-
-        /**
-         * If we cannot fire the beamer, throw an exception. 
-         * Otherwise, ChargeRoom becomes the new CurrentRoom.
-         */
-        public Room? FireBeamer()
-        {
-            if (!CanFireBeamer())
-            {
-                throw new InvalidOperationException("ChargeRoom is null.");
-            }
-
-            GoNewRoom(ChargeRoom);
-            return CurrentRoom;
-        }
-
         /**
          * Check for available exits to the current room. 
          * If there is no room, there are no exits.
