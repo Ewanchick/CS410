@@ -15,7 +15,7 @@ namespace ZuulRemake.Classes
      */
     public class Player : Entity
     {
-        private readonly BackPack Backpack = new BackPack();
+        private readonly Inventory Backpack = new Inventory();
 
         private readonly Stack<Room> PreviousRooms = new Stack<Room>();
         private Room? CurrentRoom { get; set; }
