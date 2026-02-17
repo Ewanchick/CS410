@@ -12,8 +12,7 @@ namespace ZuulRemake.Classes
         public string Name { get; set; }
         public int HP { get; protected set; }
         public int Level { get; protected set; }
-        public List<Item> Inventory { get; protected set; } = new List<Item>();
-
+        public Dictionary<string, Item> Inventory = new Dictionary<string, Item>();
         public bool IsAlive => HP > 0;
 
         public Entity(string name, int hp, int level)
