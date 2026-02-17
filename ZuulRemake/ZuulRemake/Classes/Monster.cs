@@ -8,35 +8,21 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    public class Monster
+    /**
+     * This class represents a Monster and inherits from the Entity class. Any Monster 
+     * has the unique attribute Drop, which represents an Item dropped by the Monster 
+     * when it has been defeated.
+     */
+    public class Monster : Entity
     {
-        public string Name { get; set; }
-        public int HP { get; set; } = 50;
         public Item? Drop { get; set; }
-        public int Level { get; set; } = 50;
-        public bool IsAlive => HP > 0;
 
         /**
-         * Constructor for objects of class Monster
+         * Constructor for objects of class Monster.
          */
-        public Monster(string name, int hp, int lvl, Item? drop)
+        public Monster(string name, int hp, int level, Item? drop = null): base(name, hp, level)
         {
-            Name = name;
-            HP = hp;
-            Level = lvl;
             Drop = drop;
-        }
-
-        // don't really need methods for returning drop (drop item method) / level (attack method) since those are public
-
-        /**
-         * When Player attacks Monster, this modifies its HP based on damage taken.
-         */
-        public int TakeDamage(int damage)
-        {
-            HP -= damage;
-            if (HP < 0) HP = 0;
-            return HP;
         }
 
         /**
