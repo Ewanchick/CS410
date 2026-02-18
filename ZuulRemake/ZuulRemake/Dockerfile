@@ -10,8 +10,8 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["ZuulRemake/ZuulRemake/ZuulRemake.csproj", "ZuulRemake/"]
-RUN dotnet restore "./ZuulRemake/ZuulRemake/ZuulRemake.csproj"
+COPY ["/ZuulRemake/ZuulRemake.csproj", "ZuulRemake/"]
+RUN dotnet restore "./ZuulRemake/ZuulRemake.csproj"
 COPY . .
 WORKDIR "/src/ZuulRemake"
 RUN dotnet build "./ZuulRemake.csproj" -c $BUILD_CONFIGURATION -o /app/build
