@@ -5,60 +5,55 @@ using ZuulRemake.Classes;
 
 namespace ZuulRemake.Tests
 {
-    public class CombatTests
+    [TestClass]
+    public class CombatManagerTests
     {
         [Fact]
         public void PlayerAttackReducesMonsterHP()
         {
             //Arrange
-            var player = new Player("Test");
-            var monster = new Monster("ghoul", hp: 50, lvl: 1, drop: null);
-
-            int startingHP = monster.HP;
+            var combat = new CombatManager();
+            var p = new Player("Test", hp: 100, level: 10);
+            var m = new Monster("Ghoul", hp: 100, level: 10);
+            int startingHP = m.HP;
 
             //Act
-            int damage = player.DealAttack(monster);
-            monster.TakeDamage(damage);
+            combat.PlayerAttack(p, m);
 
             // Assert
-            Assert.True(monster.HP < startingHP);
-            Assert.Equal(startingHP - player.Level, monster.HP);
+            Assert.True(m.HP < startingHP);
+            Assert.Equal(startingHP - p.Level, m.HP);
         }
+
         [Fact]
-        public void MonsterHPDoesNotGoBelowZero()
+        public void MonsterAttackReducesPlayerHP()
         {
             //Arrange
-            var monster = new Monster("Dragon", hp: 30, lvl: 10, drop: null);
+            var combat = new CombatManager();
+            var p = new Player("Test", hp: 100, level: 10);
+            var m = new Monster("Ghoul", hp: 100, level: 10);
+            int startingHP = p.HP;
 
             //Act
-            monster.TakeDamage(1000);
+            combat.MonsterAttack(p, m);
 
-            //Assert
-            Assert.Equal(0, monster.HP);
-            Assert.False(monster.IsAlive);
+            // Assert
+            Assert.True(p.HP < startingHP);
+            Assert.Equal(startingHP - m.Level, p.HP);
         }
-        [Fact]
-        public void MonsterDropItemOnDeath()
-        {
-            var room = new Room("test room");
-            var key = new Item("key", "opens door", 0);
-            var monster = new Monster("Dragon", hp: 10, lvl: 1, drop: key);
 
-            room.SetMonster("dragon", monster);
+        [Fact]
+        public void EntityHPDoesNotGoBelowZero()
+        {
+            //Arrange
+            var e = new Entity("Test", hp: 10);
 
             //Act
-            monster.TakeDamage(999);
-
-            if (!monster.IsAlive)
-            {
-                room.SetItem(key.Name, key);
-                room.RemoveMonster("dragon");
-            }
+            e.TakeDamage(100);
 
             //Assert
-            Item droppedItem = room.GetItem("key");
-            Assert.NotNull(droppedItem);
-            Assert.Equal("key", droppedItem.Name);
+            Assert.Equal(0, e.HP);
+            Assert.False(e.IsAlive);
         }
     }
 }

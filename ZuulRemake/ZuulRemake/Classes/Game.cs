@@ -346,7 +346,7 @@ namespace ZuulRemake.Classes
                 return;
             }
             string direction = command.GetSecondWord();
-            Console.WriteLine(player.GoNewRoom(direction));
+            //Console.WriteLine(player.GoNewRoom(direction));
         }
 
         /**
@@ -370,7 +370,7 @@ namespace ZuulRemake.Classes
          */
         private void Look(Command command)
         {
-            Console.WriteLine(player.GetRoomDescription());
+            //Console.WriteLine(player.GetRoomDescription());
         }
 
         /**

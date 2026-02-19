@@ -8,7 +8,7 @@ namespace ZuulRemake.Classes
 {
     public abstract class Entity
     {
-        public string Name { get; protected set; }
+        public string Name { get; set; }
         public int HP { get; protected set; }
         public int Level { get; protected set; }
 
