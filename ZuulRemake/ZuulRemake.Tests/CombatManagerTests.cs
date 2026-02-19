@@ -8,6 +8,10 @@ namespace ZuulRemake.Tests
     [TestClass]
     public class CombatManagerTests
     {
+        /**
+         * Ensure that when a player attacks a monster, the monster's HP
+         * is reduced by subtracting the player's level from the monster's HP
+         */
         [Fact]
         public void PlayerAttackReducesMonsterHP()
         {
@@ -25,6 +29,10 @@ namespace ZuulRemake.Tests
             Assert.Equal(startingHP - p.Level, m.HP);
         }
 
+        /**
+         * Ensure that when a monster attacks a player, the player's HP
+         * is reduced by subtracting the monster's level from the player's HP
+         */
         [Fact]
         public void MonsterAttackReducesPlayerHP()
         {
@@ -42,6 +50,10 @@ namespace ZuulRemake.Tests
             Assert.Equal(startingHP - m.Level, p.HP);
         }
 
+        /**
+         * Ensure that when a player or monster takes more damage than 
+         * the value of their current HP, their HP correctly resets to 0.
+         */
         [Fact]
         public void EntityHPDoesNotGoBelowZero()
         {
