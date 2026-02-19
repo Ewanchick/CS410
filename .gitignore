@@ -3,3 +3,20 @@
 ################################################################################
 
 /ZuulRemake/.vs/ZuulRemake
+/ZuulRemake/ZuulRemake/obj/Debug/net8.0/ZuulRemake.AssemblyInfo.cs
+/ZuulRemake/ZuulRemake/obj/Debug/net8.0/ZuulRemake.AssemblyInfoInputs.cache
+/ZuulRemake/ZuulRemake/obj/Debug/net8.0/ZuulRemake.assets.cache
+/ZuulRemake/ZuulRemake/obj/Debug/net8.0/ZuulRemake.GeneratedMSBuildEditorConfig.editorconfig
+/ZuulRemake/ZuulRemake/obj/Debug/net8.0/ZuulRemake.GlobalUsings.g.cs
+/ZuulRemake/ZuulRemake.Tests/obj/Debug/net10.0/ZuulRemake.Tests.assets.cache
+/ZuulRemake/ZuulRemake.Tests/obj/Debug/net10.0/ZuulRemake.Tests.csproj.AssemblyReference.cache
+/ZuulRemake/ZuulRemake.Tests/obj/Debug/net10.0/ZuulRemake.Tests.GlobalUsings.g.cs
+/ZuulRemake/ZuulRemake/obj/project.assets.json
+/ZuulRemake/ZuulRemake/obj/project.nuget.cache
+/ZuulRemake/ZuulRemake/obj/ZuulRemake.csproj.nuget.dgspec.json
+/ZuulRemake/ZuulRemake/obj/ZuulRemake.csproj.nuget.g.props
+/ZuulRemake/ZuulRemake.Tests/obj/project.assets.json
+/ZuulRemake/ZuulRemake.Tests/obj/project.nuget.cache
+/ZuulRemake/ZuulRemake.Tests/obj/ZuulRemake.Tests.csproj.nuget.dgspec.json
+/ZuulRemake/ZuulRemake.Tests/obj/ZuulRemake.Tests.csproj.nuget.g.targets
+/ZuulRemake/ZuulRemake.Tests/obj/ZuulRemake.Tests.csproj.nuget.g.props
