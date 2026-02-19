@@ -21,13 +21,13 @@ namespace ZuulRemake.Classes
                 out Room exit)
         {
             // create the rooms
-            entryway = new Room("in the entryway of the castle, the exit to the south is locked");
-            dininghall = new Room("in a large dining hall, you see a lantern on the floor and a ballroom to your right");
-            ballroom = new Room("in the ballroom, you find armour in the middle of the floor");
-            kitchen = new Room("in the kitchen, it is too dark to see anything");
-            bathroom = new Room("in the bathroom you see a potion, but there is a nasty ghoul guarding it.");
-            dungeon = new Room("in the dungeon, there is a large dragon guarding the key to the exit");
-            bedroom = new Room("in a very large bedroom, nothing interesting in here.");
+            entryway = new Room("In the entryway of the castle, the exit to the south is locked");
+            dininghall = new Room("In a large dining hall, you see a lantern on the floor and a ballroom to your right");
+            ballroom = new Room("In the ballroom, you find armour in the middle of the floor");
+            kitchen = new Room("In the kitchen, it is too dark to see anything");
+            bathroom = new Room("In the bathroom you see a potion, but there is a nasty ghoul guarding it.");
+            dungeon = new Room("In the dungeon, there is a large dragon guarding the key to the exit");
+            bedroom = new Room("In a very large bedroom, nothing interesting in here.");
             exit = new Room("You made it, you escaped the castle and are now free!");
 
             // initialise room exits
