@@ -19,6 +19,7 @@ namespace ZuulRemake.Classes
         private Room entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit;
         private Item sword, lantern, armour, key, potion;
         private Monster dragon, ghoul;
+        private CommandHandler ch;
         public static void Main(string[] args)
         {
             var game = new Game();
@@ -27,12 +28,25 @@ namespace ZuulRemake.Classes
 
         /**
          * Create the game and initialise its internal map. :3
+         * I like turtles a lot
          */
         public Game()
         {
             parser = new Parser();
             player = new Player("Player");
-            CreateRooms();
+            Room startRoom = WorldBuilder.Build(
+                out entryway,
+                out dininghall,
+                out ballroom,
+                out kitchen,
+                out bathroom,
+                out dungeon,
+                out bedroom,
+                out exit);
+
+            player.SetCurrentRoom(entryway);
+
+            ch = new CommandHandler(player, parser, entryway, kitchen, exit);
         }
 
         // attack monster goes here -> deal damage and take damage methods
@@ -113,61 +127,6 @@ namespace ZuulRemake.Classes
 
 
 
-        /**
-         * Create all the rooms and link their exits together as well as monsters and items in the rooms.
-         */
-        private  Room CreateRooms()
-        {
-
-            // create the rooms
-            entryway = new Room("in the entryway of the castle, the exit to the south is locked");
-            dininghall = new Room("in a large dining hall, you see a lantern ot the floor and a ball room to your right");
-            ballroom = new Room("in the ball room, you find a helmet and chest piece in the middle of the floor");
-            kitchen = new Room("in the kitchen, it is too dark to see anything");
-            bathroom = new Room("in the bathoom you see a potion, but there is a nasty ghoul guarding it.");
-            dungeon = new Room("in the dungeon, there is a large dragon guarding the key to the exit");
-            bedroom = new Room("in a very large bedroom, nothing interesting in here.");
-            exit = new Room("You made it, you escaped the castle and are now free!");
-
-            // initialise room exits
-            entryway.SetExit("north", dininghall);
-            entryway.SetExit("east", kitchen);
-            entryway.SetExit("west", bedroom);
-            entryway.SetExit("down", dungeon);
-
-            dininghall.SetExit("east", ballroom);
-            dininghall.SetExit("south", entryway);
-            ballroom.SetExit("west", dininghall);
-            kitchen.SetExit("west", entryway);
-            dungeon.SetExit("up", entryway);
-            bedroom.SetExit("east", entryway);
-            bedroom.SetExit("south", bathroom);
-            bathroom.SetExit("north", bedroom);
-
-            //create the items
-            sword = new Item("sword", "heavy sword, might be used to kill the dragon", 1, 10);
-            lantern = new Item("lantern", "used to light the dark rooms of the castle", 1, 0);
-            armour = new Item("armour", "protect yourself from the mighty dragon", 1, 20);
-            potion = new Item("Potion", "use this to increase your health!", 1, 50);
-            key = new Item("key", "used to unlock the way out", 0, 0);
-
-            //initialize items
-            dininghall.SetItem("lantern", lantern);
-            ballroom.SetItem("armour", armour);
-
-            // start game in the entryway of castle
-            player.GoNewRoom(entryway);  
-
-
-            //create the monsters
-            dragon = new Monster("Dragon", 100, 10, potion);
-            ghoul = new Monster("Ghoul", 50, 100, key);
-
-            dungeon.SetMonster("dragon", dragon);
-            bathroom.SetMonster("ghoul", ghoul);
-
-            return entryway;
-        }
 
         /**
          *  Main play routine.  Loops until end of play.
@@ -180,7 +139,7 @@ namespace ZuulRemake.Classes
             {
                 Command command = parser.GetCommand();
 
-                bool quitRequested = ProcessCommand(command);
+                bool quitRequested = ch.ProcessCommand(command);
 
                 if (quitRequested)
                 {
@@ -217,7 +176,7 @@ namespace ZuulRemake.Classes
                 name = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(name));
 
-            player.Name = name;
+              name = player.Name;
 
             Console.WriteLine("Greetings, " + player.Name);
             Console.WriteLine("You have awoken in a very dark castle with no memory of how you got here. \n" +
@@ -247,76 +206,6 @@ namespace ZuulRemake.Classes
             Console.WriteLine("You won, you defeated the dragon and escaped the castle!");
         }
 
-        /**
-         * Given a command, process (that is: execute) the command.
-         * @param command The command to be processed.
-         * @return true If the command ends the game, false otherwise.
-         */
-        private bool ProcessCommand(Command command)
-        {
-            
-            switch (command.GetCommandWord())
-            {
-                case CommandWord.UNKNOWN:
-                    Console.WriteLine("I don't know what you mean...");
-                    return false;
-
-                case CommandWord.HELP:
-                    PrintHelp();
-                    return false;
-
-                case CommandWord.GO:
-                    GoRoom(command);
-                    return false;
-
-                case CommandWord.QUIT:
-                    return Quit(command);
-
-                case CommandWord.LOOK:
-                    Look(command);
-                    return false;
-
-                case CommandWord.TAKE:
-                    Take(command);
-                    return false;
-
-                case CommandWord.INVENTORY:
-                    Inventory();
-                    return false;
-
-                case CommandWord.BACK:
-                    GoBack(command);
-                    return false;
-
-                case CommandWord.DROP:
-                    Drop(command);
-                    return false;
-
-                // case EAT:
-                //     eat(command);
-                //   break;
-
-                //case CHARGE:
-                // charge();
-                //break;
-
-                // case FIRE:
-                // fire();
-                // break;
-
-                case CommandWord.USE:
-                    UseItem(command);
-                    return false;
-
-                case CommandWord.ATTACK:
-                    Attack(command);
-                    return false;
-
-                default:
-                    return false;
-            }
-           
-        }
 
         // implementations of user commands:
 

@@ -15,7 +15,7 @@ namespace ZuulRemake.Classes
      */
     public class Player : Entity
     {
-        private readonly BackPack Backpack = new BackPack();
+        private readonly Inventory Backpack = new Inventory();
 
         private readonly Stack<Room> PreviousRooms = new Stack<Room>();
         private Room? CurrentRoom { get; set; }
@@ -70,19 +70,26 @@ namespace ZuulRemake.Classes
             return CurrentRoom;
         }
 
+        public string SetCurrentRoom(Room nextRoom)
+        {
+            string returnString = "";
+            CurrentRoom = nextRoom;
+
+            returnString += CurrentRoom.ToString();
+            return returnString;
+        }
         /**
          * Navigate the Player to a new room and udpate its CurrentRoom value. 
          * If the Player is already in a room, push this room onto the Stack 
          * of previous rooms before updating Player's location.
          */
-        public void GoNewRoom(Room newRoom)
+        public string GoNewRoom(string direction)
         {
-            if (CurrentRoom != null)
-            {
-                PreviousRooms.Push(CurrentRoom);
-            }
-
-            CurrentRoom = newRoom;
+            if (!CurrentRoom.TryGetExit(direction, out Room nextRoom)) return "there is no door (or it is locked).";
+            // Try to leave current room.
+            CurrentRoom = nextRoom;
+            return CurrentRoom.ToString();
+           
         }
 
         /**
@@ -129,22 +136,6 @@ namespace ZuulRemake.Classes
         {
             return ChargeRoom != null;
         }
-
-        /**
-         * If we cannot fire the beamer, throw an exception. 
-         * Otherwise, ChargeRoom becomes the new CurrentRoom.
-         */
-        public Room? FireBeamer()
-        {
-            if (!CanFireBeamer())
-            {
-                throw new InvalidOperationException("ChargeRoom is null.");
-            }
-
-            GoNewRoom(ChargeRoom);
-            return CurrentRoom;
-        }
-
         /**
          * Check for available exits to the current room. 
          * If there is no room, there are no exits.
@@ -157,161 +148,6 @@ namespace ZuulRemake.Classes
             }
             return CurrentRoom.GetExitString();
         }
-
-        /* ------------------------------ INVENTORY ------------------------------ */
-
-
-        /** Inventory logic can be moved to Backpack class. Also, we should probably 
-         * rename all instances of backpack to Inventory, especially because there 
-         * are usages of BackPack and Backpack. 
-         */
-
-
-
-        /**
-         * takes item out of room and places it into the Backpack as long as
-         * you can carry it.
-         */
-        public bool AddToBackPack(Item item)
-        {
-            // check if the item can be carried
-            if (item.Weight + CarryWeight > MaxWeight)
-            {
-                return false; // too heavy
-            }
-
-            // remove from current room
-            CurrentRoom.RemoveItem(item.Name);
-
-            // add to Backpack
-            Backpack.AddItem(item);
-
-            return true;
-        }
-
-
-        /**
-         * if the player is able to add the item to the Backpack then the player
-         * will take the item. if not the game will tell the player it is too
-         * heavy.
-         */
-        // Player should not be able to type in name of item if not in room
-        // Make yes or no prompt instead
-        public string TakeItem(string name)
-        {
-            string returnString = "";
-            Item item = CurrentRoom.GetItem(name);
-            if (item == null)
-            {
-                returnString += "that item isnt in the room";
-            }
-            else
-            {
-                if (AddToBackPack(item))
-                {
-                    returnString += "took: " + item.ToString();
-                }
-                else
-                {
-                    returnString += name + " is too heavy to carry";
-                }
-            }
-            return returnString;
-        }
-
-        /**
-         * checks to see if the item is in the Backpack, if the Backpack is
-         * empty, it will tell you, otherwise it will remove the item from
-         * the Backpack and add it to the room.
-         */
-        public string DropItem(string name)
-        {
-            string returnString = "";
-            Item itemRemove = GetItemFromBackpack(name);
-
-            if (itemRemove == null)
-            {
-                returnString += "this item isnt in your Backpack";
-            }
-            else
-            {
-                RemoveFromBackpack(name);
-                CurrentRoom.SetItem(name, itemRemove);
-                returnString += name + " dropped";
-            }
-            return returnString;
-        }
-
-        /**
-         * removes the item from the Backpack.
-         */
-        public void RemoveFromBackpack(string itemRemove)
-        {
-            Backpack.RemoveItem(itemRemove);
-        }
-
-        /**
-         * returns an item from the Backpack if it is available.
-         */
-        public Item GetItemFromBackpack(string item)
-        {
-            return Backpack.GetItem(item);
-        }
-
-
-        /**
-         * if the weight of the Backpack is less than the maximum weight
-         * and the item is less than the remaining weight available
-         * then the player can pick up the item. if not the player is unable
-         * to.
-         */
-        private bool CanCarry(Item item)
-        {
-            bool canCarry = true;
-            int totalWeight = Backpack.GetTotalWeight() + item.Weight;
-            if (totalWeight > MaxWeight)
-            {
-                canCarry = false;
-            }
-            return canCarry;
-        }
-
-        public void EquipItem()
-        {
-            string returnString = "";
-            HP += 101;
-            returnString += HP;
-        }
-
-        // MOVE LOTS OF THIS LOGIC TO GAME CLASS
-        public string attack(string name)
-        {
-            string returnString = "";
-            Monster monster = CurrentRoom.GetMonster(name);
-            if (monster == null)
-            {
-                returnString += "that monster is no monster in this room";
-            }
-            else if (GetInventoryString().Contains("sword"))
-            {
-                HP -= 100;
-                returnString += "\nyou attacked the monster" + "\nmonster HP: " + monster.HP;
-                returnString += "\nthe monster hit you back";
-                monster.TakeDamage(50);
-                returnString += "\n" + "your HP: " + HP;
-            }
-            else
-            {
-                returnString += " you dont have anything to attack" + name + "with";
-            }
-
-            return returnString;
-        }
-
-        // MOVE TO GAME CLASS
-        /**
-         * Ends the game if player HP reaches 0
-         */
         public bool gameOver()
         {
             return HP == 0;

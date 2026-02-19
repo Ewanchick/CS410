@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace ZuulRemake.Classes
         public string Name { get; set; }
         public int HP { get; protected set; }
         public int Level { get; protected set; }
-
+        public Dictionary<string, Item> Inventory = new Dictionary<string, Item>();
         public bool IsAlive => HP > 0;
 
         public Entity(string name, int hp, int level)
