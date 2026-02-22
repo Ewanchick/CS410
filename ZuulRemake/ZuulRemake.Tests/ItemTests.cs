@@ -9,8 +9,7 @@ namespace ZuulRemake.Tests
         public void ItemInitialization_WorksCorrectly()
         {
             //arrange
-            var sword = new Item("Sword", "A sharp blade", 2);
-            sword.StatIncrease = 5;
+            var sword = new Item("Sword", "A sharp blade", 2, 5);
 
             //Act & Assert
             Assert.Equal("Sword", sword.Name);
@@ -22,8 +21,7 @@ namespace ZuulRemake.Tests
         public void ItemToString_ReturnsCorectString()
         {
             //Arrange
-            var sword = new Item("Sword", "A sharp blade", 2);
-            sword.StatIncrease = 5;
+            var sword = new Item("Sword", "A sharp blade", 2, 5);
 
             //Act
             var str = sword.ToString();
@@ -37,8 +35,7 @@ namespace ZuulRemake.Tests
         public void ItemToString_ReturnsString_ForPotion()
         {
             // Arrange
-            var potion = new Item("Potion", "Heals you", 1);
-            potion.StatIncrease = 10;
+            var potion = new Item("Potion", "Heals you", 1, 10);
 
             // Act
             var str = potion.ToString();
