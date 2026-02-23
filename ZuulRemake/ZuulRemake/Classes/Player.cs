@@ -24,10 +24,8 @@ namespace ZuulRemake.Classes
         public int MaxWeight { get; private set; } = 2;
 
         public Player(string name) : base(name, hp: 100, level: 10)
-        {
+        { }
 
-<<<<<<< HEAD
-=======
         /* ------------------------------ HP ------------------------------ */
       /**
       *public void TakeDamage(int damage)
@@ -41,7 +39,6 @@ namespace ZuulRemake.Classes
         public void AddHP(int hp)
         {
             HP += hp;
->>>>>>> EthanWBranch
         }
 
         /* ------------------------------ LEVEL ------------------------------ */
@@ -166,65 +163,6 @@ namespace ZuulRemake.Classes
             }
             return CurrentRoom.GetExitString();
         }
-<<<<<<< HEAD
-=======
-
-        /* ------------------------------ INVENTORY ------------------------------ */
-
-
-
-
-
-
-        // everything below here still needs worked on
-
-        /**
-         * takes item out of room and places it into the Backpack as long as
-         * you can carry it.
-         */
-        public bool AddToBackPack(Item item)
-        {
-            // check if the item can be carried
-            if (item.Weight + CarryWeight > MaxWeight)
-            {
-                return false; // too heavy
-            }
-
-            // remove from current room
-            CurrentRoom.RemoveItem(item.Name);
-
-            // add to Backpack
-            Backpack.AddItem(item);
-
-            return true;
-        }
-
-
-        /**
-         * this returns the current room that you are in.
-         */
-        public string EnterRoom(Room nextRoom)
-        {
-            string returnString = "";
-            CurrentRoom = nextRoom;
-
-            returnString += CurrentRoom.ToString();
-            return returnString;
-        }
-
-        /**
-         * if the next room isnt empty or locked it takes you to the next room using
-         * commandword go and the direction you want to go to depending on the 
-         * given exits. then it pushes the room in the stack.
-         */
-        public string GoNewRoom(string direction)
-        {
-            if (!CurrentRoom.TryGetExit(direction, out Room nextRoom)) return "there is no door (or it is locked).";
-            // Try to leave current room.
-            PreviousRooms.Push(CurrentRoom);
-            CurrentRoom = nextRoom;
-            return CurrentRoom.ToString();           
-        }
 
         /**
          * displays the toString from the room class.
@@ -233,82 +171,6 @@ namespace ZuulRemake.Classes
         {
             return CurrentRoom.ToString();
         }
-
-        /**
-         * if the player is able to add the item to the Backpack then the player
-         * will take the item. if not the game will tell the player it is too
-         * heavy.
-         */
-        // Player should not be able to type in name of item if not in room
-        // Make yes or no prompt instead
-        public string TakeItem(string name)
-        {
-            string returnString = "";
-            Item item = CurrentRoom.GetItem(name);
-            if (item == null)
-            {
-                returnString += "that item isnt in the room";
-            }
-            else
-            {
-                if (AddToBackPack(item))
-                {
-                    returnString += "took: " + item.ToString();
-                }
-                else
-                {
-                    returnString += name + " is too heavy to carry";
-                }
-            }
-            return returnString;
-        }
-
-        /**
-         * checks to see if the item is in the Backpack, if the Backpack is
-         * empty, it will tell you, otherwise it will remove the item from
-         * the Backpack and add it to the room.
-         */
-        public string DropItem(string name)
-        {
-            string returnString = "";
-            Item itemRemove = GetItemFromBackpack(name);
-
-            if (itemRemove == null)
-            {
-                returnString += "this item isnt in your Backpack";
-            }
-            else
-            {
-                RemoveFromBackpack(name);
-                CurrentRoom.SetItem(name, itemRemove);
-                returnString += name + " dropped";
-            }
-            return returnString;
-        }
-
-        /**
-         * removes the item from the Backpack.
-         */
-        public void RemoveFromBackpack(string itemRemove)
-        {
-            Backpack.RemoveItem(itemRemove);
-        }
-
-        /**
-         * returns an item from the Backpack if it is available.
-         */
-        public Item GetItemFromBackpack(string item)
-        {
-            return Backpack.GetItem(item);
-        }
-
-
-        /**
-         * if the weight of the Backpack is less than the maximum weight
-         * and the item is less than the remaining weight available
-         * then the player can pick up the item. if not the player is unable
-         * to.
-         */
         private bool CanCarry(Item item)
         {
             bool canCarry = true;
@@ -319,24 +181,6 @@ namespace ZuulRemake.Classes
             }
             return canCarry;
         }
-
-        public void EquipItem()
-        {
-            string returnString = "";
-            HP += 101;
-            returnString += HP;
-        }
-
-        /**
-         * Reduces HP of the Player based on damage taken.
-         */
-        public int TakeDamage(int damage)
-        {
-            HP -= damage;
-            if (HP < 0) HP = 0;
-            return HP;
-        }
-
 
 
         // MOVE LOTS OF THIS LOGIC TO GAME CLASS
@@ -368,7 +212,6 @@ namespace ZuulRemake.Classes
         /**
          * Ends the game if player HP reaches 0
          */
->>>>>>> EthanWBranch
         public bool gameOver()
         {
             return HP == 0;

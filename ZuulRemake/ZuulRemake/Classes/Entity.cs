@@ -14,13 +14,9 @@ namespace ZuulRemake.Classes
         public int Level { get; protected set; }
         public Dictionary<string, Item> Inventory = new Dictionary<string, Item>();
         public bool IsAlive => HP > 0;
-<<<<<<< HEAD
-
-=======
         public int CarryWeight { get; protected set; } = 0;
         public int MaxWeight { get; protected set; } = 2;
         public Room? CurrentRoom { get; set; }
->>>>>>> EthanWBranch
         public Entity(string name, int hp, int level)
         {
             Name = name;
@@ -43,8 +39,6 @@ namespace ZuulRemake.Classes
         {
             return $"{Name}\nHP: {HP}\nLVL: {Level}";
         }
-<<<<<<< HEAD
-=======
         /* ------------------------------ INVENTORY ------------------------------ */
 
 
@@ -183,7 +177,6 @@ namespace ZuulRemake.Classes
             CarryWeight = 0;
             return temp;
         }
->>>>>>> EthanWBranch
     }
 }
 
