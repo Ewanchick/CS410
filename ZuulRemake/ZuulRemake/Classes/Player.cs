@@ -13,7 +13,6 @@ namespace ZuulRemake.Classes
         private readonly BackPack Backpack = new BackPack();
 
         private readonly Stack<Room> PreviousRooms = new Stack<Room>();
-        private Room? CurrentRoom { get; set; }
         private Room? ChargeRoom { get; set; }
 
         public string Name { get; } = "Player";
