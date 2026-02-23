@@ -9,6 +9,20 @@ namespace ZuulRemake.Classes
 {
     public class Room(string description)
     {
+        // new
+        public string? Name { get; set; }
+        public string? ShortDescription { get; set; }
+        public string? LongDescription { get; set; }
+        public bool IsLocked { get; set; }
+
+        // could also be a Dictionary that associates directions (strings) with exits (Rooms).
+        public List<Room> Exits = [];
+        public List<Item> Items = [];
+        public List<Monster> Monsters = [];
+
+
+
+        // old
         private readonly string description = description;
         private readonly Dictionary<string, Room> exits = [];
         private readonly Dictionary<string, bool> lockedExits = new(StringComparer.OrdinalIgnoreCase);
@@ -17,9 +31,33 @@ namespace ZuulRemake.Classes
 
         override public string ToString()
         {
-            return GetLongDescription() + "\n" + GetRoomItems() + "\n" +
-                GetRoomMonsters();
+            string str = $"You are in the {Name}: {ShortDescription} \n";
+
+            IEnumerable<string>? ItemNames = Items.Select(i => i.Name);
+            IEnumerable<string>? MonsterNames = Monsters.Select(m => m.Name);
+
+            string itemstr = "Items in this room: " +
+            string.Join(",", ItemNames, "\n");
+
+            string monstr = "Monsters in this room: " +
+            string.Join(",", MonsterNames, "\n");
+
+            string.Join();
+            return str;
         }
+
+
+
+        public string GetRoomItems()
+        {
+            IEnumerable<string>? ItemNames = Items.Select(i => i.Name);
+            string itemstr = "Items in this room: " +
+            string.Join(",", ItemNames, "\n");
+            return itemstr;
+        }
+
+
+
         /**
          * Define the exits of this room.  Every direction either leads
          * to another room or is null (no exit there).
@@ -41,7 +79,7 @@ namespace ZuulRemake.Classes
         public void SetExit(string direction, Room neighbor, bool isLocked)
         {
             if (string.IsNullOrWhiteSpace(direction)) throw new ArgumentException("direction required");
-            exits[direction] = neighbor?? throw new ArgumentNullException(nameof(neighbor));
+            exits[direction] = neighbor ?? throw new ArgumentNullException(nameof(neighbor));
             lockedExits[direction] = isLocked;
         }
         public bool IsExitLocked(string direction)
@@ -85,20 +123,17 @@ namespace ZuulRemake.Classes
         public string GetRoomItems()
         {
             if (items.Count == 0) return "There are no items in this room!";
-            return "Items in this room: " + string.Join (", ", items.Keys);
+            return "Items in this room: " + string.Join(", ", items.Keys);
         }
+
+
         public string GetRoomMonsters()
         {
             if (monsters.Count == 0) return "There are no Monsters in this room!";
             return "Monsters in this room: " + string.Join(", ", monsters.Keys);
         }
-        /**
-         * @return The description of the room.
-         */
-        public string GetShortDescription()
-        {
-            return description;
-        }
+
+
         /**
          * Return a description of the room in the form:
          *  you are in the kitchen.

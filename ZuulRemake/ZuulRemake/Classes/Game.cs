@@ -20,6 +20,7 @@ namespace ZuulRemake.Classes
         private Item sword, lantern, armour, key, potion;
         private Monster dragon, ghoul;
         private CommandHandler ch;
+        
         public static void Main(string[] args)
         {
             var game = new Game();
@@ -49,8 +50,8 @@ namespace ZuulRemake.Classes
             ch = new CommandHandler(player, parser, entryway, kitchen, exit);
         }
 
-        // attack monster goes here -> deal damage and take damage methods
-        // move these / reorganize methods
+        // replace with combatmanager
+        
 
         public void AttackMonster(string monsterName)
         {
@@ -335,36 +336,6 @@ namespace ZuulRemake.Classes
             }
         }
 
-
-        /**
-         * adds the command to attack the monster
-         */
-        private void Attack(Command command)
-        {
-            if (!command.HasSecondWord())
-            {
-                Console.WriteLine("what are you attacking?");
-                return;
-            }
-#pragma warning disable CS8604 // Possible null reference argument.
-            AttackMonster(command.GetSecondWord());
-#pragma warning restore CS8604 // Possible null reference argument.
-
-
-
-
-            if (ghoul.HP == 0)
-            {
-                bathroom.SetItem("potion", potion);
-                Console.WriteLine("\nyou killed the ghoul, take the potion to increase your health.\n");
-            } 
-            else if (dragon.HP == 0)
-            {
-                dungeon.SetItem("key", key);
-                Console.WriteLine("\nthe dragon has been slain! take the key and escape!");
-            }
-            
-        }
         /**
          * prints the drop item command from the player class
          */
