@@ -26,25 +26,10 @@ namespace ZuulRemake.Classes
         public Player(string name) : base(name, hp: 100, level: 10)
         { }
 
-        /* ------------------------------ HP ------------------------------ */
-      /**
-      *public void TakeDamage(int damage)
-        {
-            HP -= damage;
-            if (HP < 0) { HP = 0; }
-        }
-      */
-        
-
-        public void AddHP(int hp)
-        {
-            HP += hp;
-        }
-
         /* ------------------------------ LEVEL ------------------------------ */
-                /**
-         * Increases Player Level (damage dealt)
-         */
+        /**
+ * Increases Player Level (damage dealt)
+ */
         public void LevelUp(int lvl)
         {
             Level += lvl;
@@ -72,7 +57,7 @@ namespace ZuulRemake.Classes
         }
 
         /* -------------------------- ROOM NAVIGATION -------------------------- */
-        
+
         /**
          * Return the current room. If it is null, throw an exception.
          */
@@ -104,7 +89,7 @@ namespace ZuulRemake.Classes
             // Try to leave current room.
             CurrentRoom = nextRoom;
             return CurrentRoom.ToString();
-           
+
         }
 
         /**
@@ -123,7 +108,7 @@ namespace ZuulRemake.Classes
          */
         public Room? GoBack()
         {
-            if (!CanGoBack()) 
+            if (!CanGoBack())
             {
                 throw new InvalidOperationException("No previous rooms to go back to.");
             }
