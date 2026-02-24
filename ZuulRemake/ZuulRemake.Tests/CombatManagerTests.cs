@@ -16,13 +16,12 @@ namespace ZuulRemake.Tests
         public void PlayerAttackReducesMonsterHP()
         {
             //Arrange
-            var combat = new CombatManager();
             var p = new Player("Test", hp: 100, level: 10);
             var m = new Monster("Ghoul", hp: 100, level: 10);
             int startingHP = m.HP;
 
             //Act
-            combat.PlayerAttack(p, m);
+            CombatManager.PlayerAttack(p, m);
 
             // Assert
             Assert.True(m.HP < startingHP);
@@ -37,13 +36,12 @@ namespace ZuulRemake.Tests
         public void MonsterAttackReducesPlayerHP()
         {
             //Arrange
-            var combat = new CombatManager();
             var p = new Player("Test", hp: 100, level: 10);
             var m = new Monster("Ghoul", hp: 100, level: 10);
             int startingHP = p.HP;
 
             //Act
-            combat.MonsterAttack(p, m);
+            CombatManager.MonsterAttack(p, m);
 
             // Assert
             Assert.True(p.HP < startingHP);
@@ -65,7 +63,7 @@ namespace ZuulRemake.Tests
 
             //Assert
             Assert.Equal(0, e.HP);
-            Assert.False(e.IsAlive);
+            Assert.False( e.IsAlive);
         }
     }
 }

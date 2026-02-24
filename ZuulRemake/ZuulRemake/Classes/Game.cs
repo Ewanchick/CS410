@@ -61,7 +61,7 @@ namespace ZuulRemake.Classes
                 Console.WriteLine("There is no such monster here.");
                 return;
             }
-            
+
             monster.TakeDamage(player.Level);
 
             Console.WriteLine($"You attack the {monster.Name}!");
@@ -89,7 +89,7 @@ namespace ZuulRemake.Classes
         {
             Console.WriteLine("The " + m.Name + " is hostile! Attack or be attacked!");
 
-            while (m.IsAlive) 
+            while (m.IsAlive)
             {
                 Console.WriteLine("What will you do? ");
                 string? action = Console.ReadLine();
@@ -101,10 +101,10 @@ namespace ZuulRemake.Classes
                 {
                     m.TakeDamage(p.Level);
                     Console.WriteLine("You have attacked the " + m.Name + "! \n" +
-                                      "The " + m.Name + "attacks back!");                   
+                                      "The " + m.Name + "attacks back!");
                 }
 
-               p.TakeDamage(m.Level);
+                p.TakeDamage(m.Level);
                 Console.WriteLine("You have been injured! Your HP is now " + p.HP + ".");
             }
 
@@ -176,7 +176,7 @@ namespace ZuulRemake.Classes
                 name = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(name));
 
-              name = player.Name;
+            name = player.Name;
 
             Console.WriteLine("Greetings, " + player.Name);
             Console.WriteLine("You have awoken in a very dark castle with no memory of how you got here. \n" +
@@ -357,13 +357,13 @@ namespace ZuulRemake.Classes
             {
                 bathroom.SetItem("potion", potion);
                 Console.WriteLine("\nyou killed the ghoul, take the potion to increase your health.\n");
-            } 
+            }
             else if (dragon.HP == 0)
             {
                 dungeon.SetItem("key", key);
                 Console.WriteLine("\nthe dragon has been slain! take the key and escape!");
             }
-            
+
         }
         /**
          * prints the drop item command from the player class
