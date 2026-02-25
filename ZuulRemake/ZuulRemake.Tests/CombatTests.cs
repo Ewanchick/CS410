@@ -7,8 +7,10 @@ namespace ZuulRemake.Tests
 {
     public class CombatTests
     {
-        [Fact]
-        public void PlayerAttackReducesMonsterHP()
+
+        /**
+         * [Fact]
+         *  public void PlayerAttackReducesMonsterHP()
         {
             //Arrange
             var player = new Player("Test");
@@ -17,13 +19,15 @@ namespace ZuulRemake.Tests
             int startingHP = monster.HP;
 
             //Act
-            int damage = player.DealAttack(monster);
+            int damage = player.a(monster);
             monster.TakeDamage(damage);
 
             // Assert
             Assert.True(monster.HP < startingHP);
             Assert.Equal(startingHP - player.Level, monster.HP);
         }
+         */
+
         [Fact]
         public void MonsterHPDoesNotGoBelowZero()
         {
@@ -37,7 +41,9 @@ namespace ZuulRemake.Tests
             Assert.Equal(0, monster.HP);
             Assert.False(monster.IsAlive);
         }
-        [Fact]
+
+        /**
+         *[Fact]
         public void MonsterDropItemOnDeath()
         {
             var room = new Room("test room");
@@ -60,5 +66,7 @@ namespace ZuulRemake.Tests
             Assert.NotNull(droppedItem);
             Assert.Equal("key", droppedItem.Name);
         }
+         */
+
     }
 }

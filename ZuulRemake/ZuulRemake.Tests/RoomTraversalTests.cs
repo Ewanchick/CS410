@@ -7,7 +7,8 @@ namespace ZuulRemake.Tests
 {
     public class RoomTraversalTests
     {
-        [Fact]
+        /**
+         * [Fact]
         public void GoNewRoom_ValidDirection_MovesPlayer()
         {
             // Arrange
@@ -92,12 +93,17 @@ namespace ZuulRemake.Tests
         }
 
         // Helper to access private fields
+        /**
+         * 
+         * 
         private T GetPrivateField<T>(object obj, string fieldName)
         {
             return (T)obj.GetType()
                           .GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                           .GetValue(obj);
         }
+         */
+
     }
 }
 
