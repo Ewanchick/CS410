@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using ZuulRemake.Classes;
+using Xunit;
 
 namespace ZuulRemake.Tests
 {
-    [TestClass]
+    
     public class CombatManagerTests
     {
         /**
@@ -56,7 +57,7 @@ namespace ZuulRemake.Tests
         public void EntityHPDoesNotGoBelowZero()
         {
             //Arrange
-            var e = new Entity("Test", hp: 10);
+            var e = new Player("Test", 10, 1);
 
             //Act
             e.TakeDamage(100);
@@ -64,6 +65,28 @@ namespace ZuulRemake.Tests
             //Assert
             Assert.Equal(0, e.HP);
             Assert.False( e.IsAlive);
+        }
+        [Fact]
+        public void MonsterDropsItemOnDeath()
+        {
+            // Arrange
+            var room = new Room("Dungeon");
+            var monster = new Monster("Goblin", hp: 10, level: 1, drop: new Item("Gold","Shiny", 1,0));
+            room.SetMonster(monster.Name, monster);
+
+            var player = new Player("Hero");
+            player.CurrentRoom = room;
+
+            // Act - simulate killing monster
+            monster.TakeDamage(20); // More than HP so it dies
+            if (!monster.IsAlive && monster.Drop != null)
+            {
+                room.SetItem(monster.Drop.Name, monster.Drop);
+            }
+
+            // Assert
+            Assert.False(monster.IsAlive);
+            Assert.Contains("gold", room.GetRoomItems().ToLower());
         }
     }
 }

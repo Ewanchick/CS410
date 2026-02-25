@@ -241,7 +241,7 @@ namespace ZuulRemake.Classes
 
                 if (monster.Drop != null)
                 {
-                    player.GetCurrentRoom().SetItem(monster.Drop.Name.ToLower(), monster.Drop);
+                    player.GetCurrentRoom().SetItem(monster.Drop.Name, monster.Drop);
                     Console.WriteLine($"{monster.Name} dropped a {monster.Drop.Name}!");
                 }
                 player.GetCurrentRoom().RemoveMonster(monsterName);

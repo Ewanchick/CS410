@@ -23,8 +23,16 @@ namespace ZuulRemake.Classes
         public int CarryWeight { get; private set; } = 0;
         public int MaxWeight { get; private set; } = 2;
 
-        public Player(string name) : base(name, hp: 100, level: 10)
-        { }
+        public Player(string name) : base(name, hp: 100, level: 100) { }
+        public Player(string name, int hp, int level)
+        : base(name, 100, 10) // default HP and level
+        {
+        }
+
+        public Player(string name,int hp, int level, IEnumerable<Item> startingItems = null)
+            : base(name, 100, 10, startingItems ?? Enumerable.Empty<Item>()) // pre-filled inventory
+        {
+        }
 
         /* ------------------------------ LEVEL ------------------------------ */
         /**
@@ -87,7 +95,9 @@ namespace ZuulRemake.Classes
         {
             if (!CurrentRoom.TryGetExit(direction, out Room nextRoom)) return "there is no door (or it is locked).";
             // Try to leave current room.
+            PreviousRooms.Push(CurrentRoom);
             CurrentRoom = nextRoom;
+            
             return CurrentRoom.ToString();
 
         }
@@ -168,31 +178,6 @@ namespace ZuulRemake.Classes
         }
 
 
-        // MOVE LOTS OF THIS LOGIC TO GAME CLASS
-        public string attack(string name)
-        {
-            string returnString = "";
-            Monster monster = CurrentRoom.GetMonster(name);
-            if (monster == null)
-            {
-                returnString += "that monster is no monster in this room";
-            }
-            else if (GetInventoryString().Contains("sword"))
-            {
-                HP -= 100;
-                returnString += "\nyou attacked the monster" + "\nmonster HP: " + monster.HP;
-                returnString += "\nthe monster hit you back";
-                monster.TakeDamage(50);
-                returnString += "\n" + "your HP: " + HP;
-            }
-            else
-            {
-                returnString += " you dont have anything to attack" + name + "with";
-            }
-
-            return returnString;
-        }
-
         // MOVE TO GAME CLASS
         /**
          * Ends the game if player HP reaches 0
@@ -207,8 +192,8 @@ namespace ZuulRemake.Classes
          */
         public string GetInventoryString()
         {
-            int totalWeight = Backpack.GetTotalWeight();
-            return Backpack.InventoryToString() + "\nweight: " + totalWeight + "/" + MaxWeight + "\nHP:" + HP;
+            int totalWeight = Inventory?.GetTotalWeight() ?? 0;
+            return Inventory?.InventoryToString() + "\nweight: " + totalWeight + "/" + MaxWeight + "\nHP:" + HP;
         }
     }
 }

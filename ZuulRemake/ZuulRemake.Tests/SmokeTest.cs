@@ -9,7 +9,7 @@ namespace ZuulRemake.Tests
         [Fact]
         public void Player_CanBeCreated()
         {
-            var player = new Player("Test");
+            var player = new Player("Test",100,1);
             Assert.NotNull(player);
         }
     }

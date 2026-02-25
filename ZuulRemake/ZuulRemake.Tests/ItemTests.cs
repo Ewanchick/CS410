@@ -46,5 +46,33 @@ namespace ZuulRemake.Tests
             Assert.Contains("Weight: 1", str);
             Assert.Contains("Health Increase: 10", str);
         }
+
+        [Fact]
+        public void PlayerCanPickUpAndDropItem()
+        {
+            // Arrange
+            var room = new Room("Test Room");
+            var player = new Player("Hero");
+            player.CurrentRoom = room;
+
+            var sword = new Item("Sword", "heavy sword, might be used to kill the dragon", 1,10);
+            room.SetItem(sword.Name, sword);
+
+            // Act - pick up item
+            string takeResult = player.TakeItem("Sword");
+
+            // Assert pickup
+            Assert.Contains("took", takeResult.ToLower());
+            Assert.Contains("sword", player.GetInventoryString().ToLower());
+            Assert.DoesNotContain("sword", room.GetRoomItems().ToLower());
+
+            // Act - drop item
+            string dropResult = player.DropItem("Sword");
+
+            // Assert drop
+            Assert.Contains("dropped", dropResult.ToLower());
+            Assert.DoesNotContain("sword", player.GetInventoryString().ToLower());
+            Assert.Contains("sword", room.GetRoomItems().ToLower());
+        }
     }
 }
