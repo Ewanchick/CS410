@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
@@ -72,17 +73,23 @@ namespace ZuulRemake.Classes
         // Make yes or no prompt instead
         public string TakeItem(string name)
         {
-            Item? item = CurrentRoom?.GetItem(name);
-            if (item == null) return $"{name} isn't in this room";
+            if (CurrentRoom is null)
+                return "You are nowhere. (CurrentRoom is null)";
 
-            if (Inventory == null) Inventory = new Inventory();
+            if (!CurrentRoom.TryGetItem(name, out var item) || item is null)
+                return "That item isn't here.";
+
+            Inventory ??= new Inventory();
 
             if (Inventory.GetTotalWeight() + item.Weight > MaxWeight)
-                return $"{name} is too heavy to carry";
-            CurrentRoom?.RemoveItem(item.Name);
-            Inventory.AddItem(item);
+                return $"{item.Name} is too heavy to carry";
 
-            return $"Took: {item.Name}";
+            // remove the actual item from the room safely
+            if (!CurrentRoom.TryRemoveItem(item.Name, out var removed) || removed is null)
+                return "You tried to take it, but it wasn't there anymore.";
+
+            Inventory.AddItem(removed);
+            return $"Took: {removed.Name}";
         }
 
         /**
@@ -114,7 +121,7 @@ namespace ZuulRemake.Classes
         /**
          * returns an item from the Backpack if it is available.
          */
-        public Item GetItemFromBackpack(string itemName)
+        public Item? GetItemFromBackpack(string itemName)
         {
             if (Inventory == null) return null;
 
