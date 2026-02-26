@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
@@ -8,33 +9,37 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    public class Player
+    /**
+     * This class represents the Player and inherits from the Entity class. The Player has 
+     * these unique attributes: BackPack Backpack, Room CurrentRoom, Room ChargeRoom, 
+     * int CarryWeight, and int MaxWeight.
+     */
+
+    public class Player : Entity
     {
-        private readonly BackPack Backpack = new BackPack();
 
-        private readonly Stack<Room> PreviousRooms = new Stack<Room>();
+
+        public readonly Stack<Room> PreviousRooms = new Stack<Room>();
         private Room? ChargeRoom { get; set; }
-
-        public string Name { get; } = "Player";
-        public int HP { get; private set; } = 100;
-        public int Level { get; private set; } = 10;
+        public ArrayList Inventory { get; protected set; }
         public int CarryWeight { get; private set; } = 0;
         public int MaxWeight { get; private set; } = 2;
 
-        public Player(string name)
+        public Player(string name): base(name, hp:100, level: 10)
         {
             Name = name;
         }
 
         /* ------------------------------ HP ------------------------------ */
-      /**
-      *public void TakeDamage(int damage)
+        /**
+   * Reduces HP of the Player based on damage taken.
+   */
+        public int TakeDamage(int damage)
         {
             HP -= damage;
-            if (HP < 0) { HP = 0; }
+            if (HP < 0) HP = 0;
+            return HP;
         }
-      */
-        
 
         public void AddHP(int hp)
         {
@@ -42,12 +47,74 @@ namespace ZuulRemake.Classes
         }
 
         /* ------------------------------ LEVEL ------------------------------ */
-                /**
-         * Increases Player Level (damage dealt)
-         */
-        public void LevelUp(int lvl)
+               public void LevelUp(int levels)
         {
-            Level += lvl;
+            Level += levels;
+        }
+        /* ------------------------------ INVENTORY ------------------------------ */
+        /** Inventory logic can be moved to Backpack class. Also, we should probably 
+        * rename all instances of backpack to Inventory, especially because there 
+        * are usages of BackPack and Backpack. 
+        */
+        public bool AddToInventory(Item item)
+        {
+            // check if the item can be carried
+
+
+            // remove from current room
+            CurrentRoom.RemoveItem(item.Name);
+
+            // add to Backpack
+            Inventory.Add(item);
+
+            return true;
+        }
+        public bool PickUp(Item item)
+        {
+            if (item.Weight + CarryWeight > MaxWeight)
+            {
+                return false; // too heavy
+            }
+            else
+            {
+                AddToInventory(item);
+                return true;
+            }
+        }        /**
+         * removes the item from the Backpack.
+         */
+        public void RemoveFromBackpack(string itemRemove)
+        {
+            Inventory.Remove(itemRemove);
+        }
+
+        /**
+       * if the player is able to add the item to the Backpack then the player
+       * will take the item. if not the game will tell the player it is too
+       * heavy.
+       */
+        // Player should not be able to type in name of item if not in room
+        // Make yes or no prompt instead
+        public string TakeItem(string name)
+        {
+            string returnString = "";
+            Item item = CurrentRoom.GetItem(name);
+            if (item == null)
+            {
+                returnString += "that item isnt in the room";
+            }
+            else
+            {
+                if (AddToInventory(item))
+                {
+                    returnString += "took: " + item.ToString();
+                }
+                else
+                {
+                    returnString += name + " is too heavy to carry";
+                }
+            }
+            return returnString;
         }
 
         /* ------------------------------ WEIGHT ------------------------------ */
@@ -174,32 +241,20 @@ namespace ZuulRemake.Classes
         }
 
         /* ------------------------------ INVENTORY ------------------------------ */
-
-
-
-
-
-
         // everything below here still needs worked on
 
         /**
          * takes item out of room and places it into the Backpack as long as
          * you can carry it.
          */
-        public bool AddToBackPack(Item item)
+        public bool AddtoInventory(Item item)
         {
-            // check if the item can be carried
-            if (item.Weight + CarryWeight > MaxWeight)
+            if ((item.Weight += CarryWeight) > MaxWeight)
             {
-                return false; // too heavy
+                return false;
             }
-
-            // remove from current room
             CurrentRoom.RemoveItem(item.Name);
-
-            // add to Backpack
-            Backpack.AddItem(item);
-
+            Inventory.Add(item);
             return true;
         }
 
@@ -239,35 +294,6 @@ namespace ZuulRemake.Classes
         }
 
         /**
-         * if the player is able to add the item to the Backpack then the player
-         * will take the item. if not the game will tell the player it is too
-         * heavy.
-         */
-        // Player should not be able to type in name of item if not in room
-        // Make yes or no prompt instead
-        public string TakeItem(string name)
-        {
-            string returnString = "";
-            Item item = CurrentRoom.GetItem(name);
-            if (item == null)
-            {
-                returnString += "that item isnt in the room";
-            }
-            else
-            {
-                if (AddToBackPack(item))
-                {
-                    returnString += "took: " + item.ToString();
-                }
-                else
-                {
-                    returnString += name + " is too heavy to carry";
-                }
-            }
-            return returnString;
-        }
-
-        /**
          * checks to see if the item is in the Backpack, if the Backpack is
          * empty, it will tell you, otherwise it will remove the item from
          * the Backpack and add it to the room.
@@ -275,7 +301,7 @@ namespace ZuulRemake.Classes
         public string DropItem(string name)
         {
             string returnString = "";
-            Item itemRemove = GetItemFromBackpack(name);
+            Item itemRemove = GetItemFromInventory(name);
 
             if (itemRemove == null)
             {
@@ -290,22 +316,21 @@ namespace ZuulRemake.Classes
             return returnString;
         }
 
-        /**
-         * removes the item from the Backpack.
-         */
-        public void RemoveFromBackpack(string itemRemove)
+ 
+        public void RemoveFromInventory(string itemRemove)
         {
-            Backpack.RemoveItem(itemRemove);
+            Inventory.Remove(GetItemFromInventory(itemRemove));
         }
 
         /**
-         * returns an item from the Backpack if it is available.
-         */
-        public Item GetItemFromBackpack(string item)
+        * returns an item from the Backpack if it is available.
+        */
+        public Item GetItemFromInventory(string itemName)
         {
-            return Backpack.GetItem(item);
+            Item removedItem = Inventory.Cast<Item>().FirstOrDefault(i => i.Name == itemName);
+            Inventory.Remove(removedItem);
+            return removedItem;
         }
-
 
         /**
          * if the weight of the Backpack is less than the maximum weight
@@ -316,12 +341,11 @@ namespace ZuulRemake.Classes
         private bool CanCarry(Item item)
         {
             bool canCarry = true;
-            int totalWeight = Backpack.GetTotalWeight() + item.Weight;
-            if (totalWeight > MaxWeight)
+            if (GetTotalWeight() > MaxWeight)
             {
                 canCarry = false;
             }
-            return canCarry;
+                return canCarry;
         }
 
         public void EquipItem()
@@ -330,20 +354,7 @@ namespace ZuulRemake.Classes
             HP += 101;
             returnString += HP;
         }
-
-        /**
-         * Reduces HP of the Player based on damage taken.
-         */
-        public int TakeDamage(int damage)
-        {
-            HP -= damage;
-            if (HP < 0) HP = 0;
-            return HP;
-        }
-
-
-
-        // MOVE LOTS OF THIS LOGIC TO GAME CLASS
+        
         public string attack(string name)
         {
             string returnString = "";
@@ -382,8 +393,11 @@ namespace ZuulRemake.Classes
          */
         public string GetInventoryString()
         {
-            int totalWeight = Backpack.GetTotalWeight();
-            return Backpack.InventoryToString() + "\nweight: " + totalWeight + "/" + MaxWeight + "\nHP:" + HP;
+            return Inventory.ToString() + "\nweight: " + GetTotalWeight() + "/" + MaxWeight + "\nHP:" + HP;
+        }
+        public int GetTotalWeight()
+        {
+            return Inventory.Cast<Item>().Sum(w => w.Weight);
         }
 
         /**
@@ -416,4 +430,3 @@ namespace ZuulRemake.Classes
         }
     }
 }
-

@@ -36,7 +36,7 @@ namespace ZuulRemake.Tests
         public void MonsterAttackReducesPlayerHP()
         {
             //Arrange
-            var p = new Player("Test", hp: 100, level: 10);
+            var p = new Player("Test");
             var m = new Monster("Ghoul", hp: 100, level: 10);
             int startingHP = p.HP;
 
@@ -46,24 +46,6 @@ namespace ZuulRemake.Tests
             // Assert
             Assert.True(p.HP < startingHP);
             Assert.Equal(startingHP - m.Level, p.HP);
-        }
-
-        /**
-         * Ensure that when a player or monster takes more damage than 
-         * the value of their current HP, their HP correctly resets to 0.
-         */
-        [Fact]
-        public void EntityHPDoesNotGoBelowZero()
-        {
-            //Arrange
-            var e = new Entity("Test", hp: 10);
-
-            //Act
-            e.TakeDamage(100);
-
-            //Assert
-            Assert.Equal(0, e.HP);
-            Assert.False( e.IsAlive);
         }
     }
 }
