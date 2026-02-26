@@ -20,8 +20,7 @@ namespace ZuulRemake.Classes
         private readonly Stack<Room> PreviousRooms = new Stack<Room>();
         private Room? ChargeRoom { get; set; }
 
-        public int CarryWeight { get; private set; } = 0;
-        public int MaxWeight { get; private set; } = 2;
+        
 
         public Player(string name) : base(name, hp: 100, level: 100) { }
         public Player(string name, int hp, int level)
@@ -29,8 +28,8 @@ namespace ZuulRemake.Classes
         {
         }
 
-        public Player(string name,int hp, int level, IEnumerable<Item> startingItems = null)
-            : base(name, 100, 10, startingItems ?? Enumerable.Empty<Item>()) // pre-filled inventory
+        public Player(string name,int hp, int level, IEnumerable<Item>? startingItems = null)
+            : base(name, 100, 10, startingItems ?? []) // pre-filled inventory
         {
         }
 

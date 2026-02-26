@@ -17,8 +17,8 @@ namespace ZuulRemake.Classes
         private readonly Parser parser;
         private readonly Player player;
         private Room entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit;
-        private Item sword, lantern, armour, key, potion;
-        private Monster dragon, ghoul;
+        
+ 
         private CommandHandler ch;
         public static void Main(string[] args)
         {
@@ -49,37 +49,7 @@ namespace ZuulRemake.Classes
             ch = new CommandHandler(player, parser, entryway, kitchen, exit);
         }
 
-        // attack monster goes here -> deal damage and take damage methods
-        // move these / reorganize methods
-
-        public void AttackMonster(string monsterName)
-        {
-            // fix
-            Monster monster = player.GetCurrentRoom().GetMonster(monsterName);
-            if (monster == null)
-            {
-                Console.WriteLine("There is no such monster here.");
-                return;
-            }
-
-            monster.TakeDamage(player.Level);
-
-            Console.WriteLine($"You attack the {monster.Name}!");
-            Console.WriteLine($"{monster.Name} HP: {monster.HP}");
-
-
-            if (!monster.IsAlive)
-            {
-                Console.WriteLine($"You defeated the {monster.Name}!");
-
-                if (monster.Drop != null)
-                {
-                    player.GetCurrentRoom().SetItem(monster.Drop.Name.ToLower(), monster.Drop);
-                    Console.WriteLine($"{monster.Name} dropped a {monster.Drop.Name}!");
-                }
-                player.GetCurrentRoom().RemoveMonster(monsterName);
-            }
-        }
+        
 
         /**
          * Initiates a battle between player and monster, continously prompting for input and 

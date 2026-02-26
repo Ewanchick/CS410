@@ -120,17 +120,29 @@ namespace ZuulRemake.Classes
         /**
          * gets the item from the room
          */
-        public Item GetItem(string name)
+        public bool TryGetItem(string name, out Item? item)
         {
-            items.TryGetValue(name, out var item);
-            return item;
+            item = null;
+
+            if (string.IsNullOrWhiteSpace(name))
+                return false;
+
+            return items.TryGetValue(name, out item);
         }
         /**
          * removes the item from the room
          */
-        public void RemoveItem(string name)
+        public bool TryRemoveItem(string name, out Item? removedItem)
         {
-            items.Remove(name);
+            removedItem = null;
+
+            if (string.IsNullOrWhiteSpace(name))
+                return false;
+
+            if (!items.TryGetValue(name, out removedItem))
+                return false;
+
+            return items.Remove(name);
         }
         /**
          * adds item to list
@@ -148,10 +160,11 @@ namespace ZuulRemake.Classes
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("name required");
             monsters[name] = monster ?? throw new ArgumentNullException(nameof(monster));
         }
-        public Monster GetMonster(string name)
+        public bool TryGetMonster(string name, out Monster? monster)
         {
-            monsters.TryGetValue(name, out var monster);
-            return monster;
+            monster = null;
+            if (string.IsNullOrWhiteSpace(name)) return false;
+            return monsters.TryGetValue(name, out monster);
         }
         public bool RemoveMonster(string name)
         {
