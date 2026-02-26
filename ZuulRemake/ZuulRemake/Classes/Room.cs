@@ -29,20 +29,6 @@ namespace ZuulRemake.Classes
             LongDescription = longDescription;
         }
 
-
-        /* NOTES:
-         * Try to retreive an object before removing: 
-         * public bool TryTakeItem(string name, out Item? item)
-         * ^ out = return if found + true, return false if not found
-         * - lets you search by name.
-         * 
-         * Maybe do GetAll___() and use those in the information methods
-         * instead of doing that logic in those methods (GetItems(), etc)
-         * 
-         * Handle all traversal logic in separate class.
-         */
-
-
         /* ------------------------------ INFORMATION ------------------------------ */
         /**
          * Return a short string informing the Player of the room's Name and ShortDescription.
@@ -118,12 +104,52 @@ namespace ZuulRemake.Classes
         public void AddExit(string direction, Room targetRoom, bool isLocked = false)
         {
             if (string.IsNullOrWhiteSpace(direction)) throw new ArgumentException("Direction required.");
-            Exits.Add(new Exit(direction.ToLower(), targetRoom, isLocked));
+            try
+            {
+                Exits.Add(new Exit(direction.ToLower(), targetRoom, isLocked));
+            }
+            catch
+            {
+                throw new Exception("Failed to add room. :( ");
+            }
         }
 
+        /**
+         * Remove an exit from this room.
+         */
+        public void RemoveExit(Exit exit)
+        {
+            if (exit != null)
+            {
+                try
+                {
+                    Exits.Remove(exit);
+                }
+                catch
+                {
+                    throw new NullReferenceException("Failed to remove exit.");
+                }
+            }
+            else
+            {
+                throw new ArgumentNullException("The provided Exit object is null.");
+            }
+        }
+
+        /**
+         * Retrieve an exit from this room.
+         */
         public Exit? GetExit(string direction)
         {
-            return Exits.FirstOrDefault(e => e.Direction.Equals(direction, StringComparison.OrdinalIgnoreCase));
+            Exit? ex = Exits?.FirstOrDefault(e => e.Direction != null && Equals(direction, StringComparison.OrdinalIgnoreCase));
+            if (ex == null)
+            {
+                throw new InvalidOperationException($"No Exit was found in direction '{direction}', or expected Exit is null.");
+            }
+            else
+            {
+                return ex;
+            }
         }
 
         /* ----------------------- ITEMS ----------------------- */
@@ -133,7 +159,14 @@ namespace ZuulRemake.Classes
          */
         public void AddItem(Item item)
         {
-            Items.Add(item);
+            if (item != null)
+            {
+                Items.Add(item);
+            }
+            else
+            {
+                throw new ArgumentNullException("Specified item is null.");
+            }
         }
 
         /**
@@ -141,7 +174,14 @@ namespace ZuulRemake.Classes
          */
         public void RemoveItem(Item item)
         {
-            Items.Remove(item); 
+            if (item != null)
+            {
+                Items.Remove(item);
+            }
+            else
+            {
+                throw new ArgumentNullException("Provided Item is null.");
+            }
         }
 
         /**
@@ -149,7 +189,15 @@ namespace ZuulRemake.Classes
          */
         public Item? GetItem(string name)
         {
-            return Items.FirstOrDefault(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            Item? i = Items.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (i == null)
+            {
+                throw new InvalidOperationException($"No Item was found with the name '{name}'.");
+            }
+            else
+            {
+                return i;
+            }
         }
 
         /* ---------------------- MONSTERS ---------------------- */
@@ -159,7 +207,15 @@ namespace ZuulRemake.Classes
          */
         public void AddMonster(Monster monster)
         {
-            Monsters.Add(monster);
+            if (monster != null)
+            {   
+                Monsters.Add(monster);
+            }
+            else
+            {
+                throw new ArgumentNullException("Provided Monster is null.");
+            }
+                
         }
 
         /**
@@ -167,7 +223,14 @@ namespace ZuulRemake.Classes
          */
         public void RemoveMonster(Monster monster)
         {
-            Monsters.Remove(monster);
+            if (monster != null)
+            {
+                Monsters.Remove(monster);
+            }
+            else
+            {
+                throw new ArgumentNullException("Provided Monster is null.");
+            }
         }
 
         /**
@@ -175,31 +238,14 @@ namespace ZuulRemake.Classes
          */
         public Monster? GetMonster(string name)
         {
-            return Monsters.FirstOrDefault(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-        }
-
-        /* ---------------------------------------- EXIT CLASS ---------------------------------------- */
-
-        /**
-         * This is a nested class for Exit objects. Exits are properties of a Room and are associated with 
-         * a direction and the rooms they connect to. Exits may be locked, and can be unlocked with a key.
-         */
-        public class Exit
-        {
-            public string Direction { get; }
-            public Room TargetRoom { get; }
-            public bool IsLocked { get; private set; }
-
-            public Exit(string direction, Room targetRoom, bool isLocked = false)
+            Monster m = Monsters.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (m == null)
             {
-                Direction = direction;
-                TargetRoom = targetRoom;
-                IsLocked = isLocked;
+                throw new InvalidOperationException($"No Monster was found with name '{name}', or expected Monster is null.");
             }
-
-            public void Unlock()
+            else
             {
-                IsLocked = false;
+                return m;
             }
         }
     }
