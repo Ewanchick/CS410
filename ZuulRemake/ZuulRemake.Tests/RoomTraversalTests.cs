@@ -54,7 +54,7 @@ namespace ZuulRemake.Tests
 
             // Assert
             Assert.Equal(entryway, player.GetCurrentRoom());
-            Assert.Contains("entryway", result.ToLower());
+            Assert.Contains("entryway", result.GetShortDescription().ToLower());
         }
 
         [Fact]
@@ -64,11 +64,8 @@ namespace ZuulRemake.Tests
             var game = new Game();
             var player = GetPrivateField<Player>(game, "player");
 
-            // Act
-            var result = player.GoBack();
-
-            // Assert
-            Assert.Contains("there is no turning back", result.ToLower());
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => player.GoBack());
         }
 
         [Fact]

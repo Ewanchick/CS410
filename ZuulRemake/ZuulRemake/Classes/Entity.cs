@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ZuulRemake.Classes
 {
@@ -12,18 +14,35 @@ namespace ZuulRemake.Classes
         public string Name { get; set; }
         public int HP { get; protected set; }
         public int Level { get; protected set; }
-        public Dictionary<string, Item> Inventory = new Dictionary<string, Item>();
+        public Inventory? Inventory { get; protected set; }
         public bool IsAlive => HP > 0;
         public int CarryWeight { get; protected set; } = 0;
         public int MaxWeight { get; protected set; } = 2;
         public Room? CurrentRoom { get; set; }
+
         public Entity(string name, int hp, int level)
+        : this(name, hp, level, Enumerable.Empty<Item>())
+        {
+            Inventory = new Inventory();
+        }
+
+        public Entity(string name, int hp, int level, IEnumerable<Item> startingItems)
         {
             Name = name;
             HP = hp;
             Level = level;
-        }
 
+            Inventory = new Inventory();
+
+            if (startingItems.Any())
+            {
+                Inventory = new Inventory();
+                foreach (var item in startingItems)
+                {
+                    Inventory.AddItem(item);
+                }
+            }
+        }
         public virtual void TakeDamage(int damage)
         {
             HP -= damage;
@@ -42,33 +61,6 @@ namespace ZuulRemake.Classes
         /* ------------------------------ INVENTORY ------------------------------ */
 
 
-        /** Inventory logic can be moved to Backpack class. Also, we should probably 
-         * rename all instances of backpack to Inventory, especially because there 
-         * are usages of BackPack and Backpack. 
-         */
-
-
-
-        /**
-         * takes item out of room and places it into the Backpack as long as
-         * you can carry it.
-         */
-        public bool AddToBackPack(Item item)
-        {
-            // check if the item can be carried
-            if (item.Weight + CarryWeight > MaxWeight)
-            {
-                return false; // too heavy
-            }
-
-            // remove from current room
-            CurrentRoom.RemoveItem(item.Name);
-
-            // add to Backpack
-             Inventory.Add(item.Name,item);
-
-            return true;
-        }
 
 
         /**
@@ -80,24 +72,17 @@ namespace ZuulRemake.Classes
         // Make yes or no prompt instead
         public string TakeItem(string name)
         {
-            string returnString = "";
-            Item item = CurrentRoom.GetItem(name);
-            if (item == null)
-            {
-                returnString += "that item isnt in the room";
-            }
-            else
-            {
-                if (AddToBackPack(item))
-                {
-                    returnString += "took: " + item.ToString();
-                }
-                else
-                {
-                    returnString += name + " is too heavy to carry";
-                }
-            }
-            return returnString;
+            Item? item = CurrentRoom?.GetItem(name);
+            if (item == null) return $"{name} isn't in this room";
+
+            if (Inventory == null) Inventory = new Inventory();
+
+            if (Inventory.GetTotalWeight() + item.Weight > MaxWeight)
+                return $"{name} is too heavy to carry";
+            CurrentRoom?.RemoveItem(item.Name);
+            Inventory.AddItem(item);
+
+            return $"Took: {item.Name}";
         }
 
         /**
@@ -107,20 +92,15 @@ namespace ZuulRemake.Classes
          */
         public string DropItem(string name)
         {
-            string returnString = "";
-            Item itemRemove = GetItemFromBackpack(name);
+            if (Inventory == null) return "Your backpack is empty.";
 
-            if (itemRemove == null)
-            {
-                returnString += "this item isnt in your Backpack";
-            }
-            else
-            {
-                RemoveFromBackpack(name);
-                CurrentRoom.SetItem(name, itemRemove);
-                returnString += name + " dropped";
-            }
-            return returnString;
+            Item? itemRemove = Inventory.GetItem(name);
+            if (itemRemove == null) return "This item isn't in your backpack.";
+
+            Inventory.RemoveItem(name);
+            CurrentRoom?.SetItem(name, itemRemove);
+
+            return $"{name} dropped";
         }
 
         /**
@@ -128,17 +108,21 @@ namespace ZuulRemake.Classes
          */
         public void RemoveFromBackpack(string itemRemove)
         {
-            Inventory.Remove(itemRemove);
+            Inventory?.RemoveItem(itemRemove);
         }
 
         /**
          * returns an item from the Backpack if it is available.
          */
-        public Item GetItemFromBackpack(string item)
+        public Item GetItemFromBackpack(string itemName)
         {
-            Item removedItem = Inventory[item];
-            Inventory.Remove(item);
-            return removedItem;
+            if (Inventory == null) return null;
+
+            Item? item = Inventory.GetItem(itemName);
+            if (item != null)
+                Inventory.RemoveItem(itemName);
+
+            return item;
         }
 
 
@@ -150,13 +134,9 @@ namespace ZuulRemake.Classes
          */
         private bool CanCarry(Item item)
         {
-            bool canCarry = true;
-            int totalWeight = GetTotalWeight() + item.Weight;
-            if (totalWeight > MaxWeight)
-            {
-                canCarry = false;
-            }
-            return canCarry;
+            
+                return (Inventory?.GetTotalWeight() ?? 0) + item.Weight <= MaxWeight;
+            
         }
 
         public void EquipItem()
@@ -167,15 +147,10 @@ namespace ZuulRemake.Classes
         }
         public int GetTotalWeight()
         {
-            foreach( Item i in Inventory.Values)
             {
-                CarryWeight += i.Weight;
+                if (Inventory == null) return 0;
+                return Inventory.GetTotalWeight();
             }
-            int temp = CarryWeight;
-            //Resets CarryWeight so will repeated method calls will not lead to 
-            //just adding additional wieght onto the previous call
-            CarryWeight = 0;
-            return temp;
         }
     }
 }

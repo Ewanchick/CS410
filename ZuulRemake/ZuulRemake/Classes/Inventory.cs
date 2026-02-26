@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ZuulRemake.Classes
 {
-    internal class Inventory
+    public class Inventory
     {
         private readonly Dictionary<string, Item> inventory;
 
