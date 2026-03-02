@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
@@ -21,7 +15,7 @@ namespace ZuulRemake.Classes
          * Constructor for objects of class Monster.
          */
         public Monster(string name, int hp, int level)
-        : base(name, hp, level)  // no starting items
+            : base(name, hp, level)  // no starting items
         {
         }
 
@@ -33,13 +27,15 @@ namespace ZuulRemake.Classes
 
         /**
          * Provide detailed description of Monster.
-         * If Monster can drop loot, display posessed item.
+         * If Monster can drop loot, display possessed item name.
          */
         public override string ToString()
         {
-            string result = $"{Name}\nHP: {HP}\nLVL: {Level}";
-            if (Inventory != null && Inventory.GetTotalWeight() > 0)
-                result += $"\nLoot: {Inventory.InventoryToString()}";
+            var result = $"{Name}\nHP: {HP}\nLVL: {Level}";
+            if (Drop != null)
+            {
+                result += $"\nLoot: {Drop.Name}";
+            }
             return result;
         }
     }

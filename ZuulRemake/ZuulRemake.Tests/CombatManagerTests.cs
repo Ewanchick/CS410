@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using ZuulRemake.Classes;
-
+using Xunit;
 namespace ZuulRemake.Tests
 {
-    [TestClass]
     public class CombatManagerTests
     {
         /**
