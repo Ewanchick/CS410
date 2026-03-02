@@ -17,8 +17,8 @@ namespace ZuulRemake.Classes
         private readonly Parser parser;
         private readonly Player player;
         private Room entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit;
-        private Item sword, lantern, armour, key, potion;
-        private Monster dragon, ghoul;
+        
+ 
         private CommandHandler ch;
         
         public static void Main(string[] args)
@@ -34,7 +34,7 @@ namespace ZuulRemake.Classes
         public Game()
         {
             parser = new Parser();
-            player = new Player("Player");
+            player = new Player("Player",100, 10);
             Room startRoom = WorldBuilder.Build(
                 out entryway,
                 out dininghall,
@@ -50,37 +50,7 @@ namespace ZuulRemake.Classes
             ch = new CommandHandler(player, parser, entryway, kitchen, exit);
         }
 
-        // replace with combatmanager
         
-
-        public void AttackMonster(string monsterName)
-        {
-            // fix
-            Monster monster = player.GetCurrentRoom().GetMonster(monsterName);
-            if (monster == null)
-            {
-                Console.WriteLine("There is no such monster here.");
-                return;
-            }
-            
-            monster.TakeDamage(player.Level);
-
-            Console.WriteLine($"You attack the {monster.Name}!");
-            Console.WriteLine($"{monster.Name} HP: {monster.HP}");
-
-
-            if (!monster.IsAlive)
-            {
-                Console.WriteLine($"You defeated the {monster.Name}!");
-
-                if (monster.Drop != null)
-                {
-                    player.GetCurrentRoom().SetItem(monster.Drop.Name.ToLower(), monster.Drop);
-                    Console.WriteLine($"{monster.Name} dropped a {monster.Drop.Name}!");
-                }
-                player.GetCurrentRoom().RemoveMonster(monsterName);
-            }
-        }
 
         /**
          * Initiates a battle between player and monster, continously prompting for input and 
@@ -90,7 +60,7 @@ namespace ZuulRemake.Classes
         {
             Console.WriteLine("The " + m.Name + " is hostile! Attack or be attacked!");
 
-            while (m.IsAlive) 
+            while (m.IsAlive)
             {
                 Console.WriteLine("What will you do? ");
                 string? action = Console.ReadLine();
@@ -102,10 +72,10 @@ namespace ZuulRemake.Classes
                 {
                     m.TakeDamage(p.Level);
                     Console.WriteLine("You have attacked the " + m.Name + "! \n" +
-                                      "The " + m.Name + "attacks back!");                   
+                                      "The " + m.Name + "attacks back!");
                 }
 
-               p.TakeDamage(m.Level);
+                p.TakeDamage(m.Level);
                 Console.WriteLine("You have been injured! Your HP is now " + p.HP + ".");
             }
 
@@ -177,7 +147,7 @@ namespace ZuulRemake.Classes
                 name = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(name));
 
-              name = player.Name;
+            name = player.Name;
 
             Console.WriteLine("Greetings, " + player.Name);
             Console.WriteLine("You have awoken in a very dark castle with no memory of how you got here. \n" +
@@ -221,184 +191,6 @@ namespace ZuulRemake.Classes
             Console.WriteLine();
             Console.WriteLine("Your command words are:");
             parser.ShowCommands();
-        }
-
-        /** 
-         * Try to go in one direction. If there is an exit, enter
-         * the new room, otherwise print an error message.
-         */
-        private void GoRoom(Command command)
-        {
-            if (!command.HasSecondWord())
-            {
-                // if there is no second word, we don't know where to go...
-                Console.WriteLine("Go where?");
-                return;
-            }
-            string direction = command.GetSecondWord();
-            Console.WriteLine(player.GoNewRoom(direction));
-        }
-
-        /**
-         * take player back to previous room they were in.
-         */
-        private void GoBack(Command command)
-        {
-            if (command.HasSecondWord())
-            {
-                Console.WriteLine("Back where?");
-                return;
-            }
-            else
-            {
-                Console.WriteLine(player.GoBack());
-            }
-        }
-
-        /**
-         * looks in the room and gives description.
-         */
-        private void Look(Command command)
-        {
-            //Console.WriteLine(player.GetRoomDescription());
-            // replace with:
-            // Console.WriteLine(p.CurrentRoom.GetDescription());
-        }
-
-        /**
-         * prints the take item command from the player class
-         */
-        private void Take(Command command)
-        {
-            if (!command.HasSecondWord())
-            {
-                Console.WriteLine("what would you like to take?");
-                return;
-            }
-            string name = command.GetSecondWord();
-            Console.WriteLine(player.TakeItem(name));
-        }
-
-        /**
-         * uses the items in the inventory, if the player has a key they can unlock the door, if they have a lantern they will light the room in the kitchen
-         * if they have a potion or armour they can increase their health.
-         */
-        private void UseItem(Command command)
-        {
-            if (!command.HasSecondWord())
-            {
-                Console.WriteLine("what item would you like to use?");
-            }
-            string item = command.GetSecondWord();
-            //To standardize player input
-            switch (item.ToLower())
-            {
-                case "key":
-                    if (player.GetInventoryString().Contains("key") && player.GetCurrentRoom() == entryway)
-                    {
-                        Console.WriteLine("you unlocked the door, go south to leave");
-                        entryway.SetExit("south", exit);
-                    }
-                    else
-                    {
-                        Console.WriteLine("you cannot use key here");
-                    }
-                    break;
-                case "lantern":
-                    if (player.GetInventoryString().Contains("lantern") && player.GetCurrentRoom() == kitchen)
-                    {
-                        Console.WriteLine("you are in a nasty kitchen and see a sword lying on the ground");
-                        kitchen.SetItem("sword", sword);
-                    }
-                    else
-                    {
-                        Console.WriteLine("you cannot use the lantern here");
-                    }
-                    break;
-                case "armour":
-                    {
-                        player.EquipItem();
-                        player.RemoveFromBackpack("armour");
-                        Console.WriteLine("you are now wearing the armour, this will help you last longer when fighting enemies.");
-                        Console.WriteLine(player.GetInventoryString());
-                    }
-                    break;
-                case "potion":
-                    {
-                        player.EquipItem();
-                        player.RemoveFromBackpack("potion");
-                        // do the actual health increase
-                        Console.WriteLine("you took the potion and have increased your health");
-                        Console.WriteLine(player.GetInventoryString());
-                    }
-                    break;
-                    //Could also add logic to check incase a non command word is used
-            }
-        }
-
-        /**
-         * prints the drop item command from the player class
-         */
-        private void Drop(Command command)
-        {
-            if (!command.HasSecondWord())
-            {
-                Console.WriteLine("what item would you like to drop?");
-                return;
-            }
-
-            string name = command.GetSecondWord();
-
-            Console.WriteLine(player.DropItem(name));
-        }
-
-        /**
-         * 
-         
-        private void eat(Command command)
-        {
-            if(!command.hasSecondWord()) {
-                Console.WriteLine("what item do you want to eat?");
-                return;
-            }
-            
-            String name = command.getSecondWord();
-            
-            Console.WriteLine(player.eatCookie(name));
-            
-        }
-        */
-        /**
-         * displays the items in the inventory of the player class using the
-         * tostring in the player class.
-         */
-        private void Inventory()
-        {
-            Console.WriteLine("you are currently holding: " + player.GetInventoryString());
-
-        }
-
-
-
-
-
-
-        /** 
-         * "Quit" was entered. Check the rest of the command to see
-         * whether we really quit the game.
-         * @return true, if this command quits the game, false otherwise.
-         */
-        private bool Quit(Command command)
-        {
-            if (command.HasSecondWord())
-            {
-                Console.WriteLine("Quit what?");
-                return false;
-            }
-            else
-            {
-                return true;  // signal that we want to quit
-            }
         }
     }
 }

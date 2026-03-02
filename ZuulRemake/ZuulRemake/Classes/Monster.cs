@@ -20,7 +20,13 @@ namespace ZuulRemake.Classes
         /**
          * Constructor for objects of class Monster.
          */
-        public Monster(string name, int hp, int level, Item? drop = null): base(name, hp, level)
+        public Monster(string name, int hp, int level)
+        : base(name, hp, level)  // no starting items
+        {
+        }
+
+        public Monster(string name, int hp, int level, Item drop)
+            : base(name, hp, level)
         {
             Drop = drop;
         }
@@ -31,12 +37,10 @@ namespace ZuulRemake.Classes
          */
         public override string ToString()
         {
-            string ReturnString;
-            ReturnString = $"{Name}\n" +
-                           $"HP: {HP}\n" +
-                           $"LVL: {Level}\n";
-            if (Drop != null) { ReturnString += $"Loot: {Drop}"; }
-            return ReturnString;
+            string result = $"{Name}\nHP: {HP}\nLVL: {Level}";
+            if (Inventory != null && Inventory.GetTotalWeight() > 0)
+                result += $"\nLoot: {Inventory.InventoryToString()}";
+            return result;
         }
     }
 }

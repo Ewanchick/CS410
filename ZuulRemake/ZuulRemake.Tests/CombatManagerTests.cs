@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using ZuulRemake.Classes;
+using Xunit;
 
 namespace ZuulRemake.Tests
 {
-    [TestClass]
+    
     public class CombatManagerTests
     {
         /**
@@ -16,13 +17,12 @@ namespace ZuulRemake.Tests
         public void PlayerAttackReducesMonsterHP()
         {
             //Arrange
-            var combat = new CombatManager();
             var p = new Player("Test", hp: 100, level: 10);
             var m = new Monster("Ghoul", hp: 100, level: 10);
             int startingHP = m.HP;
 
             //Act
-            combat.PlayerAttack(p, m);
+            CombatManager.PlayerAttack(p, m);
 
             // Assert
             Assert.True(m.HP < startingHP);
@@ -37,13 +37,12 @@ namespace ZuulRemake.Tests
         public void MonsterAttackReducesPlayerHP()
         {
             //Arrange
-            var combat = new CombatManager();
             var p = new Player("Test", hp: 100, level: 10);
             var m = new Monster("Ghoul", hp: 100, level: 10);
             int startingHP = p.HP;
 
             //Act
-            combat.MonsterAttack(p, m);
+            CombatManager.MonsterAttack(p, m);
 
             // Assert
             Assert.True(p.HP < startingHP);
@@ -58,14 +57,36 @@ namespace ZuulRemake.Tests
         public void EntityHPDoesNotGoBelowZero()
         {
             //Arrange
-            var e = new Entity("Test", hp: 10);
+            var e = new Player("Test", 10, 1);
 
             //Act
             e.TakeDamage(100);
 
             //Assert
             Assert.Equal(0, e.HP);
-            Assert.False(e.IsAlive);
+            Assert.False( e.IsAlive);
+        }
+        [Fact]
+        public void MonsterDropsItemOnDeath()
+        {
+            // Arrange
+            var room = new Room("Dungeon");
+            var monster = new Monster("Goblin", hp: 10, level: 1, drop: new Item("Gold","Shiny", 1,0));
+            room.SetMonster(monster.Name, monster);
+
+            var player = new Player("Hero");
+            player.CurrentRoom = room;
+
+            // Act - simulate killing monster
+            monster.TakeDamage(20); // More than HP so it dies
+            if (!monster.IsAlive && monster.Drop != null)
+            {
+                room.SetItem(monster.Drop.Name, monster.Drop);
+            }
+
+            // Assert
+            Assert.False(monster.IsAlive);
+            Assert.Contains("gold", room.GetRoomItems().ToLower());
         }
     }
 }

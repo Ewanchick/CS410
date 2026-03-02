@@ -171,8 +171,10 @@ namespace ZuulRemake.Classes
             if (!command.HasSecondWord())
             {
                 Console.WriteLine("what item would you like to use?");
+                return;
             }
-            string item = command.GetSecondWord();
+            
+            string item = command.GetSecondWord()!;
             //To standardize player input
             switch (item.ToLower())
             {
@@ -222,8 +224,7 @@ namespace ZuulRemake.Classes
 
         public void AttackMonster(string monsterName)
         {
-            Monster monster = player.GetCurrentRoom().GetMonster(monsterName);
-            if (monster == null)
+            if (!player.GetCurrentRoom().TryGetMonster(monsterName, out var monster) || monster is null)
             {
                 Console.WriteLine("There is no such monster here.");
                 return;
@@ -241,7 +242,7 @@ namespace ZuulRemake.Classes
 
                 if (monster.Drop != null)
                 {
-                    player.GetCurrentRoom().SetItem(monster.Drop.Name.ToLower(), monster.Drop);
+                    player.GetCurrentRoom().SetItem(monster.Drop.Name, monster.Drop);
                     Console.WriteLine($"{monster.Name} dropped a {monster.Drop.Name}!");
                 }
                 player.GetCurrentRoom().RemoveMonster(monsterName);
