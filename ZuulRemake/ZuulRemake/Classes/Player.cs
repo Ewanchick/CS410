@@ -15,9 +15,9 @@ namespace ZuulRemake.Classes
      */
     public class Player : Entity
     {
-        private readonly Inventory Backpack = new Inventory();
+        public readonly Inventory Backpack = new Inventory();
 
-        private readonly Stack<Room> PreviousRooms = new Stack<Room>();
+        public readonly Stack<Room> PreviousRooms = new Stack<Room>();
         private Room? ChargeRoom { get; set; }
 
         
@@ -35,8 +35,8 @@ namespace ZuulRemake.Classes
 
         /* ------------------------------ LEVEL ------------------------------ */
         /**
- * Increases Player Level (damage dealt)
- */
+        * Increases Player Level (damage dealt)
+        */
         public void LevelUp(int lvl)
         {
             Level += lvl;

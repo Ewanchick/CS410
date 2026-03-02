@@ -238,7 +238,7 @@ namespace ZuulRemake.Classes
          */
         public Monster? GetMonster(string name)
         {
-            Monster m = Monsters.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
+            Monster? m = Monsters.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
             if (m == null)
             {
                 throw new InvalidOperationException($"No Monster was found with name '{name}', or expected Monster is null.");
