@@ -140,11 +140,11 @@ namespace ZuulRemake.Classes
             Console.WriteLine("Welcome to the World of Zuul!\n");
             Console.Write("Please enter your name: ");
             string? name = Console.ReadLine();
-            do
+            while (string.IsNullOrEmpty(name.Trim()));
             {
                 Console.Write("Invalid input. Please enter your name: ");
                 name = Console.ReadLine();
-            } while (string.IsNullOrWhiteSpace(name));
+            } 
 
             name = player.Name;
 
