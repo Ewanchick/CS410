@@ -15,10 +15,7 @@ namespace ZuulRemake.Classes
         public string Name { get; set; }
         public int HP { get; protected set; }
         public int Level { get; protected set; }
-        public Inventory? Inventory { get; protected set; }
         public bool IsAlive => HP > 0;
-        public int CarryWeight { get; protected set; } = 0;
-        public int MaxWeight { get; protected set; } = 2;
         public Room? CurrentRoom { get; set; }
 
         public Entity(string name, int hp, int level)

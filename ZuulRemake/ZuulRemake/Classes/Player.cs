@@ -10,30 +10,46 @@ namespace ZuulRemake.Classes
 {
     /**
      * This class represents the Player and inherits from the Entity class. The Player has 
-     * these unique attributes: BackPack Backpack, Room CurrentRoom, Room ChargeRoom, 
+     * these unique attributes: List<Item> Inventory, Room CurrentRoom, Room ChargeRoom, 
      * int CarryWeight, and int MaxWeight.
      */
     public class Player : Entity
     {
-        public readonly Inventory Backpack = new Inventory();
+        private readonly List<Item> Inventory = new();
+        private readonly Stack<Room> PreviousRooms = new();
 
-        public readonly Stack<Room> PreviousRooms = new Stack<Room>();
-        private Room? ChargeRoom { get; set; }
+        // REMOVE AFTER REVIEW w TEAM
+        // Sum iterates through a collection of ints and adds them.
+        // Handy in case we would forget to manually call Add or Remove.
+        // It's a derived property!! :D
+        public int CarryWeight => Inventory.Sum(i => i.Weight);
+        public int MaxWeight { get; private set; } = 2;
 
         
-
-        public Player(string name) : base(name, hp: 100, level: 100) { }
-        public Player(string name, int hp, int level)
-        : base(name, 100, 10) // default HP and level
+        private Room? ChargeRoom { get; set; }
+        
+        /**
+         * Constructors for objects of class Player
+         */
+        public Player(string name) : base(name, hp: 100, level: 100) 
+        { }
+        public Player(string name, int hp, int level) : base(name, 100, 10) 
+        { }
+        public Player(string name,int hp, int level, IEnumerable<Item>? startingItems)
+            : base(name, hp, level)
         {
-        }
-
-        public Player(string name,int hp, int level, IEnumerable<Item>? startingItems = null)
-            : base(name, 100, 10, startingItems ?? []) // pre-filled inventory
-        {
+            if (startingItems != null)
+            {
+                foreach (var item in startingItems)
+                {
+                    if (CanCarry(item))
+                        Inventory.Add(item);
+                }
+            }
         }
 
         /* ------------------------------ LEVEL ------------------------------ */
+
         /**
         * Increases Player Level (damage dealt)
         */
@@ -42,16 +58,7 @@ namespace ZuulRemake.Classes
             Level += lvl;
         }
 
-        /* ------------------------------ WEIGHT ------------------------------ */
-        public void AddWeight(int weight)
-        {
-            CarryWeight += weight;
-        }
-
-        public void RemoveWeight(int weight)
-        {
-            CarryWeight -= weight;
-        }
+        /* ------------------------------ WEIGHT & INVENTORY ------------------------------ */
 
         public void AddMaxWeight(int weight)
         {
@@ -63,6 +70,25 @@ namespace ZuulRemake.Classes
             MaxWeight -= weight;
         }
 
+        public bool CanCarry(Item item)
+        {
+            int totalWeight = CarryWeight + item.Weight;
+            return totalWeight <= MaxWeight;
+        }
+
+        public bool AddItem(Item item)
+        {
+            if (!CanCarry(item)) return false;
+
+            Inventory.Add(item);
+            return true;
+        }
+
+        public bool RemoveItem(Item item)
+        {
+            return Inventory.Remove(item);
+        }
+
         /* -------------------------- ROOM NAVIGATION -------------------------- */
 
         /**
@@ -70,35 +96,20 @@ namespace ZuulRemake.Classes
          */
         public Room GetCurrentRoom()
         {
-            if (CurrentRoom == null)
-            {
-                throw new InvalidOperationException("CurrentRoom is null.");
-            }
+            if (CurrentRoom == null) throw new InvalidOperationException("CurrentRoom is null.");
             return CurrentRoom;
         }
 
-        public string SetCurrentRoom(Room nextRoom)
-        {
-            string returnString = "";
-            CurrentRoom = nextRoom;
-
-            returnString += CurrentRoom.ToString();
-            return returnString;
-        }
         /**
          * Navigate the Player to a new room and udpate its CurrentRoom value. 
          * If the Player is already in a room, push this room onto the Stack 
          * of previous rooms before updating Player's location.
          */
-        public string GoNewRoom(string direction)
+        public string GoNewRoom(Room newRoom)
         {
-            if (!CurrentRoom.TryGetExit(direction, out Room nextRoom)) return "there is no door (or it is locked).";
-            // Try to leave current room.
-            PreviousRooms.Push(CurrentRoom);
-            CurrentRoom = nextRoom;
-            
+            if (CurrentRoom != null) PreviousRooms.Push(CurrentRoom);
+            CurrentRoom = newRoom;            
             return CurrentRoom.ToString();
-
         }
 
         /**
@@ -124,9 +135,19 @@ namespace ZuulRemake.Classes
 
             CurrentRoom = PreviousRooms.Pop();
             return CurrentRoom;
+        }        
+
+        /**
+         * Check for available exits to the current room. 
+         * If there is no room, there are no exits.
+         */
+        public string ExitsAvailable()
+        {
+            if (CurrentRoom == null) throw new InvalidOperationException("CurrentRoom is null.");
+            return CurrentRoom.GetExits();
         }
 
-        /* ------------------------------ CHARGE BEAMER ------------------------------ */
+        /* ------------------------------ BEAMER ------------------------------ */
 
         /**
          * The Beamer is a mechanism which teleports the player to a room specified by 
@@ -145,55 +166,7 @@ namespace ZuulRemake.Classes
         {
             return ChargeRoom != null;
         }
-        /**
-         * Check for available exits to the current room. 
-         * If there is no room, there are no exits.
-         */
-        public string ExitsAvailable()
-        {
-            if (CurrentRoom == null)
-            {
-                return "CurrentRoom is null. There are no exits, because you are not in a room!";
-            }
-            return CurrentRoom.GetExitString();
-        }
 
-        /**
-         * displays the toString from the room class.
-         */
-        public string GetRoomDescription()
-        {
-            return CurrentRoom.ToString();
-        }
-        private bool CanCarry(Item item)
-        {
-            bool canCarry = true;
-            int totalWeight = Backpack.GetTotalWeight() + item.Weight;
-            if (totalWeight > MaxWeight)
-            {
-                canCarry = false;
-            }
-            return canCarry;
-        }
-
-
-        // MOVE TO GAME CLASS
-        /**
-         * Ends the game if player HP reaches 0
-         */
-        public bool gameOver()
-        {
-            return HP == 0;
-        }
-
-        /**
-         * Returns items in the inventory
-         */
-        public string GetInventoryString()
-        {
-            int totalWeight = Inventory?.GetTotalWeight() ?? 0;
-            return Inventory?.InventoryToString() + "\nweight: " + totalWeight + "/" + MaxWeight + "\nHP:" + HP;
-        }
     }
 }
 
