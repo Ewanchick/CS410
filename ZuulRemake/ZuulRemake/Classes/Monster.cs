@@ -35,7 +35,7 @@ namespace ZuulRemake.Classes
             ReturnString = $"{Name}\n" +
                            $"HP: {HP}\n" +
                            $"LVL: {Level}\n";
-            if (Drop != null) { ReturnString += $"Loot: {Drop}"; }
+            if (Drop != null) { ReturnString += $"Loot: {Drop.Name}"; }
             return ReturnString;
         }
     }
