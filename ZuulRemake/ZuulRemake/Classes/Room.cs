@@ -104,36 +104,17 @@ namespace ZuulRemake.Classes
         public void AddExit(string direction, Room targetRoom, bool isLocked = false)
         {
             if (string.IsNullOrWhiteSpace(direction)) throw new ArgumentException("Direction required.");
-            try
-            {
-                Exits.Add(new Exit(direction.ToLower(), targetRoom, isLocked));
-            }
-            catch
-            {
-                throw new Exception("Failed to add room. :( ");
-            }
+            if (targetRoom == null) throw new ArgumentNullException(nameof(targetRoom));
+
+            Exits.Add(new Exit(direction.ToLower(), targetRoom, isLocked));
         }
 
         /**
          * Remove an exit from this room.
          */
-        public void RemoveExit(Exit exit)
+        public bool RemoveExit(Exit exit)
         {
-            if (exit != null)
-            {
-                try
-                {
-                    Exits.Remove(exit);
-                }
-                catch
-                {
-                    throw new NullReferenceException("Failed to remove exit.");
-                }
-            }
-            else
-            {
-                throw new ArgumentNullException("The provided Exit object is null.");
-            }
+            return Exits.Remove(exit);
         }
 
         /**
@@ -141,15 +122,8 @@ namespace ZuulRemake.Classes
          */
         public Exit? GetExit(string direction)
         {
-            Exit? ex = Exits?.FirstOrDefault(e => e.Direction != null && Equals(direction, StringComparison.OrdinalIgnoreCase));
-            if (ex == null)
-            {
-                throw new InvalidOperationException($"No Exit was found in direction '{direction}', or expected Exit is null.");
-            }
-            else
-            {
-                return ex;
-            }
+            if (string.IsNullOrWhiteSpace(direction)) return null;
+            return Exits?.FirstOrDefault(e => e.Direction != null && e.Direction.Equals(direction, StringComparison.OrdinalIgnoreCase));
         }
 
         /* ----------------------- ITEMS ----------------------- */
@@ -159,29 +133,16 @@ namespace ZuulRemake.Classes
          */
         public void AddItem(Item item)
         {
-            if (item != null)
-            {
-                Items.Add(item);
-            }
-            else
-            {
-                throw new ArgumentNullException("Specified item is null.");
-            }
+            if (item == null) throw new ArgumentNullException(nameof(item));
+            Items.Add(item);            
         }
 
         /**
          * Remove an item from this room.
          */
-        public void RemoveItem(Item item)
+        public bool RemoveItem(Item item)
         {
-            if (item != null)
-            {
-                Items.Remove(item);
-            }
-            else
-            {
-                throw new ArgumentNullException("Provided Item is null.");
-            }
+            return Items.Remove(item);
         }
 
         /**
@@ -189,15 +150,8 @@ namespace ZuulRemake.Classes
          */
         public Item? GetItem(string name)
         {
-            Item? i = Items.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
-            if (i == null)
-            {
-                throw new InvalidOperationException($"No Item was found with the name '{name}'.");
-            }
-            else
-            {
-                return i;
-            }
+            if (string.IsNullOrWhiteSpace(name)) return null;
+            return Items.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         /* ---------------------- MONSTERS ---------------------- */
@@ -207,30 +161,16 @@ namespace ZuulRemake.Classes
          */
         public void AddMonster(Monster monster)
         {
-            if (monster != null)
-            {   
-                Monsters.Add(monster);
-            }
-            else
-            {
-                throw new ArgumentNullException("Provided Monster is null.");
-            }
-                
+            if (monster == null) throw new ArgumentNullException(nameof(monster));
+            Monsters.Add(monster);
         }
 
         /**
          * Remove a monster from this room.
          */
-        public void RemoveMonster(Monster monster)
+        public bool RemoveMonster(Monster monster)
         {
-            if (monster != null)
-            {
-                Monsters.Remove(monster);
-            }
-            else
-            {
-                throw new ArgumentNullException("Provided Monster is null.");
-            }
+            return Monsters.Remove(monster);
         }
 
         /**
@@ -238,15 +178,8 @@ namespace ZuulRemake.Classes
          */
         public Monster? GetMonster(string name)
         {
-            Monster? m = Monsters.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
-            if (m == null)
-            {
-                throw new InvalidOperationException($"No Monster was found with name '{name}', or expected Monster is null.");
-            }
-            else
-            {
-                return m;
-            }
+            if (string.IsNullOrWhiteSpace(name)) return null;
+            return Monsters.FirstOrDefault(m => m.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

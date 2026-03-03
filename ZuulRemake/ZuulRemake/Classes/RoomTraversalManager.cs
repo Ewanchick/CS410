@@ -19,7 +19,6 @@ namespace ZuulRemake.Classes
         {
             player = p;
             currentRoom = player.CurrentRoom;
-            //prevRooms = player.PreviousRooms;
         }
 
         //public Room GoNewRoom(string direction)
