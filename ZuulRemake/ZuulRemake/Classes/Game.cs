@@ -20,6 +20,7 @@ namespace ZuulRemake.Classes
         
  
         private CommandHandler ch;
+        
         public static void Main(string[] args)
         {
             var game = new Game();

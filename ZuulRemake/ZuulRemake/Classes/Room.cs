@@ -7,168 +7,179 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    public class Room(string description)
+    /**
+     * This class represents a Room to which the Player can travel. A Room has a Name, 
+     * ShortDescriptions, and LongDescriptions. A Room can contain Items and Monsters, 
+     * and also contains a collection of Exits which are associated with directions.
+     */
+    public class Room
     {
-        private readonly string description = description;
-        private readonly Dictionary<string, Room> exits = [];
-        private readonly Dictionary<string, bool> lockedExits = new(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<string, Item> items = [];
-        private readonly Dictionary<string, Monster> monsters = [];
+        public string Name { get; }
+        public string ShortDescription { get; }
+        public string LongDescription { get; }
 
+        private readonly List<Item> Items = new();
+        private readonly List<Monster> Monsters = new();
+        private readonly List<Exit> Exits = new();
+
+        public Room(string name, string shortDescription, string longDescription)
+        {
+            Name = name;
+            ShortDescription = shortDescription;
+            LongDescription = longDescription;
+        }
+
+        /* ------------------------------ INFORMATION ------------------------------ */
+        /**
+         * Return a short string informing the Player of the room's Name and ShortDescription.
+         */
         override public string ToString()
         {
-            return GetLongDescription() + "\n" + GetRoomItems() + "\n" +
-                GetRoomMonsters();
+            return $"You are standing in the {Name}: {ShortDescription}";
         }
+
         /**
-         * Define the exits of this room.  Every direction either leads
-         * to another room or is null (no exit there).
-         * @param neighbor the room in the given direction
-         * @param direction the direction of the exit
-         */
-        public void SetExit(string direction, Room neighbor)
-        {
-            if (string.IsNullOrWhiteSpace(direction)) throw new ArgumentException("direction required");
-            exits[direction] = neighbor ?? throw new ArgumentNullException(nameof(neighbor));
-            lockedExits[direction] = false;
-        }
-        /**
-         * Define the exits of this room.  Every direction either leads
-         * to another room or is null (no exit there).
-         * @param neighbor the room in the given direction
-         * @param direction the direction of the exit
-         */
-        public void SetExit(string direction, Room neighbor, bool isLocked)
-        {
-            if (string.IsNullOrWhiteSpace(direction)) throw new ArgumentException("direction required");
-            exits[direction] = neighbor?? throw new ArgumentNullException(nameof(neighbor));
-            lockedExits[direction] = isLocked;
-        }
-        public bool IsExitLocked(string direction)
-        {
-            return lockedExits.TryGetValue(direction, out var locked) && locked;
-        }
-
-        public bool TryGetExit(string direction, out Room? nextRoom)
-        {
-            nextRoom = null;
-
-            if (!exits.TryGetValue(direction, out var room))
-                return false;
-
-
-            if (IsExitLocked(direction))
-                return false;
-
-            nextRoom = room;
-            return true;
-        }
-
-        public Room GetExitRaw(string direction)
-        {
-            exits.TryGetValue(direction, out var room);
-            return room;
-        }
-        /**
-         * return a description of the rooms exits,
-         * for ecample, "exits: north west".
-         * @return A description of the available exits.
-         */
-        public string GetExitString()
-        {
-            if (exits.Count == 0) return "Exits from this room:";
-            var parts = exits.Keys
-                .Select(d => IsExitLocked(d) ? $"{d} (locked)" : d);
-
-            return "Exits from this room: " + string.Join(", ", parts);
-        }
-        public string GetRoomItems()
-        {
-            if (items.Count == 0) return "There are no items in this room!";
-            return "Items in this room: " + string.Join (", ", items.Keys);
-        }
-        public string GetRoomMonsters()
-        {
-            if (monsters.Count == 0) return "There are no Monsters in this room!";
-            return "Monsters in this room: " + string.Join(", ", monsters.Keys);
-        }
-        /**
-         * @return The description of the room.
-         */
-        public string GetShortDescription()
-        {
-            return description;
-        }
-        /**
-         * Return a description of the room in the form:
-         *  you are in the kitchen.
-         *  Exits: north west
-         * @return a long description of this room
+         * Return a longer message detailing the room's Name and ShortDescription, as well as 
+         * any Monsters, Items, or Exits in the room.
          */
         public string GetLongDescription()
         {
-            return "You are " + description + ".\n" + GetExitString();
+            return ToString() + "\n" +
+            GetItems() + "\n" +
+            GetMonsters() + "\n" +
+            GetExits();
         }
-        /**
-         * puts the item in the room
-         */
-        public void SetItem(string itemName, Item item)
-        {
-            if (string.IsNullOrWhiteSpace(itemName)) throw new ArgumentException("itemName required");
-            items[itemName] = item ?? throw new ArgumentNullException(nameof(item));
-        }
-        /**
-         * gets the item from the room
-         */
-        public bool TryGetItem(string name, out Item? item)
-        {
-            item = null;
 
-            if (string.IsNullOrWhiteSpace(name))
-                return false;
-
-            return items.TryGetValue(name, out item);
-        }
         /**
-         * removes the item from the room
+         * Check if the room contains any Items. If not, print a message explaining so. 
+         * Otherwise, list each Item in the room on a new line and return as a string.
          */
-        public bool TryRemoveItem(string name, out Item? removedItem)
+        public string GetItems()
         {
-            removedItem = null;
+            if (Items.Count == 0)
+                return "It seems there are no items in this room...";
 
-            if (string.IsNullOrWhiteSpace(name))
-                return false;
-
-            if (!items.TryGetValue(name, out removedItem))
-                return false;
-
-            return items.Remove(name);
+            IEnumerable<string>? ItemNames = Items.Select(i => i.Name);
+            string itemstr = "Items in this room: " +
+            string.Join("\n", ItemNames);
+            return itemstr;
         }
+
         /**
-         * adds item to list
+         * Check if the room contains any Monsters. If not, print a message explaining so. 
+         * Otherwise, list each Monster in the room on a new line and return as a string.
          */
-        public Item AddItem(string name, Item item)
+        public string GetMonsters()
         {
-            SetItem(name, item);
-            return item;
+            if (Monsters.Count == 0)
+                return "Thankfully, there are no monsters in this room! ...yet.";
+
+            IEnumerable<string>? MonsterNames = Monsters.Select(m => m.Name);
+            string monstr = "Monsters in this room: " +
+            string.Join("\n", MonsterNames);
+            return monstr;
         }
+
         /**
-         * adds monster to room
+         * Check if the room contains any Exits. If not, print a message explaining so. Otherwise, 
+         * list the Direction of each Exit in the room on a new line and return as a string.
          */
-        public void SetMonster(string name, Monster monster)
+        public string GetExits()
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("name required");
-            monsters[name] = monster ?? throw new ArgumentNullException(nameof(monster));
+            if (Exits.Count == 0)
+                return "This room appears to have no exits...";
+
+            IEnumerable<string>? ExitsAvailable = Exits.Select(i => i.Direction);
+            string exitstr = "Exits: " +
+            string.Join("\n", ExitsAvailable);
+            return exitstr;
         }
-        public bool TryGetMonster(string name, out Monster? monster)
+
+        /* ----------------------- EXITS ----------------------- */
+
+        /**
+         * Add an exit to this room, including its Direction, the Room it leads to, 
+         * and whether or not it is locked.
+         */
+        public void AddExit(string direction, Room targetRoom, bool isLocked = false)
         {
-            monster = null;
-            if (string.IsNullOrWhiteSpace(name)) return false;
-            return monsters.TryGetValue(name, out monster);
+            if (string.IsNullOrWhiteSpace(direction)) throw new ArgumentException("Direction required.");
+            if (targetRoom == null) throw new ArgumentNullException(nameof(targetRoom));
+
+            Exits.Add(new Exit(direction.ToLower(), targetRoom, isLocked));
         }
-        public bool RemoveMonster(string name)
+
+        /**
+         * Remove an exit from this room.
+         */
+        public bool RemoveExit(Exit exit)
         {
-            return monsters.Remove(name);
+            return Exits.Remove(exit);
+        }
+
+        /**
+         * Retrieve an exit from this room.
+         */
+        public Exit? GetExit(string direction)
+        {
+            if (string.IsNullOrWhiteSpace(direction)) return null;
+            return Exits?.FirstOrDefault(e => e.Direction != null && e.Direction.Equals(direction, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /* ----------------------- ITEMS ----------------------- */
+
+        /**
+         * Add an item to this room.
+         */
+        public void AddItem(Item item)
+        {
+            if (item == null) throw new ArgumentNullException(nameof(item));
+            Items.Add(item);            
+        }
+
+        /**
+         * Remove an item from this room.
+         */
+        public bool RemoveItem(Item item)
+        {
+            return Items.Remove(item);
+        }
+
+        /**
+         * Retrieve an item from this room.
+         */
+        public Item? GetItem(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return null;
+            return Items.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /* ---------------------- MONSTERS ---------------------- */
+
+        /**
+         * Add a monster to this room.
+         */
+        public void AddMonster(Monster monster)
+        {
+            if (monster == null) throw new ArgumentNullException(nameof(monster));
+            Monsters.Add(monster);
+        }
+
+        /**
+         * Remove a monster from this room.
+         */
+        public bool RemoveMonster(Monster monster)
+        {
+            return Monsters.Remove(monster);
+        }
+
+        /**
+         * Retrieve a monster from this room.
+         */
+        public Monster? GetMonster(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return null;
+            return Monsters.FirstOrDefault(m => m.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
