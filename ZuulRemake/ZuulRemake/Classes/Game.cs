@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,8 +17,7 @@ namespace ZuulRemake.Classes
         private readonly Parser parser;
         private readonly Player player;
         private Room entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit;
-        
- 
+
         private CommandHandler ch;
         public static void Main(string[] args)
         {
@@ -33,7 +32,7 @@ namespace ZuulRemake.Classes
         public Game()
         {
             parser = new Parser();
-            player = new Player("Player",100, 10);
+            player = new Player("Player", 100, 10);
             Room startRoom = WorldBuilder.Build(
                 out entryway,
                 out dininghall,
@@ -48,8 +47,6 @@ namespace ZuulRemake.Classes
 
             ch = new CommandHandler(player, parser, entryway, kitchen, exit);
         }
-
-        
 
         /**
          * Initiates a battle between player and monster, continously prompting for input and 
@@ -87,16 +84,6 @@ namespace ZuulRemake.Classes
             }
             player.GetCurrentRoom().RemoveMonster(m.Name);
         }
-
-
-
-
-
-
-
-
-
-
 
         /**
          *  Main play routine.  Loops until end of play.
@@ -140,13 +127,15 @@ namespace ZuulRemake.Classes
             Console.WriteLine("Welcome to the World of Zuul!\n");
             Console.Write("Please enter your name: ");
             string? name = Console.ReadLine();
-            do
+
+            while (string.IsNullOrWhiteSpace(name))
             {
                 Console.Write("Invalid input. Please enter your name: ");
                 name = Console.ReadLine();
-            } while (string.IsNullOrWhiteSpace(name));
+            }
 
-            name = player.Name;
+            // assign the validated name to the player
+            player.Name = name!;
 
             Console.WriteLine("Greetings, " + player.Name);
             Console.WriteLine("You have awoken in a very dark castle with no memory of how you got here. \n" +
@@ -175,7 +164,6 @@ namespace ZuulRemake.Classes
         {
             Console.WriteLine("You won, you defeated the dragon and escaped the castle!");
         }
-
 
         // implementations of user commands:
 

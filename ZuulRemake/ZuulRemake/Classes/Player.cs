@@ -1,199 +1,215 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
-    /**
-     * This class represents the Player and inherits from the Entity class. The Player has 
-     * these unique attributes: BackPack Backpack, Room CurrentRoom, Room ChargeRoom, 
-     * int CarryWeight, and int MaxWeight.
-     */
     public class Player : Entity
     {
-        private readonly Inventory Backpack = new Inventory();
-
-        private readonly Stack<Room> PreviousRooms = new Stack<Room>();
+        public readonly Stack<Room> PreviousRooms = new Stack<Room>();
         private Room? ChargeRoom { get; set; }
 
-        
+        // Converted Inventory from ArrayList to strongly-typed List<Item>
+        public List<Item> Inventory { get; protected set; }
 
-        public Player(string name) : base(name, hp: 100, level: 100) { }
-        public Player(string name, int hp, int level)
-        : base(name, 100, 10) // default HP and level
+        public int CarryWeight { get; private set; } = 0;
+        public int MaxWeight { get; private set; } = 2;
+
+        // Primary ctor used by tests / callers that only pass name
+        public Player(string name) : base(name, hp: 100, level: 10)
         {
+            Inventory = new List<Item>();
+            Name = name;
         }
 
-        public Player(string name,int hp, int level, IEnumerable<Item>? startingItems = null)
-            : base(name, 100, 10, startingItems ?? []) // pre-filled inventory
+        // Overload used by Game (preserves compatibility with existing code)
+        public Player(string name, int hp, int level) : base(name, hp, level)
         {
+            Inventory = new List<Item>();
+            Name = name;
+        }
+
+        // Compatibility helper used by Game (Game calls SetCurrentRoom)
+        public void SetCurrentRoom(Room room) => CurrentRoom = room;
+
+        /* ------------------------------ HP ------------------------------ */
+        public int TakeDamage(int damage)
+        {
+            HP -= damage;
+            if (HP < 0) HP = 0;
+            return HP;
+        }
+
+        public void AddHP(int hp)
+        {
+            HP += hp;
         }
 
         /* ------------------------------ LEVEL ------------------------------ */
-        /**
- * Increases Player Level (damage dealt)
- */
-        public void LevelUp(int lvl)
+        public void LevelUp(int levels)
         {
-            Level += lvl;
+            Level += levels;
+        }
+
+        /* ------------------------------ INVENTORY ------------------------------ */
+        // Adds item to player's inventory after removing it from the room.
+        public bool AddToInventory(Item item)
+        {
+            if (item == null) return false;
+            if (item.Weight + GetTotalWeight() > MaxWeight) return false;
+
+            // remove from current room (safe)
+            CurrentRoom?.RemoveItem(item.Name);
+
+            Inventory.Add(item);
+            return true;
+        }
+
+        public bool PickUp(Item item) => AddToInventory(item);
+
+        public void RemoveFromBackpack(string itemName)
+        {
+            var item = Inventory.FirstOrDefault(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
+            if (item != null) Inventory.Remove(item);
+        }
+
+        // take item by name from current room and add to inventory
+        public string TakeItem(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return "that item isnt in the room";
+
+            var item = CurrentRoom?.GetItem(name);
+            if (item == null)
+            {
+                return "that item isnt in the room";
+            }
+
+            if (AddToInventory(item))
+            {
+                return "took: " + item.ToString();
+            }
+            return name + " is too heavy to carry";
         }
 
         /* ------------------------------ WEIGHT ------------------------------ */
-        public void AddWeight(int weight)
-        {
-            CarryWeight += weight;
-        }
+        public void AddWeight(int weight) => CarryWeight += weight;
+        public void RemoveWeight(int weight) => CarryWeight -= weight;
+        public void AddMaxWeight(int weight) => MaxWeight += weight;
+        public void RemoveMaxWeight(int weight) => MaxWeight -= weight;
 
-        public void RemoveWeight(int weight)
-        {
-            CarryWeight -= weight;
-        }
-
-        public void AddMaxWeight(int weight)
-        {
-            MaxWeight += weight;
-        }
-
-        public void RemoveMaxWeight(int weight)
-        {
-            MaxWeight -= weight;
-        }
-
-        /* -------------------------- ROOM NAVIGATION -------------------------- */
-
-        /**
-         * Return the current room. If it is null, throw an exception.
-         */
+        /* ------------------------------ ROOM NAVIGATION ------------------------------ */
         public Room GetCurrentRoom()
         {
-            if (CurrentRoom == null)
-            {
-                throw new InvalidOperationException("CurrentRoom is null.");
-            }
+            if (CurrentRoom == null) throw new InvalidOperationException("CurrentRoom is null.");
             return CurrentRoom;
         }
 
-        public string SetCurrentRoom(Room nextRoom)
+        public void GoNewRoom(Room newRoom)
         {
-            string returnString = "";
-            CurrentRoom = nextRoom;
-
-            returnString += CurrentRoom.ToString();
-            return returnString;
-        }
-        /**
-         * Navigate the Player to a new room and udpate its CurrentRoom value. 
-         * If the Player is already in a room, push this room onto the Stack 
-         * of previous rooms before updating Player's location.
-         */
-        public string GoNewRoom(string direction)
-        {
-            if (!CurrentRoom.TryGetExit(direction, out Room nextRoom)) return "there is no door (or it is locked).";
-            // Try to leave current room.
-            PreviousRooms.Push(CurrentRoom);
-            CurrentRoom = nextRoom;
-            
-            return CurrentRoom.ToString();
-
+            if (CurrentRoom != null) PreviousRooms.Push(CurrentRoom);
+            CurrentRoom = newRoom;
         }
 
-        /**
-         * If there are previous rooms to return to, return true. If the 
-         * player has yet to visit any rooms before this one, return false.
-         */
-        public bool CanGoBack()
-        {
-            return PreviousRooms.Count > 0;
-        }
+        public bool CanGoBack() => PreviousRooms.Count > 0;
 
-        /**
-         * If the player is able to go back to a previous room, update the CurrentRoom 
-         * value to the most recently visited room. If there are no rooms to return to, 
-         * throw an exception.
-         */
         public Room? GoBack()
         {
-            if (!CanGoBack())
-            {
-                throw new InvalidOperationException("No previous rooms to go back to.");
-            }
-
+            if (!CanGoBack()) throw new InvalidOperationException("No previous rooms to go back to.");
             CurrentRoom = PreviousRooms.Pop();
             return CurrentRoom;
         }
 
-        /* ------------------------------ CHARGE BEAMER ------------------------------ */
-
-        /**
-         * The Beamer is a mechanism which teleports the player to a room specified by 
-         * ChargeRoom. To teleport, the ChargeRoom must first be set to a Room value.
-         */
-        public void ChargeBeamer(Room room)
+        /* ------------------------------ BEAMER ------------------------------ */
+        public void ChargeBeamer(Room room) => ChargeRoom = room;
+        public bool CanFireBeamer() => ChargeRoom != null;
+        public Room? FireBeamer()
         {
-            ChargeRoom = room;
+            if (!CanFireBeamer()) throw new InvalidOperationException("ChargeRoom is null.");
+            GoNewRoom(ChargeRoom!);
+            return CurrentRoom;
         }
 
-        /**
-         * If ChargeRoom has been set, return true.
-         * If ChargeRoom is null, return false.
-         */
-        public bool CanFireBeamer()
-        {
-            return ChargeRoom != null;
-        }
-        /**
-         * Check for available exits to the current room. 
-         * If there is no room, there are no exits.
-         */
         public string ExitsAvailable()
         {
-            if (CurrentRoom == null)
-            {
-                return "CurrentRoom is null. There are no exits, because you are not in a room!";
-            }
+            if (CurrentRoom == null) return "CurrentRoom is null. There are no exits, because you are not in a room!";
             return CurrentRoom.GetExitString();
         }
 
-        /**
-         * displays the toString from the room class.
-         */
-        public string GetRoomDescription()
+        /* ------------------------------ DROP / INVENTORY HELPERS ------------------------------ */
+        public string DropItem(string name)
         {
-            return CurrentRoom.ToString();
+            if (string.IsNullOrWhiteSpace(name)) return "this item isnt in your Backpack";
+
+            var item = GetItemFromInventory(name);
+            if (item == null) return "this item isnt in your Backpack";
+
+            // remove from inventory and place into room
+            Inventory.Remove(item);
+            CurrentRoom?.SetItem(name, item);
+            return name + " dropped";
         }
-        private bool CanCarry(Item item)
+
+        public Item? GetItemFromInventory(string itemName)
         {
-            bool canCarry = true;
-            int totalWeight = Backpack.GetTotalWeight() + item.Weight;
-            if (totalWeight > MaxWeight)
+            if (string.IsNullOrWhiteSpace(itemName)) return null;
+            return Inventory.FirstOrDefault(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private bool CanCarry(Item item) => (GetTotalWeight() + item.Weight) <= MaxWeight;
+
+        public void EquipItem()
+        {
+            HP += 101;
+        }
+
+        public string attack(string name)
+        {
+            var monster = CurrentRoom?.GetMonster(name);
+            if (monster == null) return "that monster is no monster in this room";
+
+            if (GetInventoryString().Contains("sword"))
             {
-                canCarry = false;
+                HP -= 100;
+                monster.TakeDamage(50);
+                return $"\nyou attacked the monster\nmonster HP: {monster.HP}\n the monster hit you back\nyour HP: {HP}";
             }
-            return canCarry;
+
+            return $" you dont have anything to attack {name} with";
         }
 
+        public bool gameOver() => HP == 0;
 
-        // MOVE TO GAME CLASS
-        /**
-         * Ends the game if player HP reaches 0
-         */
-        public bool gameOver()
-        {
-            return HP == 0;
-        }
-
-        /**
-         * Returns items in the inventory
-         */
         public string GetInventoryString()
         {
-            int totalWeight = Inventory?.GetTotalWeight() ?? 0;
-            return Inventory?.InventoryToString() + "\nweight: " + totalWeight + "/" + MaxWeight + "\nHP:" + HP;
+            var names = Inventory.Select(i => i.Name).ToArray();
+            var list = names.Length == 0 ? "Backpack is empty" : string.Join(", ", names);
+            return $"{list}\nweight: {GetTotalWeight()}/{MaxWeight}\nHP:{HP}";
         }
+
+        public int GetTotalWeight() => Inventory.Sum(w => w.Weight);
+
+        public string BeamerCharge()
+        {
+            ChargeRoom = CurrentRoom;
+            return "charged beamer";
+        }
+
+        public string BeamerFire()
+        {
+            if (ChargeRoom != null)
+            {
+                EnterRoom(ChargeRoom);
+                return "fired beamer:\n" + GetRoomDescription();
+            }
+            return "you have to charge the beamer first";
+        }
+
+        public string EnterRoom(Room nextRoom)
+        {
+            CurrentRoom = nextRoom;
+            return CurrentRoom.ToString();
+        }
+
+        public string GetRoomDescription() => CurrentRoom?.ToString() ?? "You are nowhere.";
     }
 }
-

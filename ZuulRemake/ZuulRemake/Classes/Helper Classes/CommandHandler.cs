@@ -121,7 +121,16 @@ namespace ZuulRemake.Classes
                 return;
             }
             string direction = command.GetSecondWord()!;
-            Console.WriteLine(player.GoNewRoom(direction));
+            if (player.GetCurrentRoom().TryGetExit(direction, out Room? nextRoom))
+            {
+                Console.WriteLine($"You go {direction}.");
+                player.SetCurrentRoom(nextRoom!);
+                Console.WriteLine(nextRoom!.GetLongDescription());
+            }
+            else
+            {
+                Console.WriteLine("There is no exit in that direction!");
+            }
         }
 
         /**
@@ -224,7 +233,8 @@ namespace ZuulRemake.Classes
 
         public void AttackMonster(string monsterName)
         {
-            if (!player.GetCurrentRoom().TryGetMonster(monsterName, out var monster) || monster is null)
+            var monster = player.GetCurrentRoom().GetMonster(monsterName);
+            if (monster is null)
             {
                 Console.WriteLine("There is no such monster here.");
                 return;
@@ -234,7 +244,6 @@ namespace ZuulRemake.Classes
 
             Console.WriteLine($"You attack the {monster.Name}!");
             Console.WriteLine($"{monster.Name} HP: {monster.HP}");
-
 
             if (!monster.IsAlive)
             {
