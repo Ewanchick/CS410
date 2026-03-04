@@ -45,7 +45,7 @@ namespace ZuulRemake.Classes
                 out bedroom,
                 out exit);
 
-            player.SetCurrentRoom(entryway);
+            player.GoNewRoom(entryway);
 
             ch = new CommandHandler(player, parser, entryway, kitchen, exit);
         }
