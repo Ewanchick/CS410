@@ -18,10 +18,6 @@ namespace ZuulRemake.Classes
         private readonly List<Item> Inventory = new();
         private readonly Stack<Room> PreviousRooms = new();
 
-        // REMOVE AFTER REVIEW w TEAM
-        // Sum iterates through a collection of ints and adds them.
-        // Handy in case we would forget to manually call Add or Remove.
-        // It's a derived property!! :D
         public int CarryWeight => Inventory.Sum(i => i.Weight);
         public int MaxWeight { get; private set; } = 2;
 
@@ -108,7 +104,7 @@ namespace ZuulRemake.Classes
         public string GoNewRoom(Room newRoom)
         {
             if (CurrentRoom != null) PreviousRooms.Push(CurrentRoom);
-            CurrentRoom = newRoom;            
+            CurrentRoom = newRoom;
             return CurrentRoom.ToString();
         }
 
