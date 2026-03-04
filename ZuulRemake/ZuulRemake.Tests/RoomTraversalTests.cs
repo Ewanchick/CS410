@@ -18,7 +18,7 @@ namespace ZuulRemake.Tests
             var dininghall = GetPrivateField<Room>(game, "dininghall");
 
             // Act
-            var result = player.GoNewRoom("north");
+            var result = player.GoNewRoom(entryway);
 
             // Assert
             Assert.Equal(dininghall, player.GetCurrentRoom());

@@ -29,12 +29,12 @@ namespace ZuulRemake.Classes
 
             if (exit == null) return "There is no exit that way.";
 
-            if (exit.IsLocked) return "The door is locked!";
+            if (exit.IsLocked) return "The door is locked! Use a key to unlock this door.";
 
             player.GoNewRoom(exit.TargetRoom);
 
-            return $"You move {direction}.\n{player.CurrentRoom.GetLongDescription()}";
+            return $"You move {direction}.\n" +
+                   $"{player.CurrentRoom.GetLongDescription()}";
         }
-
     }
 }
