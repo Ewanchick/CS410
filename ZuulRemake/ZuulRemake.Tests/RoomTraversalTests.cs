@@ -54,7 +54,7 @@ namespace ZuulRemake.Tests
 
             // Assert
             Assert.Equal(entryway, player.GetCurrentRoom());
-            Assert.Contains("entryway", result.GetShortDescription().ToLower());
+            Assert.Contains("entryway", result.GetNarrativeDescription().ToLower());
         }
 
         [Fact]
