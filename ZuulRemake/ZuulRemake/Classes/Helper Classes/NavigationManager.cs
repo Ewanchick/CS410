@@ -47,7 +47,7 @@ namespace ZuulRemake.Classes
          */
         public string HandleLockedDoor(Player player)
         {
-            StringBuilder str = new StringBuilder("The door is locked! A key will unlock it.\n");
+            StringBuilder str = new StringBuilder("The door is locked! A key will unlock it.");
             Item? key = player.GetItem("key");
 
             if (key != null)
