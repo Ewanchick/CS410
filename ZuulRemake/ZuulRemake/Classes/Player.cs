@@ -15,8 +15,9 @@ namespace ZuulRemake.Classes
      */
     public class Player : Entity
     {
-        private readonly List<Item> Inventory = new();
+        protected List<Item> Inventory = new();
         private readonly Stack<Room> PreviousRooms = new();
+        private readonly NavigationManager navigationManager = new();
 
         public int CarryWeight => Inventory.Sum(i => i.Weight);
         public int MaxWeight { get; private set; } = 2;
@@ -44,7 +45,7 @@ namespace ZuulRemake.Classes
             }
         }
 
-        /* ------------------------------ LEVEL ------------------------------ */
+        /* ------------------------------ LEVEL HP ------------------------------ */
 
         /**
         * Increases Player Level (damage dealt)
@@ -52,6 +53,10 @@ namespace ZuulRemake.Classes
         public void LevelUp(int lvl)
         {
             Level += lvl;
+        }
+        public void AddHp(int hp)
+        {
+            HP += hp;
         }
 
         /* ------------------------------ WEIGHT & INVENTORY ------------------------------ */
@@ -84,6 +89,21 @@ namespace ZuulRemake.Classes
         {
             return Inventory.Remove(item);
         }
+        public string ReadInventory()
+        {
+            return Inventory.ToString();
+        }
+        public Item? GetItem(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return null;
+            return Inventory.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public List<Item> GetItems()
+        {
+            return Inventory;
+        }
+
 
         /* -------------------------- ROOM NAVIGATION -------------------------- */
 
@@ -107,6 +127,7 @@ namespace ZuulRemake.Classes
             CurrentRoom = newRoom;
             return CurrentRoom.ToString();
         }
+
 
         /**
          * If there are previous rooms to return to, return true. If the 

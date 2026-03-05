@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -20,6 +21,7 @@ namespace ZuulRemake.Classes
         
  
         private CommandHandler ch;
+        private NavigationManager nH = new NavigationManager();
         
         public static void Main(string[] args)
         {
@@ -45,7 +47,7 @@ namespace ZuulRemake.Classes
                 out bedroom,
                 out exit);
 
-            player.SetCurrentRoom(entryway);
+            player.GoNewRoom(entryway);
 
             ch = new CommandHandler(player, parser, entryway, kitchen, exit);
         }
@@ -83,10 +85,10 @@ namespace ZuulRemake.Classes
 
             if (m.Drop != null)
             {
-                player.GetCurrentRoom().SetItem(m.Drop.Name.ToLower(), m.Drop);
+                player.GetCurrentRoom().AddItem(m.Drop);
                 Console.WriteLine($"{m.Name} dropped a {m.Drop.Name}!");
             }
-            player.GetCurrentRoom().RemoveMonster(m.Name);
+            player.GetCurrentRoom().RemoveMonster(m);
         }
 
 
@@ -117,7 +119,7 @@ namespace ZuulRemake.Classes
                     break;
                 }
 
-                if (player.gameOver())
+                if (player.HP == 0)
                 {
                     GameOver();
                     break;

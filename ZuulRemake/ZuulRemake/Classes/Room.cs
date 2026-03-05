@@ -9,37 +9,37 @@ namespace ZuulRemake.Classes
 {
     /**
      * This class represents a Room to which the Player can travel. A Room has a Name, 
-     * ShortDescriptions, and LongDescriptions. A Room can contain Items and Monsters, 
+     * NarrativeDescriptions, and LongDescriptions. A Room can contain Items and Monsters, 
      * and also contains a collection of Exits which are associated with directions.
      */
     public class Room
     {
         public string Name { get; }
-        public string ShortDescription { get; }
+        public string NarrativeDescription { get; }
         public string LongDescription { get; }
 
         private readonly List<Item> Items = new();
         private readonly List<Monster> Monsters = new();
         private readonly List<Exit> Exits = new();
 
-        public Room(string name, string shortDescription, string longDescription)
+        public Room(string name, string narrativeDescription, string longDescription)
         {
             Name = name;
-            ShortDescription = shortDescription;
+            NarrativeDescription = narrativeDescription;
             LongDescription = longDescription;
         }
 
         /* ------------------------------ INFORMATION ------------------------------ */
         /**
-         * Return a short string informing the Player of the room's Name and ShortDescription.
+         * Return a short string informing the Player of the room's Name and NarrativeDescription.
          */
         override public string ToString()
         {
-            return $"You are standing in the {Name}: {ShortDescription}";
+            return $"You are standing in the {Name}:";
         }
 
         /**
-         * Return a longer message detailing the room's Name and ShortDescription, as well as 
+         * Return a longer message detailing the room's Name and NarrativeDescription, as well as 
          * any Monsters, Items, or Exits in the room.
          */
         public string GetLongDescription()
