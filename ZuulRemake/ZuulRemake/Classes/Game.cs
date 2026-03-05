@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -20,6 +21,7 @@ namespace ZuulRemake.Classes
         
  
         private CommandHandler ch;
+        private NavigationManager nH = new NavigationManager();
         
         public static void Main(string[] args)
         {

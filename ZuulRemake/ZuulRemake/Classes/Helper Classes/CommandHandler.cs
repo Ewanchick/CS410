@@ -12,8 +12,8 @@ namespace ZuulRemake.Classes
     {
         private readonly Player player;
         private readonly Parser parser;
-        private readonly WorldBuilder worldBuilder;
-        private readonly NavigationManager navigationManager;
+        private readonly WorldBuilder worldBuilder = new WorldBuilder();
+        private readonly NavigationManager navigationManager = new NavigationManager();
 
         private readonly Room entryway, kitchen, exit;
 
@@ -50,10 +50,6 @@ namespace ZuulRemake.Classes
 
                 case CommandWord.LOOK:
                     Look(command);
-                    return false;
-
-                case CommandWord.TAKE:
-                    Take(command);
                     return false;
 
                 case CommandWord.INVENTORY:
@@ -135,19 +131,6 @@ namespace ZuulRemake.Classes
             Console.WriteLine(player.GetCurrentRoom().GetLongDescription());
         }
 
-        /**
-         * prints the take item command from the player class
-         */
-        private void Take(Command command)
-        {
-            if (!command.HasSecondWord())
-            {
-                Console.WriteLine("what would you like to take?");
-                return;
-            }
-            string name = command.GetSecondWord()!;
-            Console.WriteLine(player.TakeItem(name));
-        }
 
         /**
          * uses the items in the inventory, if the player has a key they can unlock the door, if they have a lantern they will light the room in the kitchen
@@ -166,10 +149,10 @@ namespace ZuulRemake.Classes
             switch (item.ToLower())
             {
                 case "key":
-                    if (player.Inventory.Contains("key") && player.GetCurrentRoom() == entryway)
+                    if (player.ReadInventory().Contains("key") && player.GetCurrentRoom() == entryway)
                     {
                         Console.WriteLine("you unlocked the door, go south to leave");
-                        entryway.SetExit("south", exit);
+                        entryway.GetExit("south").Unlock();
                     }
                     else
                     {
@@ -177,7 +160,7 @@ namespace ZuulRemake.Classes
                     }
                     break;
                 case "lantern":
-                    if (player.GetInventoryString().Contains("lantern") && player.GetCurrentRoom() == kitchen)
+                    if (player.ReadInventory().Contains("lantern") && player.GetCurrentRoom() == kitchen)
                     {
                         Console.WriteLine("you are in a nasty kitchen and see a sword lying on the ground");
                         Item sword = new Item("sword", "heavy sword, might be used to kill the dragon", 1, 10);
@@ -189,20 +172,23 @@ namespace ZuulRemake.Classes
                     }
                     break;
                 case "armour":
+                    if (player.ReadInventory().Contains("armour"))
                     {
-                        player.EquipItem();
-                        player.RemoveFromBackpack("armour");
+                        var i = player.GetItem("armor");
+                        player.AddHP(i.StatIncrease ?? 0);
+                        player.RemoveItem(i);
                         Console.WriteLine("you are now wearing the armour, this will help you last longer when fighting enemies.");
-                        Console.WriteLine(player.InventoryToString());
+                        Console.WriteLine(player.ReadInventory());
                     }
                     break;
                 case "potion":
                     {
-                        player.EquipItem();
-                        player.RemoveFromBackpack("potion");
+                        var i = player.GetItem("potion");
+                        player.AddHP(i.StatIncrease ?? 0);
+                        player.RemoveItem(i);
                         // do the actual health increase
                         Console.WriteLine("you took the potion and have increased your health");
-                        Console.WriteLine(player.GetInventoryString());
+                        Console.WriteLine(player.ReadInventory());
                     }
                     break;
                     //Could also add logic to check incase a non command word is used
@@ -264,8 +250,8 @@ namespace ZuulRemake.Classes
             }
 
             string name = command.GetSecondWord()!;
-
-            Console.WriteLine(player.DropItem(name));
+            var i = player.GetItem(name);
+            Console.WriteLine(player.RemoveItem(i));
         }
         /*
             * displays the items in the inventory of the player class using the
