@@ -91,6 +91,11 @@ namespace ZuulRemake.Classes
             return Inventory.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
+        public List<Item> GetItems()
+        {
+            return Inventory;
+        }
+
         /* -------------------------- ROOM NAVIGATION -------------------------- */
 
         /**
