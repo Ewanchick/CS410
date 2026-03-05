@@ -89,10 +89,12 @@ namespace ZuulRemake.Classes
         {
             return Inventory.Remove(item);
         }
+
         public string ReadInventory()
         {
             return Inventory.ToString();
         }
+
         public Item? GetItem(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return null;

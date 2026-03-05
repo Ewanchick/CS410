@@ -134,7 +134,7 @@ namespace ZuulRemake.Classes
         public void AddItem(Item item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
-            Items.Add(item);            
+            Items.Add(item);
         }
 
         /**

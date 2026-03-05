@@ -68,13 +68,23 @@ namespace ZuulRemake.Tests
 
             // Assert
             Assert.Equal(roomB, p.CurrentRoom);
-            Assert.Equal("The door is locked! Use a key to unlock this door.", attempt);        
+            Assert.Equal("The door is locked! A key will unlock it.", attempt);        
         }
 
         [Fact]
         public void PlayerCanUnlockExit()
         {
+            // Arrange
+            Item key = new Item("key", "", 0, null);
+            p.AddItem(key);
 
+            // Act
+            // player use key -> call unlock() on this exit
+            _nav.MovePlayer(p, "north");
+
+            // Assert
+            Assert.Equal(roomC, p.CurrentRoom);
+            Assert.DoesNotContain(key, p.GetItems());
         }
     }
 }
