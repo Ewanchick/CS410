@@ -67,6 +67,42 @@ namespace ZuulRemake.Classes
             Console.WriteLine($"Level: {m.Level} \n");
         }
 
+        /*
+         *Player should have the option to flee combat
+         *If the player's health is below max HP
+         *chance depends on Monster level
+         */
+        public static void Flee(Player p, Monster m)
+        {
+            if (p.HP < 100)
+            {
+                Console.WriteLine($"Would you like to flee the {m.Name}? Y/N");
+                string? action = Console.ReadLine()?.ToLower();
+                bool flee = action == "y";
+                if (flee)
+                {
+                    Random rnd = new();
+                    if (m.Level > 10)
+                    {
+                        if (rnd.Next(50) > 30)
+                        {
+                            EndBattle(p, m);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{m.Name} Level too high, try again");
+                            MonsterAttack(p, m);
+                        }
+                    }
+                    else
+                    {
+                        EndBattle(p, m);
+                    }
+                }
+            }
+        }
+
+
         /**
          * End combat between a Player and Monster. If the Player has lost all HP, print a message informing 
          * them of their defeat. If the monster has lost all HP, inform the player of their success. 
