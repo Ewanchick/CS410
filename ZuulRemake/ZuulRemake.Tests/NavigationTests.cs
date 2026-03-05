@@ -74,6 +74,14 @@ namespace ZuulRemake.Tests
         [Fact]
         public void PlayerCanUnlockExit()
         {
+            // Arrange
+            Item key = new Item("key", "", 0, null);
+            p.AddItem(key);
+
+            // Act
+
+
+            // Assert
 
         }
     }

@@ -85,6 +85,12 @@ namespace ZuulRemake.Classes
             return Inventory.Remove(item);
         }
 
+        public Item? GetItem(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return null;
+            return Inventory.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
         /* -------------------------- ROOM NAVIGATION -------------------------- */
 
         /**
