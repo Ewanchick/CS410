@@ -83,10 +83,10 @@ namespace ZuulRemake.Classes
 
             if (m.Drop != null)
             {
-                player.GetCurrentRoom().SetItem(m.Drop.Name.ToLower(), m.Drop);
+                player.GetCurrentRoom().AddItem(m.Drop);
                 Console.WriteLine($"{m.Name} dropped a {m.Drop.Name}!");
             }
-            player.GetCurrentRoom().RemoveMonster(m.Name);
+            player.GetCurrentRoom().RemoveMonster(m);
         }
 
 
@@ -117,7 +117,7 @@ namespace ZuulRemake.Classes
                     break;
                 }
 
-                if (player.gameOver())
+                if (player.HP == 0)
                 {
                     GameOver();
                     break;

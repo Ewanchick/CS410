@@ -12,6 +12,8 @@ namespace ZuulRemake.Classes
     {
         private readonly Player player;
         private readonly Parser parser;
+        private readonly WorldBuilder worldBuilder;
+        private readonly NavigationManager navigationManager;
 
         private readonly Room entryway, kitchen, exit;
 
@@ -40,7 +42,7 @@ namespace ZuulRemake.Classes
                     return false;
 
                 case CommandWord.GO:
-                    GoRoom(command);
+                    navigationManager.MovePlayer(player,command.GetSecondWord());
                     return false;
 
                 case CommandWord.QUIT:
@@ -108,21 +110,6 @@ namespace ZuulRemake.Classes
             parser.ShowCommands();
         }
 
-        /** 
-         * Try to go in one direction. If there is an exit, enter
-         * the new room, otherwise print an error message.
-         */
-        private void GoRoom(Command command)
-        {
-            if (!command.HasSecondWord())
-            {
-                // if there is no second word, we don't know where to go...
-                Console.WriteLine("Go where?");
-                return;
-            }
-            string direction = command.GetSecondWord()!;
-            Console.WriteLine(player.GoNewRoom(direction));
-        }
 
         /**
          * take player back to previous room they were in.
@@ -179,7 +166,7 @@ namespace ZuulRemake.Classes
             switch (item.ToLower())
             {
                 case "key":
-                    if (player.GetInventoryString().Contains("key") && player.GetCurrentRoom() == entryway)
+                    if (player.Inventory.Contains("key") && player.GetCurrentRoom() == entryway)
                     {
                         Console.WriteLine("you unlocked the door, go south to leave");
                         entryway.SetExit("south", exit);
@@ -194,7 +181,7 @@ namespace ZuulRemake.Classes
                     {
                         Console.WriteLine("you are in a nasty kitchen and see a sword lying on the ground");
                         Item sword = new Item("sword", "heavy sword, might be used to kill the dragon", 1, 10);
-                        kitchen.SetItem("sword", sword);
+                        kitchen.AddItem(sword);
                     }
                     else
                     {
@@ -206,7 +193,7 @@ namespace ZuulRemake.Classes
                         player.EquipItem();
                         player.RemoveFromBackpack("armour");
                         Console.WriteLine("you are now wearing the armour, this will help you last longer when fighting enemies.");
-                        Console.WriteLine(player.GetInventoryString());
+                        Console.WriteLine(player.InventoryToString());
                     }
                     break;
                 case "potion":
@@ -224,12 +211,12 @@ namespace ZuulRemake.Classes
 
         public void AttackMonster(string monsterName)
         {
-            if (!player.GetCurrentRoom().TryGetMonster(monsterName, out var monster) || monster is null)
+            if (player.GetCurrentRoom().GetMonster(monsterName) == null)
             {
                 Console.WriteLine("There is no such monster here.");
                 return;
             }
-
+            Monster monster = player.GetCurrentRoom().GetMonster(monsterName);
             monster.TakeDamage(player.Level);
 
             Console.WriteLine($"You attack the {monster.Name}!");
@@ -242,10 +229,10 @@ namespace ZuulRemake.Classes
 
                 if (monster.Drop != null)
                 {
-                    player.GetCurrentRoom().SetItem(monster.Drop.Name, monster.Drop);
+                    player.GetCurrentRoom().AddItem(monster.Drop);
                     Console.WriteLine($"{monster.Name} dropped a {monster.Drop.Name}!");
                 }
-                player.GetCurrentRoom().RemoveMonster(monsterName);
+                player.GetCurrentRoom().RemoveMonster(monster);
             }
         }
     
@@ -286,7 +273,7 @@ namespace ZuulRemake.Classes
         */
         private void Inventory()
         {
-            Console.WriteLine("you are currently holding: " + player.GetInventoryString());
+            Console.WriteLine("you are currently holding: " + player.ReadInventory());
         }
 
 

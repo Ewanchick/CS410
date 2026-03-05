@@ -17,6 +17,7 @@ namespace ZuulRemake.Classes
     {
         private readonly List<Item> Inventory = new();
         private readonly Stack<Room> PreviousRooms = new();
+        private readonly NavigationManager navigationManager = new();
 
         // REMOVE AFTER REVIEW w TEAM
         // Sum iterates through a collection of ints and adds them.
@@ -88,6 +89,10 @@ namespace ZuulRemake.Classes
         {
             return Inventory.Remove(item);
         }
+        public string ReadInventory()
+        {
+            return Inventory.ToString();
+        }
 
         /* -------------------------- ROOM NAVIGATION -------------------------- */
 
@@ -111,6 +116,7 @@ namespace ZuulRemake.Classes
             CurrentRoom = newRoom;            
             return CurrentRoom.ToString();
         }
+
 
         /**
          * If there are previous rooms to return to, return true. If the 
