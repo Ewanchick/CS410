@@ -37,7 +37,6 @@ namespace ZuulRemake.Classes
         {
             return $"You are standing in the {Name}:";
         }
-        public string 
 
         /**
          * Return a longer message detailing the room's Name and NarrativeDescription, as well as 

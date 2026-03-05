@@ -17,6 +17,7 @@ namespace ZuulRemake.Classes
     {
         private readonly List<Item> Inventory = new();
         private readonly Stack<Room> PreviousRooms = new();
+        private readonly NavigationManager navigationManager = new();
 
         public int CarryWeight => Inventory.Sum(i => i.Weight);
         public int MaxWeight { get; private set; } = 2;
@@ -84,6 +85,10 @@ namespace ZuulRemake.Classes
         {
             return Inventory.Remove(item);
         }
+        public string ReadInventory()
+        {
+            return Inventory.ToString();
+        }
 
         public Item? GetItem(string name)
         {
@@ -118,6 +123,7 @@ namespace ZuulRemake.Classes
             CurrentRoom = newRoom;
             return CurrentRoom.ToString();
         }
+
 
         /**
          * If there are previous rooms to return to, return true. If the 
