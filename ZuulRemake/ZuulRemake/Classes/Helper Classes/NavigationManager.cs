@@ -31,13 +31,16 @@ namespace ZuulRemake.Classes
 
             if (exit.IsLocked)
             {
-                HandleLockedDoor(player);
+                return HandleLockedDoor(player);
             }
+            else
+            {
+                player.GoNewRoom(exit.TargetRoom);
 
-            player.GoNewRoom(exit.TargetRoom);
-
-            return $"You move {direction}.\n" +
-                   $"{player.CurrentRoom.GetLongDescription()}";
+                return $"You move {direction}.\n" +
+                       $"{player.CurrentRoom.GetLongDescription()}";
+            }
+                
         }
 
         /**

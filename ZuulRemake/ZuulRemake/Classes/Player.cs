@@ -91,7 +91,7 @@ namespace ZuulRemake.Classes
         }
         public string ReadInventory()
         {
-            return Inventory.ToString();
+            return string.Join(", ", Inventory);
         }
         public Item? GetItem(string name)
         {
