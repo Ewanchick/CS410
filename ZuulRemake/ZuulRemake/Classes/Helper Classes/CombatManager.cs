@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ZuulRemake.Classes
+﻿namespace ZuulRemake.Classes
 {
     /**
      * This class manages combat between a Player and a Monster. It is responsible for starting 
@@ -19,23 +12,42 @@ namespace ZuulRemake.Classes
       */
         public static void StartBattle(Player p, Monster m)
         {
-            while (p.IsAlive || m.IsAlive)
+            while (p.IsAlive && m.IsAlive)
             {
                 PrintPlayerAndMonsterStats(p, m);
-                Console.WriteLine($"Will you attack the {m.Name}? Y/N");
+
+                Console.WriteLine($"Woulf you like to Attack or Flee the {m.Name}? (A/F)");
                 string? action = Console.ReadLine()?.ToLower();
-                bool attack = action == "y";                
-                if (attack)
+
+                if (action == "a")
                 {
-                    Console.WriteLine("You have chosen to attack.");
                     PlayerAttack(p, m);
+                    if (m.IsAlive)
+                    {
+                        MonsterAttack(p, m);
+                    }
+                }
+                else if (action == "f")
+                {
+                    bool escaped = Flee(p, m);
+                    if (escaped)
+                    {
+                        Console.WriteLine($"You escaped from the {m.Name}!");
+                        return;
+                    }
+                    else
+                    {
+                        MonsterAttack(p, m);
+                    }
+                    
                 }
                 else
                 {
-                    Console.WriteLine("You have chosen not to attack...");
+                    Console.WriteLine("You hesitate...");
+                    MonsterAttack(p, m);
                 }
-                MonsterAttack(p, m);
             }
+            EndBattle(p, m);
         }
 
         /**
@@ -63,7 +75,7 @@ namespace ZuulRemake.Classes
         {
             Console.WriteLine($"{p.Name}'s HP: {p.HP}");
             Console.WriteLine($"Level: {p.Level} \n");
-            Console.WriteLine($"The {m.Name}'s HP: {p.HP}");
+            Console.WriteLine($"The {m.Name}'s HP: {m.HP}");
             Console.WriteLine($"Level: {m.Level} \n");
         }
 
@@ -72,36 +84,34 @@ namespace ZuulRemake.Classes
          *If the player's health is below max HP
          *chance depends on Monster level
          */
-        public static void Flee(Player p, Monster m)
+        public static bool Flee(Player p, Monster m)
         {
-            if (p.HP < 100)
-            {
-                Console.WriteLine($"Would you like to flee the {m.Name}? Y/N");
-                string? action = Console.ReadLine()?.ToLower();
-                bool flee = action == "y";
-                if (flee)
-                {
-                    Random rnd = new();
-                    if (m.Level > 10)
-                    {
-                        if (rnd.Next(50) > 30)
-                        {
-                            EndBattle(p, m);
-                        }
-                        else
-                        {
-                            Console.WriteLine($"{m.Name} Level too high, try again");
-                            MonsterAttack(p, m);
-                        }
-                    }
-                    else
-                    {
-                        EndBattle(p, m);
-                    }
-                }
-            }
-        }
+            Random random = new Random();
 
+            //base flee chance is 75
+            //harder to flee from higher level monsrters
+            int fleeChance = 75 - (m.Level * 5);
+
+            //keep the chance within a reasonable range
+            if (fleeChance < 20)
+                fleeChance = 20;
+
+            if (fleeChance > 90)
+                fleeChance = 90;
+
+            int roll = random.Next(1, 101);//roll from 1 - 100
+
+            Console.WriteLine($"You try to flee from the {m.Name}...");
+            Console.WriteLine($"Escape chance: {fleeChance}%");
+            Console.WriteLine($"You Rolled: {roll}");
+
+            if (roll <= fleeChance)
+            {
+                return true;
+            }
+            Console.WriteLine("You failed to escape!");
+            return false;
+                }
 
         /**
          * End combat between a Player and Monster. If the Player has lost all HP, print a message informing 

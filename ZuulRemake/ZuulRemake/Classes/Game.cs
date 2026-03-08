@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -17,10 +18,11 @@ namespace ZuulRemake.Classes
         private readonly Parser parser;
         private readonly Player player;
         private Room entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit;
-        
- 
+
+
         private CommandHandler ch;
-        
+        private NavigationManager nH = new NavigationManager();
+
         public static void Main(string[] args)
         {
             var game = new Game();
@@ -34,7 +36,7 @@ namespace ZuulRemake.Classes
         public Game()
         {
             parser = new Parser();
-            player = new Player("Player",100, 10);
+            player = new Player("Player", 100, 10);
             Room startRoom = WorldBuilder.Build(
                 out entryway,
                 out dininghall,
@@ -45,12 +47,12 @@ namespace ZuulRemake.Classes
                 out bedroom,
                 out exit);
 
-            player.SetCurrentRoom(entryway);
+            player.GoNewRoom(entryway);
 
             ch = new CommandHandler(player, parser, entryway, kitchen, exit);
         }
 
-        
+
 
         /**
          * Initiates a battle between player and monster, continously prompting for input and 
@@ -83,10 +85,10 @@ namespace ZuulRemake.Classes
 
             if (m.Drop != null)
             {
-                player.GetCurrentRoom().SetItem(m.Drop.Name.ToLower(), m.Drop);
+                player.GetCurrentRoom().AddItem(m.Drop);
                 Console.WriteLine($"{m.Name} dropped a {m.Drop.Name}!");
             }
-            player.GetCurrentRoom().RemoveMonster(m.Name);
+            player.GetCurrentRoom().RemoveMonster(m);
         }
 
 
@@ -117,7 +119,7 @@ namespace ZuulRemake.Classes
                     break;
                 }
 
-                if (player.gameOver())
+                if (player.HP == 0)
                 {
                     GameOver();
                     break;
@@ -140,14 +142,17 @@ namespace ZuulRemake.Classes
             Console.WriteLine();
             Console.WriteLine("Welcome to the World of Zuul!\n");
             Console.Write("Please enter your name: ");
+
             string? name = Console.ReadLine();
-            do
+            
+                
+            while (string.IsNullOrWhiteSpace(name))
             {
                 Console.Write("Invalid input. Please enter your name: ");
                 name = Console.ReadLine();
-            } while (string.IsNullOrWhiteSpace(name));
+            }
 
-            name = player.Name;
+            player.Name = name;
 
             Console.WriteLine("Greetings, " + player.Name);
             Console.WriteLine("You have awoken in a very dark castle with no memory of how you got here. \n" +

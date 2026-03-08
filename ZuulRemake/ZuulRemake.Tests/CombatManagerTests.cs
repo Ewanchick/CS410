@@ -6,7 +6,7 @@ using Xunit;
 
 namespace ZuulRemake.Tests
 {
-    
+
     public class CombatManagerTests
     {
         /**
@@ -64,29 +64,29 @@ namespace ZuulRemake.Tests
 
             //Assert
             Assert.Equal(0, e.HP);
-            Assert.False( e.IsAlive);
+            Assert.False(e.IsAlive);
         }
         [Fact]
         public void MonsterDropsItemOnDeath()
         {
             // Arrange
-            var room = new Room("Dungeon");
-            var monster = new Monster("Goblin", hp: 10, level: 1, drop: new Item("Gold","Shiny", 1,0));
-            room.SetMonster(monster.Name, monster);
+            var room = new Room("TestRoom", "This Room is a test", "This room is a test");
+            var monster = new Monster("Goblin", hp: 10, level: 1, drop: new Item("Gold", "Shiny", 1, 0));
+            room.AddMonster(monster);
 
             var player = new Player("Hero");
-            player.CurrentRoom = room;
+            player.GoNewRoom(room);
 
             // Act - simulate killing monster
             monster.TakeDamage(20); // More than HP so it dies
             if (!monster.IsAlive && monster.Drop != null)
             {
-                room.SetItem(monster.Drop.Name, monster.Drop);
+                room.AddItem(monster.Drop);
             }
 
             // Assert
             Assert.False(monster.IsAlive);
-            Assert.Contains("gold", room.GetRoomItems().ToLower());
+            Assert.Contains("Gold", room.GetItems());
         }
     }
 }

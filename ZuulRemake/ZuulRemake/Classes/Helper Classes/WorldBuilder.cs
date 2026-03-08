@@ -22,19 +22,19 @@ namespace ZuulRemake.Classes
         {
             // create the rooms
             entryway = new Room("Entryway", "You enter into the entry way of the castle dim lights", " ");
-            dininghall = new Room("Dining Hall", "In a large dining hall, you see a" + dining. on the floor and a ballroom to your right",);
-            ballroom = new Room("Ballroom", "In the ballroom, you find armour in the middle of the floor");
-            kitchen = new Room("Kicthen","You step into the damp, musty kitchen. It is much too dark to see any",);
-            bathroom = new Room("Bathroom", "");
-            dungeon = new Room("In the dungeon, there is a large dragon guarding the key to the exit");
-            bedroom = new Room("In a very large bedroom, nothing interesting in here.");
-            exit = new Room("You made it, you escaped the castle and are now free!");
+            dininghall = new Room("Dining Hall", "In a large dining hall, you see a", " ");
+            ballroom = new Room("Ballroom", "In the ballroom, you find armour in the middle of the floor", " ");
+            kitchen = new Room("Kicthen", "You step into the damp, musty kitchen. It is much too dark to see any", " ");
+            bathroom = new Room("Bathroom", "As you enter the bathroom you a pair of bloodshot eyes glaring at you from the darkness", " ");
+            dungeon = new Room("Dungeon", "In the dungeon, there is a large dragon guarding the key to the exit", " ");
+            bedroom = new Room("Bedroom", "In a very large bedroom, nothing interesting in here.", " ");
+            exit = new Room("Exit", "You made it, you escaped the castle and are now free!", " ");
 
             // initialise room exits
             entryway.AddExit("north", dininghall, false);
             entryway.AddExit("east", kitchen, false);
             entryway.AddExit("west", bedroom, false);
-            entryway.AddExit("down", dungeon, false);
+            entryway.AddExit("south", dungeon, true);
 
             dininghall.AddExit("east", ballroom, false);
             dininghall.AddExit("south", entryway, false);

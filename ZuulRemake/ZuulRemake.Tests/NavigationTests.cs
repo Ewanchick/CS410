@@ -34,7 +34,7 @@ namespace ZuulRemake.Tests
         public void PlayerCanExitRoomTest()
         {
             // Arrange
-            p.GoNewRoom(roomA); 
+            p.GoNewRoom(roomA);
 
             // Act
             _nav.MovePlayer(p, "north");
@@ -68,14 +68,26 @@ namespace ZuulRemake.Tests
 
             // Assert
             Assert.Equal(roomB, p.CurrentRoom);
-            Assert.Equal("The door is locked! Use a key to unlock this door.", attempt);        
+            Assert.Equal("The door is locked! A key will unlock it." + "Come back and try again when you have found a key. ", attempt);
         }
+        /*
+         *   [Fact]
+                public void PlayerCanUnlockExit()
+                {
+                    // Arrange
+                    p.GoNewRoom(roomB);
+                    Item key = new Item("key", "", 0, null);
+                    p.AddItem(key);
 
-        [Fact]
-        public void PlayerCanUnlockExit()
-        {
+                    // Act
+                    // player use key -> call unlock() on this exit
+                    _nav.MovePlayer(p, "north");
 
-        }
+                    // Assert
+                    Assert.Equal(roomC, p.CurrentRoom);
+                    Assert.DoesNotContain(key, p.GetItems());
+                }
+         */
+
     }
 }
-
