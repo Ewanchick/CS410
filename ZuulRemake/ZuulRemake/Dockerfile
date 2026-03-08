@@ -16,7 +16,7 @@ COPY ["ZuulRemake/ZuulRemake/ZuulRemake.csproj", "ZuulRemake/ZuulRemake/"]
 COPY ["ZuulRemake/ZuulRemake.Tests/ZuulRemake.Tests.csproj", "ZuulRemake/ZuulRemake.Tests/"]
 
 RUN dotnet restore "ZuulRemake/ZuulRemake/ZuulRemake.csproj"
-RUN dotnet restore "ZuulRemake.Tests/ZuulRemake.Tests.csproj"
+RUN dotnet restore "ZuulRemake/ZuulRemake.Tests/ZuulRemake.Tests.csproj"
 
 COPY . .
 
