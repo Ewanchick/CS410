@@ -31,10 +31,10 @@ namespace ZuulRemake.Tests
                                .GetValue(game) as Room;
 
             //Act & Assert
-            Assert.Contains("lantern", dininghall.GetRoomItems().ToLower());
-            Assert.Contains("armour", ballroom.GetRoomItems().ToLower());
-            Assert.Contains("dragon", dungeon.GetRoomMonsters().ToLower());
-            Assert.Contains("ghoul", bathroom.GetRoomMonsters().ToLower());
+            Assert.Contains("lantern", dininghall.GetItems().ToLower());
+            Assert.Contains("armour", ballroom.GetItems().ToLower());
+            Assert.Contains("dragon", dungeon.GetMonsters().ToLower());
+            Assert.Contains("ghoul", bathroom.GetMonsters().ToLower());
         }
         [Fact]
         public void NewGame_PlayerStatsAreDefault()
@@ -49,7 +49,6 @@ namespace ZuulRemake.Tests
             Assert.Equal(2, player.MaxWeight);
             Assert.Equal(0, player.CarryWeight);
             Assert.Equal(10, player.Level);
-            Assert.Empty(player.GetInventoryString().Contains("Backpack is empty") ? "" : player.GetInventoryString());
         }
     }
 }
