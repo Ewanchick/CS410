@@ -27,7 +27,7 @@ RUN dotnet build "ZuulRemake.csproj" -c $BUILD_CONFIGURATION -o /app/build
 # Run unit tests
 FROM build AS test
 WORKDIR "/src/ZuulRemake/ZuulRemake.Tests"
-RUN dotnet test "ZuulRemake.Tests.csproj" -c Release --no-build --verbosity normal
+RUN dotnet test "ZuulRemake.Tests.csproj" -c Release --verbosity normal
 
 
 # This stage is used to publish the service project
