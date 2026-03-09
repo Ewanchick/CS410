@@ -167,7 +167,8 @@ namespace ZuulRemake.Classes
                 return;
             }
             string name = command.GetSecondWord()!;
-            Item item = _player.GetCurrentRoom().GetItem(command.GetSecondWord()!)!;
+
+            Item item = _player.CurrentRoom!.GetItem(name)!;
             if (item == null)
             {
                 Console.WriteLine($"there is no '{name}' in this room.");
