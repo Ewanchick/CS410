@@ -22,7 +22,7 @@ namespace ZuulRemake.Classes
 
         private CommandHandler ch;
         private NavigationManager nH = new NavigationManager();
-
+        
         public static void Main(string[] args)
         {
             var game = new Game();
@@ -141,27 +141,35 @@ namespace ZuulRemake.Classes
         {
             Console.WriteLine();
             Console.WriteLine("Welcome to the World of Zuul!\n");
-            Console.Write("Please enter your name: ");
 
-            string? name = Console.ReadLine();
-            
-                
+            string? name = null;
             while (string.IsNullOrWhiteSpace(name))
             {
-                Console.Write("Invalid input. Please enter your name: ");
+                Console.Write("Please enter your name: ");
                 name = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(name))
+                    Console.WriteLine("Invalid input. Please enter your name:");
             }
 
-            player.Name = name;
+            // FIX: apply the typed name to the player
+            player.Name = name.Trim();
 
-            Console.WriteLine("Greetings, " + player.Name);
-            Console.WriteLine("You have awoken in a very dark castle with no memory of how you got here. \n" +
-                              "Upon attempting to leave, you find that the front door is locked. \n" +
-                              "You need to find its key in order to escape this place... but beware! \n" +
-                              "Danger lurks around every corner.");
+            Console.WriteLine($"Greetings, {player.Name}!");
+            Console.WriteLine("You have awoken in a very dark castle with no memory of how you got here.");
+            Console.WriteLine("Upon attempting to leave, you find that the front door is locked.");
+            Console.WriteLine("You need to find its key in order to escape... but beware!");
+            Console.WriteLine("Danger lurks around every corner.");
             Console.WriteLine("(Type 'help' at any time to display available commands.)");
             Console.WriteLine();
-            Console.WriteLine(player.GetCurrentRoom());
+
+            try
+            {
+                Console.WriteLine(player.GetCurrentRoom().GetLongDescription());
+            }
+            catch (NoCurrentRoomException ex)
+            {
+                Console.WriteLine($"Error loading starting room: {ex.Message}");
+            }
         }
 
         // We can probably get rid of these two methods and just do an if-then in the game loop

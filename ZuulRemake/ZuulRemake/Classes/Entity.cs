@@ -14,21 +14,31 @@ namespace ZuulRemake.Classes
 
         public bool IsAlive => HP > 0;
 
-        public Entity(string name, int hp, int level)
+        protected Entity(string name, int hp, int level)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Entity name cannot be null.");
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Entity name cannot be empty or whitespace.", nameof(name));
+            if (level < 1)
+                throw new ArgumentOutOfRangeException(nameof(level), "Level must be at least 1.");
+
+            Name = name;
             HP = hp;
             Level = level;
         }
 
         public virtual void TakeDamage(int damage)
         {
+            if (damage < 0)
+                throw new ArgumentOutOfRangeException(nameof(damage), "Damage cannot be negative.");
             HP -= damage;
-            if (HP < 0) HP = 0;
         }
 
         public virtual void AddHP(int amount)
         {
+            if (amount < 0)
+                throw new ArgumentOutOfRangeException(nameof(amount), "Heal amount cannot be negative.");
             HP += amount;
         }
 

@@ -68,7 +68,7 @@ namespace ZuulRemake.Tests
 
             // Assert
             Assert.Equal(roomB, p.CurrentRoom);
-            Assert.Equal("The door is locked! A key will unlock it." + "Come back and try again when you have found a key. ", attempt);
+            Assert.Equal("The door is locked! A key will unlock it." + "Come back and try again when you have found a key. ", attempt);        
         }
         /*
          *   [Fact]
@@ -88,6 +88,9 @@ namespace ZuulRemake.Tests
                     Assert.DoesNotContain(key, p.GetItems());
                 }
          */
+
+    }
+}
 
     }
 }

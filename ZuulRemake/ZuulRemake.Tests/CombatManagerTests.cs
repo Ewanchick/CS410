@@ -70,8 +70,8 @@ namespace ZuulRemake.Tests
         public void MonsterDropsItemOnDeath()
         {
             // Arrange
-            var room = new Room("TestRoom", "This Room is a test", "This room is a test");
-            var monster = new Monster("Goblin", hp: 10, level: 1, drop: new Item("Gold", "Shiny", 1, 0));
+            var room = new Room("TestRoom","This Room is a test", "This room is a test");
+            var monster = new Monster("Goblin", hp: 10, level: 1, drop: new Item("Gold","Shiny", 1,0));
             room.AddMonster(monster);
 
             var player = new Player("Hero");

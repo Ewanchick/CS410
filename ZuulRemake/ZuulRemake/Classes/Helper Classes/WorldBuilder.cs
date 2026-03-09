@@ -22,13 +22,13 @@ namespace ZuulRemake.Classes
         {
             // create the rooms
             entryway = new Room("Entryway", "You enter into the entry way of the castle dim lights", " ");
-            dininghall = new Room("Dining Hall", "In a large dining hall, you see a", " ");
+            dininghall = new Room("Dining Hall", "In a large dining hall, you see a" ," ");
             ballroom = new Room("Ballroom", "In the ballroom, you find armour in the middle of the floor", " ");
-            kitchen = new Room("Kicthen", "You step into the damp, musty kitchen. It is much too dark to see any", " ");
-            bathroom = new Room("Bathroom", "As you enter the bathroom you a pair of bloodshot eyes glaring at you from the darkness", " ");
+            kitchen = new Room("Kicthen","You step into the damp, musty kitchen. It is much too dark to see any", " ");
+            bathroom = new Room("Bathroom","As you enter the bathroom you a pair of bloodshot eyes glaring at you from the darkness", " ");
             dungeon = new Room("Dungeon", "In the dungeon, there is a large dragon guarding the key to the exit", " ");
-            bedroom = new Room("Bedroom", "In a very large bedroom, nothing interesting in here.", " ");
-            exit = new Room("Exit", "You made it, you escaped the castle and are now free!", " ");
+            bedroom = new Room("Bedroom", "In a very large bedroom, nothing interesting in here."," ");
+            exit = new Room("Exit","You made it, you escaped the castle and are now free!"," ");
 
             // initialise room exits
             entryway.AddExit("north", dininghall, false);

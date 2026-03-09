@@ -1,4 +1,5 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+# See https://aka.ms/customizecontainer to learn how to customize your debug container 
+# and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/runtime:9.0 AS base
@@ -10,19 +11,35 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
 COPY ["ZuulRemake/ZuulRemake/ZuulRemake.csproj", "ZuulRemake/ZuulRemake/"]
+COPY ["ZuulRemake/ZuulRemake.Tests/ZuulRemake.Tests.csproj", "ZuulRemake/ZuulRemake.Tests/"]
+
 RUN dotnet restore "ZuulRemake/ZuulRemake/ZuulRemake.csproj"
+RUN dotnet restore "ZuulRemake/ZuulRemake.Tests/ZuulRemake.Tests.csproj"
+
 COPY . .
+
 WORKDIR "/src/ZuulRemake/ZuulRemake"
 RUN dotnet build "ZuulRemake.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
-FROM build AS publish
+
+# Run unit tests
+FROM build AS test
+WORKDIR "/src/ZuulRemake/ZuulRemake.Tests"
+RUN dotnet test "ZuulRemake.Tests.csproj" -c Release --verbosity normal
+
+
+# This stage is used to publish the service project
+FROM test AS publish
 ARG BUILD_CONFIGURATION=Release
+WORKDIR "/src/ZuulRemake/ZuulRemake"
 RUN dotnet publish "ZuulRemake.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+
+# Final runtime image
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
 ENTRYPOINT ["dotnet", "ZuulRemake.dll"]

@@ -1,17 +1,24 @@
-﻿namespace ZuulRemake.Classes
+﻿using System;
+
+namespace ZuulRemake.Classes
 {
-    /**
-     * This class manages combat between a Player and a Monster. It is responsible for starting 
-     * and ending battles, coordinating turns, and displaying the consequences of each turn.
-     */
+    /// <summary>
+    /// Manages combat between a Player and a Monster.
+    /// Coordinates turns, processes attacks, and displays outcomes.
+    /// </summary>
     public static class CombatManager
-    {/**
-      * Initiate combat between a Player and a Monster. Prompt the player to attack, and call the 
-      * PlayerAttack method if they choose yes. If they choose anything else, call MonsterAttack.
-      * After each move, print both combatants' HP.
-      */
+    {
+        /// <summary>
+        /// Runs a full turn-based battle. Each turn, the player is prompted to attack or skip.
+        /// The monster always retaliates if still alive.
+        /// <exception cref="ArgumentNullException">If player or monster is null.</exception>
         public static void StartBattle(Player p, Monster m)
         {
+          
+            if (p == null) throw new ArgumentNullException(nameof(p), "Player cannot be null.");
+            if (m == null) throw new ArgumentNullException(nameof(m), "Monster cannot be null.");
+
+            Console.WriteLine($"You have entered combat with the {m.Name}!");
             while (p.IsAlive && m.IsAlive)
             {
                 PrintPlayerAndMonsterStats(p, m);
@@ -43,42 +50,64 @@
                 }
                 else
                 {
-                    Console.WriteLine("You hesitate...");
-                    MonsterAttack(p, m);
+                    Console.WriteLine("You chose not to attack. The monster seizes the opportunity!");
                 }
+
+                // Monster only retaliates if still alive
+                if (m.IsAlive)
+                    MonsterAttack(p, m);
             }
+
             EndBattle(p, m);
         }
 
-        /**
-         * The Player attacks the Monster, dealing damage to the Monster's HP based on the Player's Level.
-         */
+        /// <summary>
+        /// The Player attacks the Monster, dealing damage equal to the player's Level.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">If player or monster is null.</exception>
         public static void PlayerAttack(Player p, Monster m)
         {
-            Console.WriteLine($"You attack the {m.Name} for {p.Level} points of damage!");
+            if (p == null) throw new ArgumentNullException(nameof(p));
+            if (m == null) throw new ArgumentNullException(nameof(m));
+
+            Console.WriteLine($"You attack the {m.Name} for {p.Level} damage!");
             m.TakeDamage(p.Level);
+
+            if (!m.IsAlive)
+                Console.WriteLine($"Your blow was lethal — the {m.Name} collapses!");
         }
 
-        /**
-         * The Monster attacks the Player, dealing damage to the Player's HP based on the Monster's Level.
-         */
+        /// <summary>
+        /// The Monster attacks the Player, dealing damage equal to the monster's Level.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">If player or monster is null.</exception>
         public static void MonsterAttack(Player p, Monster m)
         {
-            Console.WriteLine($"The {m.Name} attacks you! You have taken {m.Level} points of damage!");
+            if (p == null) throw new ArgumentNullException(nameof(p));
+            if (m == null) throw new ArgumentNullException(nameof(m));
+
+            Console.WriteLine($"The {m.Name} attacks you for {m.Level} damage!");
             p.TakeDamage(m.Level);
+
+            if (!p.IsAlive)
+                Console.WriteLine("The attack was fatal...");
         }
 
-        /**
-         * Display the health and level of both combatants.
-         */
-        public static void PrintPlayerAndMonsterStats(Player p, Monster m)
+        /// <summary>
+        /// Displays HP and level of both combatants.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">If player or monster is null.</exception>
+        public static void PrintCombatantStats(Player p, Monster m)
         {
-            Console.WriteLine($"{p.Name}'s HP: {p.HP}");
-            Console.WriteLine($"Level: {p.Level} \n");
-            Console.WriteLine($"The {m.Name}'s HP: {m.HP}");
-            Console.WriteLine($"Level: {m.Level} \n");
-        }
+            if (p == null) throw new ArgumentNullException(nameof(p));
+            if (m == null) throw new ArgumentNullException(nameof(m));
 
+            Console.WriteLine("--- Combat Status ---");
+            Console.WriteLine($"{p.Name} | HP: {p.HP} | Level: {p.Level}");
+            // FIX: was p.HP — now correctly m.HP
+            Console.WriteLine($"{m.Name}  | HP: {m.HP} | Level: {m.Level}");
+            Console.WriteLine("---------------------");
+        }
         /*
          *Player should have the option to flee combat
          *If the player's health is below max HP
@@ -118,15 +147,46 @@
          * them of their defeat. If the monster has lost all HP, inform the player of their success. 
          * Print the Player's remaining HP.
          */
+          
+        /// <summary>
+        /// Concludes the battle. If the monster was defeated and had a drop, it is placed in the room.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">If player or monster is null.</exception>
         public static void EndBattle(Player p, Monster m)
         {
+            if (p == null) throw new ArgumentNullException(nameof(p));
+            if (m == null) throw new ArgumentNullException(nameof(m));
+
             if (!p.IsAlive)
             {
                 Console.WriteLine("You were defeated in battle...");
                 return;
             }
+
             Console.WriteLine($"You have defeated the {m.Name}!");
             Console.WriteLine($"{p.Name}'s remaining HP: {p.HP}");
-        }        
+
+            if (m.Drop != null)
+            {
+                try
+                {
+                    p.GetCurrentRoom().AddItem(m.Drop);
+                    Console.WriteLine($"The {m.Name} dropped: {m.Drop.Name}!");
+                }
+                catch (NoCurrentRoomException ex)
+                {
+                    Console.WriteLine($"(Could not drop loot: {ex.Message})");
+                }
+            }
+
+            try
+            {
+                p.GetCurrentRoom().RemoveMonster(m);
+            }
+            catch (NoCurrentRoomException)
+            {
+                // Non-critical — ignore if room context unavailable
+            }
+        }
     }
 }

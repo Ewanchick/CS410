@@ -55,7 +55,7 @@ namespace ZuulRemake.Tests
             var player = new Player("Hero");
             player.GoNewRoom(room);
 
-            var sword = new Item("Sword", "heavy sword, might be used to kill the dragon", 1, 10);
+            var sword = new Item("Sword", "heavy sword, might be used to kill the dragon", 1,10);
             room.AddItem(sword);
 
             // Act - pick up item
