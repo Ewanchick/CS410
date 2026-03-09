@@ -151,7 +151,7 @@ namespace ZuulRemake.Classes
         public Item? GetItem(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return null;
-            return Items.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
+            return Items.FirstOrDefault(i => i.Name != null && i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         /* ---------------------- MONSTERS ---------------------- */
@@ -179,7 +179,7 @@ namespace ZuulRemake.Classes
         public Monster? GetMonster(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return null;
-            return Monsters.FirstOrDefault(m => m.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
+            return Monsters.FirstOrDefault(m => m.Name != null && m.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

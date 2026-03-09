@@ -186,6 +186,11 @@ namespace ZuulRemake.Classes
                 {
                     Console.WriteLine($"Could not take item: {ex.Message}");
                 }
+
+            }
+            else if (!_player.CanCarry(item))
+                {
+                Console.WriteLine("You're carrying too many items! drop what you dont need");
             }
         }
 

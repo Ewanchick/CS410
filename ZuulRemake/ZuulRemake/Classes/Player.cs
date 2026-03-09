@@ -30,7 +30,7 @@ namespace ZuulRemake.Classes
          */
         public Player(string name) : base(name, hp: 100, level: 100)
         { }
-        public Player(string name, int hp, int level) : base(name, 100, 10)
+        public Player(string name, int hp, int level) : base(name, 100, 50)
         { }
         public Player(string name, int hp, int level, IEnumerable<Item>? startingItems)
             : base(name, hp, level)
@@ -98,7 +98,7 @@ namespace ZuulRemake.Classes
         public Item? GetItem(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return null;
-            return Inventory.FirstOrDefault(i => i.Name != null && Equals(name, StringComparison.OrdinalIgnoreCase));
+            return Inventory.FirstOrDefault(i => i.Name != null && i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         public List<Item> GetItems()

@@ -34,7 +34,8 @@ namespace ZuulRemake.Classes
             entryway.AddExit("north", dininghall, false);
             entryway.AddExit("east", kitchen, false);
             entryway.AddExit("west", bedroom, false);
-            entryway.AddExit("south", dungeon, true);
+            entryway.AddExit("down", dungeon, false);
+            entryway.AddExit("south", exit, true);
 
             dininghall.AddExit("east", ballroom, false);
             dininghall.AddExit("south", entryway, false);
@@ -48,7 +49,7 @@ namespace ZuulRemake.Classes
             bathroom.AddExit("north", bedroom, false);
 
             // create the items
-            var sword = new Item("sword", "heavy sword, might be used to kill the dragon", 1, 10);
+            var sword = new Item("sword", "heavy sword, might be used to kill the dragon", 1, 50);
             var lantern = new Item("lantern", "used to light the dark rooms of the castle", 1, 0);
             var armour = new Item("armour", "protect yourself from the mighty dragon", 1, 20);
             var potion = new Item("Potion", "use this to increase your health!", 1, 50);
@@ -58,9 +59,10 @@ namespace ZuulRemake.Classes
             dininghall.AddItem(lantern);
             ballroom.AddItem(armour);
 
+
             // create the monsters
             var dragon = new Monster("dragon", 100, 10, key);
-            var ghoul = new Monster("ghoul", 50, 100, potion);
+            var ghoul = new Monster("ghoul", 100, 30, potion);
 
             dungeon.AddMonster(dragon);
             bathroom.AddMonster(ghoul);

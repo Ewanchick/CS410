@@ -36,7 +36,7 @@ namespace ZuulRemake.Classes
         public Game()
         {
             parser = new Parser();
-            player = new Player("Player", 100, 10);
+            player = new Player("Player", 100, 50);
             Room startRoom = WorldBuilder.Build(
                 out entryway,
                 out dininghall,

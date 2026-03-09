@@ -18,15 +18,19 @@ namespace ZuulRemake.Classes
             if (p == null) throw new ArgumentNullException(nameof(p), "Player cannot be null.");
             if (m == null) throw new ArgumentNullException(nameof(m), "Monster cannot be null.");
 
+            Console.WriteLine("____________________________________________");
+            Console.WriteLine("____________________________________________");
             Console.WriteLine($"You have entered combat with the {m.Name}!");
             while (p.IsAlive && m.IsAlive)
             {
                 PrintCombatantStats(p, m);
 
-                Console.WriteLine($"Woulf you like to Attack or Flee the {m.Name}? (A/F)");
+                Console.WriteLine($"Would you like to Attack or Flee the {m.Name}? (A/F)");
+                Console.WriteLine("____________________________________________");
+                Console.WriteLine("____________________________________________");
                 string? action = Console.ReadLine()?.ToLower();
 
-                if (action == "a")
+                if (action == "a".ToLower())
                 {
                     PlayerAttack(p, m);
                     if (m.IsAlive)
@@ -34,7 +38,7 @@ namespace ZuulRemake.Classes
                         MonsterAttack(p, m);
                     }
                 }
-                else if (action == "f")
+                else if (action == "f".ToLower())
                 {
                     bool escaped = Flee(p, m);
                     if (escaped)
@@ -52,10 +56,6 @@ namespace ZuulRemake.Classes
                 {
                     Console.WriteLine("You chose not to attack. The monster seizes the opportunity!");
                 }
-
-                // Monster only retaliates if still alive
-                if (m.IsAlive)
-                    MonsterAttack(p, m);
             }
 
             EndBattle(p, m);
@@ -69,12 +69,15 @@ namespace ZuulRemake.Classes
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
             if (m == null) throw new ArgumentNullException(nameof(m));
-
+            Console.WriteLine("____________________________________________");
+            Console.WriteLine("____________________________________________");
             Console.WriteLine($"You attack the {m.Name} for {p.Level} damage!");
             m.TakeDamage(p.Level);
 
             if (!m.IsAlive)
                 Console.WriteLine($"Your blow was lethal — the {m.Name} collapses!");
+            Console.WriteLine("____________________________________________");
+            Console.WriteLine("____________________________________________");
         }
 
         /// <summary>
@@ -170,8 +173,10 @@ namespace ZuulRemake.Classes
             {
                 try
                 {
-                    p.GetCurrentRoom().AddItem(m.Drop);
+                    p.CurrentRoom!.AddItem(m.Drop);
                     Console.WriteLine($"The {m.Name} dropped: {m.Drop.Name}!");
+                    Console.WriteLine("Room now contains:");
+                    Console.WriteLine(p.GetCurrentRoom().GetItems());
                 }
                 catch (NoCurrentRoomException ex)
                 {
