@@ -207,8 +207,7 @@ namespace ZuulRemake.Classes
                     Console.WriteLine($"You don't know how to use '{command.GetSecondWord()}'.");
                     break;
             }
-        }
-
+        }      
         private void UseKey()
         {
             Item? key = _player.GetItem("key");
@@ -268,36 +267,39 @@ namespace ZuulRemake.Classes
         }
 
         /* ------------------------------ COMBAT ------------------------------ */
-
-        /// <summary>
+       /// <summary>
         ///null-checks the result and gives a clear message if the monster isn't present.
         /// </summary>
         private void Attack(Command command)
         {
             if (!command.HasSecondWord())
             {
-                Console.WriteLine("Attack what? Please specify a monster name.");
+               Console.WriteLine("Attack what? Please specify a monster name.");
                 return;
             }
-
-            try
+           try
             {
-                Room current = _player.GetCurrentRoom();
-                Monster? monster = current.GetMonster(command.GetSecondWord()!);
+            string monsterName = command.GetSecondWord()!;
+            Room currentRoom = player.GetCurrentRoom();
+            Monster? monster = currentRoom.GetMonster(monsterName);
 
-                if (monster == null)
-                {
-                    Console.WriteLine($"There is no '{command.GetSecondWord()}' here.");
-                    return;
-                }
+            if (monster == null) 
+            {
+                Console.WriteLine($"there is no {monsterName} here!");
+                return;
+            }
+            CombatManager.StartBattle(player, monster);
 
-                CombatManager.StartBattle(_player, monster);
+             
+            if (!monster.IsAlive)
+            {
+                currentRoom.RemoveMonster(monster);
             }
             catch (NoCurrentRoomException ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+              Console.WriteLine($"Error: {ex.Message}");
             }
-        }
+           }
 
         /* ------------------------------ QUIT ------------------------------ */
 

@@ -18,8 +18,8 @@ namespace ZuulRemake.Classes
         private readonly Parser parser;
         private readonly Player player;
         private Room entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit;
-        
- 
+
+
         private CommandHandler ch;
         private NavigationManager nH = new NavigationManager();
         
@@ -36,7 +36,7 @@ namespace ZuulRemake.Classes
         public Game()
         {
             parser = new Parser();
-            player = new Player("Player",100, 10);
+            player = new Player("Player", 100, 10);
             Room startRoom = WorldBuilder.Build(
                 out entryway,
                 out dininghall,
@@ -52,7 +52,7 @@ namespace ZuulRemake.Classes
             ch = new CommandHandler(player, parser, entryway, kitchen, exit);
         }
 
-        
+
 
         /**
          * Initiates a battle between player and monster, continously prompting for input and 

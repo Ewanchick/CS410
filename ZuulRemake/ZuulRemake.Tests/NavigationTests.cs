@@ -34,7 +34,7 @@ namespace ZuulRemake.Tests
         public void PlayerCanExitRoomTest()
         {
             // Arrange
-            p.GoNewRoom(roomA); 
+            p.GoNewRoom(roomA);
 
             // Act
             _nav.MovePlayer(p, "north");
@@ -92,3 +92,5 @@ namespace ZuulRemake.Tests
     }
 }
 
+    }
+}

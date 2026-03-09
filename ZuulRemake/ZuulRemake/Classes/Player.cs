@@ -22,17 +22,17 @@ namespace ZuulRemake.Classes
         public int CarryWeight => Inventory.Sum(i => i.Weight);
         public int MaxWeight { get; private set; } = 2;
 
-        public Room? CurrentRoom {  get; private set; }
+        public Room? CurrentRoom { get; private set; }
         private Room? ChargeRoom { get; set; }
-        
+
         /**
          * Constructors for objects of class Player
          */
-        public Player(string name) : base(name, hp: 100, level: 100) 
+        public Player(string name) : base(name, hp: 100, level: 100)
         { }
-        public Player(string name, int hp, int level) : base(name, 100, 10) 
+        public Player(string name, int hp, int level) : base(name, 100, 10)
         { }
-        public Player(string name,int hp, int level, IEnumerable<Item>? startingItems)
+        public Player(string name, int hp, int level, IEnumerable<Item>? startingItems)
             : base(name, hp, level)
         {
             if (startingItems != null)
@@ -154,7 +154,7 @@ namespace ZuulRemake.Classes
 
             CurrentRoom = PreviousRooms.Pop();
             return CurrentRoom;
-        }        
+        }
 
         /**
          * Check for available exits to the current room. 
@@ -188,4 +188,3 @@ namespace ZuulRemake.Classes
 
     }
 }
-

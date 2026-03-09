@@ -14,23 +14,39 @@ namespace ZuulRemake.Classes
         /// <exception cref="ArgumentNullException">If player or monster is null.</exception>
         public static void StartBattle(Player p, Monster m)
         {
+          
             if (p == null) throw new ArgumentNullException(nameof(p), "Player cannot be null.");
             if (m == null) throw new ArgumentNullException(nameof(m), "Monster cannot be null.");
 
             Console.WriteLine($"You have entered combat with the {m.Name}!");
-
-            // FIX: was || — battle continued even after a combatant died
             while (p.IsAlive && m.IsAlive)
             {
-                PrintCombatantStats(p, m);
-                Console.WriteLine($"Will you attack the {m.Name}? (Y/N)");
+                PrintPlayerAndMonsterStats(p, m);
 
-                string? action = Console.ReadLine()?.Trim().ToLower();
+                Console.WriteLine($"Woulf you like to Attack or Flee the {m.Name}? (A/F)");
+                string? action = Console.ReadLine()?.ToLower();
 
-                if (action == "y")
+                if (action == "a")
                 {
-                    Console.WriteLine("You have chosen to attack.");
                     PlayerAttack(p, m);
+                    if (m.IsAlive)
+                    {
+                        MonsterAttack(p, m);
+                    }
+                }
+                else if (action == "f")
+                {
+                    bool escaped = Flee(p, m);
+                    if (escaped)
+                    {
+                        Console.WriteLine($"You escaped from the {m.Name}!");
+                        return;
+                    }
+                    else
+                    {
+                        MonsterAttack(p, m);
+                    }
+                    
                 }
                 else
                 {
@@ -92,7 +108,46 @@ namespace ZuulRemake.Classes
             Console.WriteLine($"{m.Name}  | HP: {m.HP} | Level: {m.Level}");
             Console.WriteLine("---------------------");
         }
+        /*
+         *Player should have the option to flee combat
+         *If the player's health is below max HP
+         *chance depends on Monster level
+         */
+        public static bool Flee(Player p, Monster m)
+        {
+            Random random = new Random();
 
+            //base flee chance is 75
+            //harder to flee from higher level monsrters
+            int fleeChance = 75 - (m.Level * 5);
+
+            //keep the chance within a reasonable range
+            if (fleeChance < 20)
+                fleeChance = 20;
+
+            if (fleeChance > 90)
+                fleeChance = 90;
+
+            int roll = random.Next(1, 101);//roll from 1 - 100
+
+            Console.WriteLine($"You try to flee from the {m.Name}...");
+            Console.WriteLine($"Escape chance: {fleeChance}%");
+            Console.WriteLine($"You Rolled: {roll}");
+
+            if (roll <= fleeChance)
+            {
+                return true;
+            }
+            Console.WriteLine("You failed to escape!");
+            return false;
+                }
+
+        /**
+         * End combat between a Player and Monster. If the Player has lost all HP, print a message informing 
+         * them of their defeat. If the monster has lost all HP, inform the player of their success. 
+         * Print the Player's remaining HP.
+         */
+          
         /// <summary>
         /// Concludes the battle. If the monster was defeated and had a drop, it is placed in the room.
         /// </summary>
