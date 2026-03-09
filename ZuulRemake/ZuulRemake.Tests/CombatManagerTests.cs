@@ -6,7 +6,7 @@ using Xunit;
 
 namespace ZuulRemake.Tests
 {
-    
+
     public class CombatManagerTests
     {
         /**
@@ -64,7 +64,7 @@ namespace ZuulRemake.Tests
 
             //Assert
             Assert.Equal(0, e.HP);
-            Assert.False( e.IsAlive);
+            Assert.False(e.IsAlive);
         }
         [Fact]
         public void MonsterDropsItemOnDeath()

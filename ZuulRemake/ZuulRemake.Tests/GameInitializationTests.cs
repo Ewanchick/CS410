@@ -19,9 +19,9 @@ namespace ZuulRemake.Tests
                                                         | System.Reflection.BindingFlags.Instance)
                                   .GetValue(game) as Room;
             var ballroom = game.GetType()
-                               .GetField("ballroom", System.Reflection.BindingFlags.NonPublic 
+                               .GetField("ballroom", System.Reflection.BindingFlags.NonPublic
                                                      | System.Reflection.BindingFlags.Instance)
-                               .GetValue (game) as Room;
+                               .GetValue(game) as Room;
             var dungeon = game.GetType()
                               .GetField("dungeon", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                               .GetValue(game) as Room;
