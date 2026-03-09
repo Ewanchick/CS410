@@ -21,7 +21,7 @@ namespace ZuulRemake.Classes
             Console.WriteLine($"You have entered combat with the {m.Name}!");
             while (p.IsAlive && m.IsAlive)
             {
-                PrintPlayerAndMonsterStats(p, m);
+                PrintCombatantStats(p, m);
 
                 Console.WriteLine($"Woulf you like to Attack or Flee the {m.Name}? (A/F)");
                 string? action = Console.ReadLine()?.ToLower();

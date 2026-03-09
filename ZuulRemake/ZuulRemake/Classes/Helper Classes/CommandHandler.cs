@@ -51,7 +51,7 @@ namespace ZuulRemake.Classes
                         return false;
 
                     case CommandWord.GO:
-                        Console.WriteLine(_navigationManager.MovePlayer(_player, command.GetSecondWord()));
+                        Console.WriteLine(_navigationManager.MovePlayer(_player, command.GetSecondWord()!));
                         return false;
 
                     case CommandWord.QUIT:
@@ -67,6 +67,10 @@ namespace ZuulRemake.Classes
 
                     case CommandWord.BACK:
                         GoBack(command);
+                        return false;
+
+                    case CommandWord.TAKE:
+                        Take(command);
                         return false;
 
                     case CommandWord.DROP:
@@ -121,7 +125,7 @@ namespace ZuulRemake.Classes
 
             try
             {
-                Room previous = _player.GoBack();
+                Room previous = _player.GoBack()!;
                 Console.WriteLine($"You go back to the {previous.Name}.");
                 Console.WriteLine(previous.GetLongDescription());
             }
@@ -148,6 +152,40 @@ namespace ZuulRemake.Classes
         private void Inventory()
         {
             Console.WriteLine("You are currently holding: " + _player.ReadInventory());
+        }
+
+        /// <summary>
+        /// Now null-checks the result and gives
+        /// the player a clear message if the item isn't in the room.
+        /// </summary>
+        
+        private void Take(Command command)
+        {
+            if (!command.HasSecondWord())
+            {
+                Console.WriteLine("Take what? Please specify an item name.");
+                return;
+            }
+            string name = command.GetSecondWord()!;
+            Item item = _player.GetCurrentRoom().GetItem(command.GetSecondWord()!)!;
+            if (item == null)
+            {
+                Console.WriteLine($"there is no '{name}' in this room.");
+                return;
+            }
+            bool added = _player.AddItem(item);
+            if (added)
+            {
+                try
+                {
+                    _player.GetCurrentRoom().RemoveItem(item);
+                    Console.WriteLine($"You take the {item.Name}.");
+                }
+                catch (NoCurrentRoomException ex)
+                {
+                    Console.WriteLine($"Could not take item: {ex.Message}");
+                }
+            }
         }
 
         /// <summary>
@@ -277,27 +315,28 @@ namespace ZuulRemake.Classes
                Console.WriteLine("Attack what? Please specify a monster name.");
                 return;
             }
-           try
+            try
             {
-            string monsterName = command.GetSecondWord()!;
-            Room currentRoom = player.GetCurrentRoom();
-            Monster? monster = currentRoom.GetMonster(monsterName);
+                string monsterName = command.GetSecondWord()!;
+                Room currentRoom = _player.GetCurrentRoom();
+                Monster? monster = currentRoom.GetMonster(monsterName);
 
-            if (monster == null) 
-            {
-                Console.WriteLine($"there is no {monsterName} here!");
-                return;
-            }
-            CombatManager.StartBattle(player, monster);
+                if (monster == null)
+                {
+                    Console.WriteLine($"there is no {monsterName} here!");
+                    return;
+                }
+                CombatManager.StartBattle(_player, monster);
 
-             
-            if (!monster.IsAlive)
-            {
-                currentRoom.RemoveMonster(monster);
+
+                if (!monster.IsAlive)
+                {
+                    currentRoom.RemoveMonster(monster);
+                }
             }
             catch (NoCurrentRoomException ex)
             {
-              Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"Error: {ex.Message}");
             }
            }
 

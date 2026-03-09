@@ -91,6 +91,3 @@ namespace ZuulRemake.Tests
 
     }
 }
-
-    }
-}

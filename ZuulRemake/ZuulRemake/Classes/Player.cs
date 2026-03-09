@@ -15,7 +15,7 @@ namespace ZuulRemake.Classes
      */
     public class Player : Entity
     {
-        protected List<Item> Inventory = new();
+        protected List<Item> Inventory = [];
         private readonly Stack<Room> PreviousRooms = new();
         private readonly NavigationManager navigationManager = new();
 
