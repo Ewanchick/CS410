@@ -13,6 +13,40 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZuulRemake.Classes
 {
+    /**
+    * --------------------  NOTES:  -------------------- 
+    * (!) removed 0 reference methods Battle and PrintHelp
+    * 
+    * 
+    * kitchen does not tell the player that it's too dark to see/does not 
+    * hint to them that they should go find a lantern or why that would be worth doing
+    *
+    * after defeating the ghoul: the "items in this room" is repetitive:
+    * Room now contains:
+    * Items in this room: Potion    
+    * remove that entirely since drop message is enough
+    * 
+    * fix grammar everywhere
+    * shorten line lengths, make sure lines are broken up with \n
+    *
+    * item drop repetition after defeating dragon too (remove will fix both)
+    *
+    * Exit room should not print its details since the game is over
+    *
+    * add sleeps EVERYWHERE, lack of delay feels weird
+    *
+    * dragon is a lower level than the ghoul?
+    * combat (maybe?) should start automatically if a monster is present in the room
+    *
+    *POSSIBLY:
+    * alternate room description/entry message if there is a monster for auto combat
+    * same for if the room is dark (!!!)
+    * do not hard code lantern putting sword in room 
+    * 
+    * maybe make descriptions nullable so they don't print at all?
+    * basically just REMOVE any places where those print automatically when they shouldnt
+    * we should be able to customize what prints for a given room
+    */
     public class Game
     {
         private readonly Parser parser;
@@ -21,8 +55,8 @@ namespace ZuulRemake.Classes
 
 
         private CommandHandler ch;
-        private NavigationManager nH = new NavigationManager();
-        
+        private NavigationManager nav = new NavigationManager();
+
         public static void Main(string[] args)
         {
             var game = new Game();
@@ -52,55 +86,6 @@ namespace ZuulRemake.Classes
             ch = new CommandHandler(player, parser, entryway, kitchen, exit);
         }
 
-
-
-        /**
-         * Initiates a battle between player and monster, continously prompting for input and 
-         * returning with attacks until the monster or player is dead.
-         */
-        public void Battle(Monster m, Player p)
-        {
-            Console.WriteLine("The " + m.Name + " is hostile! Attack or be attacked!");
-
-            while (m.IsAlive)
-            {
-                Console.WriteLine("What will you do? ");
-                string? action = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(action) || !action.Contains("attack", StringComparison.OrdinalIgnoreCase))
-                {
-                    Console.WriteLine("You have chosen not to attack. The " + m.Name + " attacks instead!");
-                }
-                else
-                {
-                    m.TakeDamage(p.Level);
-                    Console.WriteLine("You have attacked the " + m.Name + "! \n" +
-                                      "The " + m.Name + "attacks back!");
-                }
-
-                p.TakeDamage(m.Level);
-                Console.WriteLine("You have been injured! Your HP is now " + p.HP + ".");
-            }
-
-            Console.WriteLine($"You defeated the {m.Name}!");
-
-            if (m.Drop != null)
-            {
-                player.GetCurrentRoom().AddItem(m.Drop);
-                Console.WriteLine($"{m.Name} dropped a {m.Drop.Name}!");
-            }
-            player.GetCurrentRoom().RemoveMonster(m);
-        }
-
-
-
-
-
-
-
-
-
-
-
         /**
          *  Main play routine.  Loops until end of play.
          */
@@ -124,6 +109,7 @@ namespace ZuulRemake.Classes
                     GameOver();
                     break;
                 }
+
 
                 if (player.GetCurrentRoom() == exit)
                 {
@@ -171,9 +157,7 @@ namespace ZuulRemake.Classes
                 Console.WriteLine($"Error loading starting room: {ex.Message}");
             }
         }
-
-        // We can probably get rid of these two methods and just do an if-then in the game loop
-
+        
         /**
          * Print a game over message.
          */
@@ -188,22 +172,6 @@ namespace ZuulRemake.Classes
         private void PrintWon()
         {
             Console.WriteLine("You won, you defeated the dragon and escaped the castle!");
-        }
-
-
-        // implementations of user commands:
-
-        /**
-         * Print out some help information.
-         * Here we print some stupid, cryptic message and a list of the 
-         * command words.
-         */
-        private void PrintHelp()
-        {
-            Console.WriteLine("You are lost. You are alone. You wander around the castle.");
-            Console.WriteLine();
-            Console.WriteLine("Your command words are:");
-            parser.ShowCommands();
         }
     }
 }
