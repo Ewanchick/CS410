@@ -14,38 +14,23 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace ZuulRemake.Classes
 {
     /**
-    * --------------------  NOTES:  -------------------- 
-    * (!) removed 0 reference methods Battle and PrintHelp
-    * 
-    * 
-    * kitchen does not tell the player that it's too dark to see/does not 
-    * hint to them that they should go find a lantern or why that would be worth doing
-    *
+    * --------------------  NOTES:  --------------------     *
     * after defeating the ghoul: the "items in this room" is repetitive:
     * Room now contains:
     * Items in this room: Potion    
     * remove that entirely since drop message is enough
-    * 
-    * fix grammar everywhere
-    * shorten line lengths, make sure lines are broken up with \n
     *
     * item drop repetition after defeating dragon too (remove will fix both)
     *
     * Exit room should not print its details since the game is over
-    *
-    * add sleeps EVERYWHERE, lack of delay feels weird
     *
     * dragon is a lower level than the ghoul?
     * combat (maybe?) should start automatically if a monster is present in the room
     *
     *POSSIBLY:
     * alternate room description/entry message if there is a monster for auto combat
-    * same for if the room is dark (!!!)
-    * do not hard code lantern putting sword in room 
-    * 
     * maybe make descriptions nullable so they don't print at all?
-    * basically just REMOVE any places where those print automatically when they shouldnt
-    * we should be able to customize what prints for a given room
+    * we should be able to customize what prints & when for a given room
     */
     public class Game
     {
