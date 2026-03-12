@@ -286,6 +286,7 @@ namespace ZuulRemake.Classes
                 }
                 Console.WriteLine("You light the lantern — a sword is revealed on the ground!");
                 _kitchen.AddItem(new Item("Sword", "Heavy and sharp, capable of slaying the mightiest beast.", 1, 50));
+                _kitchen.UpdateNarrativeDescription("Still damp and dim, but now visibly filthy... yuck.");
             }
             catch (NoCurrentRoomException ex) { Console.WriteLine($"Error: {ex.Message}"); }
         }

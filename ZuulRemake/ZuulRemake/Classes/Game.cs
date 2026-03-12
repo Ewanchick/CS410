@@ -14,7 +14,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace ZuulRemake.Classes
 {
     /**
-    * --------------------  NOTES:  --------------------     *
+    * --------------------  NOTES:  --------------------     
     * after defeating the ghoul: the "items in this room" is repetitive:
     * Room now contains:
     * Items in this room: Potion    
@@ -24,10 +24,7 @@ namespace ZuulRemake.Classes
     *
     * Exit room should not print its details since the game is over
     *
-    * dragon is a lower level than the ghoul?
     * combat (maybe?) should start automatically if a monster is present in the room
-    *
-    *POSSIBLY:
     * alternate room description/entry message if there is a monster for auto combat
     * maybe make descriptions nullable so they don't print at all?
     * we should be able to customize what prints & when for a given room
@@ -103,7 +100,7 @@ namespace ZuulRemake.Classes
                     break;
                 }
             }
-            Console.WriteLine("Thank you for playing.  Good bye.");
+            Console.WriteLine("Thank you for playing. Goodbye!");
         }
 
         /**

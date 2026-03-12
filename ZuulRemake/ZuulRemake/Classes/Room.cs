@@ -15,7 +15,7 @@ namespace ZuulRemake.Classes
     public class Room
     {
         public string Name { get; }
-        public string NarrativeDescription { get; }
+        public string NarrativeDescription { get; set; }
         public string LongDescription { get; }
 
         private readonly List<Item> Items = new();
@@ -48,6 +48,11 @@ namespace ZuulRemake.Classes
             GetItems() + "\n" +
             GetMonsters() + "\n" +
             GetExits();
+        }
+
+        public void UpdateNarrativeDescription(string narDesc)
+        {
+            NarrativeDescription = narDesc;
         }
 
         /**
