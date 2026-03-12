@@ -51,6 +51,7 @@ namespace ZuulRemake.Classes
     {
         private readonly Parser parser;
         private readonly Player player;
+        
         private Room entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit;
 
 
@@ -60,7 +61,7 @@ namespace ZuulRemake.Classes
         public static void Main(string[] args)
         {
             var game = new Game();
-            game.Play();
+            game.Play();            
         }
 
         /**
@@ -104,7 +105,7 @@ namespace ZuulRemake.Classes
                     break;
                 }
 
-                if (player.HP == 0)
+                if (!player.IsAlive)
                 {
                     GameOver();
                     break;
@@ -141,12 +142,17 @@ namespace ZuulRemake.Classes
             player.Name = name.Trim();
 
             Console.WriteLine($"Greetings, {player.Name}!");
+            Thread.Sleep(2000);
             Console.WriteLine("You have awoken in a very dark castle with no memory of how you got here.");
+            Thread.Sleep(3000);
             Console.WriteLine("Upon attempting to leave, you find that the front door is locked.");
+            Thread.Sleep(3000);
             Console.WriteLine("You need to find its key in order to escape... but beware!");
+            Thread.Sleep(2000);
             Console.WriteLine("Danger lurks around every corner.");
-            Console.WriteLine("(Type 'help' at any time to display available commands.)");
-            Console.WriteLine();
+            Thread.Sleep(3000);
+            Console.WriteLine("(Type 'help' at any time to display available commands.) \n");
+            Thread.Sleep(2000);
 
             try
             {

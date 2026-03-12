@@ -171,7 +171,7 @@ namespace ZuulRemake.Classes
             Item item = _player.CurrentRoom!.GetItem(name)!;
             if (item == null)
             {
-                Console.WriteLine($"there is no '{name}' in this room.");
+                Console.WriteLine($"There is no '{name}' in this room.");
                 return;
             }
             bool added = _player.AddItem(item);
@@ -190,7 +190,7 @@ namespace ZuulRemake.Classes
             }
             else if (!_player.CanCarry(item))
                 {
-                Console.WriteLine("You're carrying too many items! drop what you dont need");
+                Console.WriteLine("You're carrying too many items! Use 'drop' followed by an item you no longer need.");
             }
         }
 
@@ -285,7 +285,7 @@ namespace ZuulRemake.Classes
                     return;
                 }
                 Console.WriteLine("You light the lantern — a sword is revealed on the ground!");
-                _kitchen.AddItem(new Item("sword", "A heavy sword, might be used to kill the dragon.", 1, 10));
+                _kitchen.AddItem(new Item("Sword", "Heavy and sharp, capable of slaying the mightiest beast.", 1, 50));
             }
             catch (NoCurrentRoomException ex) { Console.WriteLine($"Error: {ex.Message}"); }
         }
@@ -329,7 +329,7 @@ namespace ZuulRemake.Classes
 
                 if (monster == null)
                 {
-                    Console.WriteLine($"there is no {monsterName} here!");
+                    Console.WriteLine($"There is no {monsterName} here!");
                     return;
                 }
                 CombatManager.StartBattle(_player, monster);
@@ -350,7 +350,7 @@ namespace ZuulRemake.Classes
 
         private bool Quit(Command command)
         {
-            if (command.HasSecondWord()) { Console.WriteLine("Quit what?"); return false; }
+            if (command.HasSecondWord()) { Console.WriteLine("Please only type 'quit' to quit game."); return false; }
             return true;
         }
     }
