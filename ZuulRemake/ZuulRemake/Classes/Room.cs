@@ -62,7 +62,7 @@ namespace ZuulRemake.Classes
         public string GetItems()
         {
             if (Items.Count == 0)
-                return "It seems there are no items in this room...";
+                return "";
 
             IEnumerable<string>? ItemNames = Items.Select(i => i.Name);
             string itemstr = "Items in this room: \n " +
@@ -76,8 +76,7 @@ namespace ZuulRemake.Classes
          */
         public string GetMonsters()
         {
-            if (Monsters.Count == 0)
-                return "Thankfully, there doesn't seem to be any danger! ...yet.";
+            if (Monsters.Count == 0) return "";
 
             IEnumerable<string>? MonsterNames = Monsters.Select(m => m.Name);
             string monstr = "Monsters in this room: \n " +

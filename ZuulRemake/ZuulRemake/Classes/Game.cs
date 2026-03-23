@@ -15,12 +15,7 @@ namespace ZuulRemake.Classes
 {
     /**
     * --------------------  NOTES:  --------------------     
-    * after defeating the ghoul: the "items in this room" is repetitive:
-    * Room now contains:
-    * Items in this room: Potion    
-    * remove that entirely since drop message is enough
-    *
-    * item drop repetition after defeating dragon too (remove will fix both)
+    * 
     *
     * Exit room should not print its details since the game is over
     *
@@ -75,7 +70,7 @@ namespace ZuulRemake.Classes
         public void Play()
         {
             PrintWelcome();
-
+            
             while (true)
             {
                 Command command = parser.GetCommand();
@@ -110,7 +105,7 @@ namespace ZuulRemake.Classes
         {
             Console.WriteLine();
             Console.WriteLine("Welcome to the World of Zuul!\n");
-
+            Thread.Sleep(500);
             string? name = null;
             while (string.IsNullOrWhiteSpace(name))
             {
@@ -124,15 +119,15 @@ namespace ZuulRemake.Classes
             player.Name = name.Trim();
 
             Console.WriteLine($"Greetings, {player.Name}!");
-            Thread.Sleep(2000);
+            Thread.Sleep(1000);
             Console.WriteLine("You have awoken in a very dark castle with no memory of how you got here.");
-            Thread.Sleep(3000);
-            Console.WriteLine("Upon attempting to leave, you find that the front door is locked.");
-            Thread.Sleep(3000);
-            Console.WriteLine("You need to find its key in order to escape... but beware!");
             Thread.Sleep(2000);
+            Console.WriteLine("Upon attempting to leave, you find that the front door is locked.");
+            Thread.Sleep(2000);
+            Console.WriteLine("You need to find its key in order to escape... but beware!");
+            Thread.Sleep(1000);
             Console.WriteLine("Danger lurks around every corner.");
-            Thread.Sleep(3000);
+            Thread.Sleep(2000);
             Console.WriteLine("(Type 'help' at any time to display available commands.) \n");
             Thread.Sleep(2000);
 
@@ -151,7 +146,7 @@ namespace ZuulRemake.Classes
          */
         private void GameOver()
         {
-            Console.WriteLine("You have died, please try again!");
+            Console.WriteLine("YOU DIED, please try again!");
         }
 
         /**
@@ -159,7 +154,27 @@ namespace ZuulRemake.Classes
          */
         private void PrintWon()
         {
-            Console.WriteLine("You won, you defeated the dragon and escaped the castle!");
+            Console.WriteLine("\nCongratulations, you've won the game!");
+            Thread.Sleep(500);
+            Console.WriteLine("             ___________");
+            Thread.Sleep(50);
+            Console.WriteLine("            '._==_==_=_.'");
+            Thread.Sleep(50);
+            Console.WriteLine("            .-\\:      /-.");
+            Thread.Sleep(50);
+            Console.WriteLine("           | (|:.     |) |");
+            Thread.Sleep(50);
+            Console.WriteLine("            '-|:.     |-'");
+            Thread.Sleep(50);
+            Console.WriteLine("              \\::.    /");
+            Thread.Sleep(50);
+            Console.WriteLine("               '::. .'");
+            Thread.Sleep(50);
+            Console.WriteLine("                 ) (");
+            Thread.Sleep(50);
+            Console.WriteLine("               _.' '._");
+            Thread.Sleep(50);
+            Console.WriteLine("              `'''''''`\n");
         }
     }
 }

@@ -18,16 +18,13 @@ namespace ZuulRemake.Classes
             if (p == null) throw new ArgumentNullException(nameof(p), "Player cannot be null.");
             if (m == null) throw new ArgumentNullException(nameof(m), "Monster cannot be null.");
 
-            Console.WriteLine("____________________________________________");
-            Console.WriteLine("____________________________________________");
-            Console.WriteLine($"You have entered combat with the {m.Name}!");
+            Console.WriteLine($"\nYou have entered combat with the {m.Name}!");
+            Thread.Sleep(1000);
             while (p.IsAlive && m.IsAlive)
             {
                 PrintCombatantStats(p, m);
 
-                Console.WriteLine($"Would you like to Attack or Flee the {m.Name}? (A/F)");
-                Console.WriteLine("____________________________________________");
-                Console.WriteLine("____________________________________________");
+                Console.WriteLine($"Would you like to attack or attempt to flee the {m.Name}? (A/F) \n");
                 string? action = Console.ReadLine()?.ToLower();
 
                 if (action == "a".ToLower())
@@ -43,18 +40,22 @@ namespace ZuulRemake.Classes
                     bool escaped = Flee(p, m);
                     if (escaped)
                     {
+                        Thread.Sleep(500);
                         Console.WriteLine($"You escaped from the {m.Name}!");
                         return;
                     }
                     else
                     {
+                        Thread.Sleep(500);
                         MonsterAttack(p, m);
                     }
                     
                 }
                 else
                 {
+                    Thread.Sleep(500);
                     Console.WriteLine("You chose not to attack. The monster seizes the opportunity!");
+                    Thread.Sleep(500);
                 }
             }
 
@@ -69,14 +70,13 @@ namespace ZuulRemake.Classes
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
             if (m == null) throw new ArgumentNullException(nameof(m));
-            Console.WriteLine("____________________________________________");
+            Thread.Sleep(500);
             Console.WriteLine("____________________________________________");
             Console.WriteLine($"You attack the {m.Name} for {p.Level} damage!");
+            Thread.Sleep(1000);
             m.TakeDamage(p.Level);
-
             if (!m.IsAlive)
                 Console.WriteLine($"Your blow was lethal — the {m.Name} collapses!");
-            Console.WriteLine("____________________________________________");
             Console.WriteLine("____________________________________________");
         }
 
@@ -90,6 +90,7 @@ namespace ZuulRemake.Classes
             if (m == null) throw new ArgumentNullException(nameof(m));
 
             Console.WriteLine($"The {m.Name} attacks you for {m.Level} damage!");
+            Thread.Sleep(1000);
             p.TakeDamage(m.Level);
 
             if (!p.IsAlive)
@@ -104,12 +105,13 @@ namespace ZuulRemake.Classes
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
             if (m == null) throw new ArgumentNullException(nameof(m));
-
-            Console.WriteLine("--- Combat Status ---");
+            Console.WriteLine("\n--- Combat Status ---");
             Console.WriteLine($"{p.Name} | HP: {p.HP} | Level: {p.Level}");
+            Thread.Sleep(500);
             // FIX: was p.HP — now correctly m.HP
             Console.WriteLine($"{m.Name}  | HP: {m.HP} | Level: {m.Level}");
             Console.WriteLine("---------------------");
+            Thread.Sleep(1000);
         }
         /*
          *Player should have the option to flee combat
@@ -121,7 +123,7 @@ namespace ZuulRemake.Classes
             Random random = new Random();
 
             //base flee chance is 75
-            //harder to flee from higher level monsrters
+            //harder to flee from higher level monsters
             int fleeChance = 75 - (m.Level * 5);
 
             //keep the chance within a reasonable range
@@ -135,7 +137,14 @@ namespace ZuulRemake.Classes
 
             Console.WriteLine($"You try to flee from the {m.Name}...");
             Console.WriteLine($"Escape chance: {fleeChance}%");
-            Console.WriteLine($"You Rolled: {roll}");
+            for (int i = 0; i < 3; i++)
+            {
+                Thread.Sleep(500);
+                Console.Write(".");
+            }
+            Thread.Sleep(500);
+            Console.WriteLine($"You rolled: {roll}");
+            Thread.Sleep(500);
 
             if (roll <= fleeChance)
             {
