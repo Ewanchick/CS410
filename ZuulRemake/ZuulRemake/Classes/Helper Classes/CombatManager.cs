@@ -24,7 +24,7 @@ namespace ZuulRemake.Classes
             {
                 PrintCombatantStats(p, m);
 
-                Console.WriteLine($"Would you like to attack or attempt to flee the {m.Name}? (A/F) \n");
+                Console.WriteLine($"\nWould you like to attack or attempt to flee the {m.Name}? (A/F) \n");
                 string? action = Console.ReadLine()?.ToLower();
 
                 if (action == "a".ToLower())
@@ -71,13 +71,11 @@ namespace ZuulRemake.Classes
             if (p == null) throw new ArgumentNullException(nameof(p));
             if (m == null) throw new ArgumentNullException(nameof(m));
             Thread.Sleep(500);
-            Console.WriteLine("____________________________________________");
-            Console.WriteLine($"You attack the {m.Name} for {p.Level} damage!");
+            Console.WriteLine($"\nYou attack the {m.Name} for {p.Level} damage!\n");
             Thread.Sleep(1000);
             m.TakeDamage(p.Level);
             if (!m.IsAlive)
-                Console.WriteLine($"Your blow was lethal — the {m.Name} collapses!");
-            Console.WriteLine("____________________________________________");
+                Console.WriteLine($"Your blow was lethal — the {m.Name} collapses!\n");
         }
 
         /// <summary>
@@ -89,7 +87,7 @@ namespace ZuulRemake.Classes
             if (p == null) throw new ArgumentNullException(nameof(p));
             if (m == null) throw new ArgumentNullException(nameof(m));
 
-            Console.WriteLine($"The {m.Name} attacks you for {m.Level} damage!");
+            Console.WriteLine($"The {m.Name} attacks you for {m.Level} damage!\n");
             Thread.Sleep(1000);
             p.TakeDamage(m.Level);
 
@@ -135,22 +133,27 @@ namespace ZuulRemake.Classes
 
             int roll = random.Next(1, 101);//roll from 1 - 100
 
-            Console.WriteLine($"You try to flee from the {m.Name}...");
-            Console.WriteLine($"Escape chance: {fleeChance}%");
+            Console.WriteLine($"\nYou decide to try and run from the {m.Name}!");
+            Thread.Sleep(1000);
+            Console.WriteLine($"Escape chance: {fleeChance}% \n");
+            Thread.Sleep(550);
+            Console.Write("Attempting escape");
             for (int i = 0; i < 3; i++)
             {
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
                 Console.Write(".");
             }
-            Thread.Sleep(500);
-            Console.WriteLine($"You rolled: {roll}");
-            Thread.Sleep(500);
+            Thread.Sleep(1000);
 
             if (roll <= fleeChance)
             {
                 return true;
             }
-            Console.WriteLine("You failed to escape!");
+
+            Console.WriteLine("ATTEMPT UNSUCCESFUL!");
+            Thread.Sleep(500);
+            Console.WriteLine("You failed to escape! \n");
+            Thread.Sleep(2000);
             return false;
                 }
 
@@ -176,22 +179,26 @@ namespace ZuulRemake.Classes
             }
 
             Console.WriteLine($"You have defeated the {m.Name}!");
-            Console.WriteLine($"{p.Name}'s remaining HP: {p.HP}");
+            Thread.Sleep(500);
 
             if (m.Drop != null)
             {
                 try
                 {
                     p.CurrentRoom!.AddItem(m.Drop);
-                    Console.WriteLine($"The {m.Name} dropped: {m.Drop.Name}!");
-                    Console.WriteLine("Room now contains:");
-                    Console.WriteLine(p.GetCurrentRoom().GetItems());
+                    Console.Write("Wait a second... ");
+                    Thread.Sleep(1000);
+                    Console.Write("There's something on the floor now.\n");
+                    Thread.Sleep(500);
+                    Console.WriteLine($"The {m.Name} dropped a {m.Drop.Name}!");
                 }
                 catch (NoCurrentRoomException ex)
                 {
                     Console.WriteLine($"(Could not drop loot: {ex.Message})");
                 }
             }
+            Thread.Sleep(500);
+            Console.WriteLine($"\n{p.Name}'s remaining HP: {p.HP}\n");
 
             try
             {
