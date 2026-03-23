@@ -15,7 +15,7 @@ namespace ZuulRemake.Classes
     public class Room
     {
         public string Name { get; }
-        public string NarrativeDescription { get; }
+        public string NarrativeDescription { get; set; }
         public string LongDescription { get; }
 
         private readonly List<Item> Items = new();
@@ -35,7 +35,7 @@ namespace ZuulRemake.Classes
          */
         override public string ToString()
         {
-            return $"You are standing in the {Name}:";
+            return $"You are standing in the {Name}. \n{NarrativeDescription}";
         }
 
         /**
@@ -50,6 +50,11 @@ namespace ZuulRemake.Classes
             GetExits();
         }
 
+        public void UpdateNarrativeDescription(string narDesc)
+        {
+            NarrativeDescription = narDesc;
+        }
+
         /**
          * Check if the room contains any Items. If not, print a message explaining so. 
          * Otherwise, list each Item in the room on a new line and return as a string.
@@ -60,8 +65,8 @@ namespace ZuulRemake.Classes
                 return "It seems there are no items in this room...";
 
             IEnumerable<string>? ItemNames = Items.Select(i => i.Name);
-            string itemstr = "Items in this room: " +
-            string.Join("\n", ItemNames);
+            string itemstr = "Items in this room: \n " +
+            string.Join("\n ", ItemNames);
             return itemstr;
         }
 
@@ -72,11 +77,11 @@ namespace ZuulRemake.Classes
         public string GetMonsters()
         {
             if (Monsters.Count == 0)
-                return "Thankfully, there are no monsters in this room! ...yet.";
+                return "Thankfully, there doesn't seem to be any danger! ...yet.";
 
             IEnumerable<string>? MonsterNames = Monsters.Select(m => m.Name);
-            string monstr = "Monsters in this room: " +
-            string.Join("\n", MonsterNames);
+            string monstr = "Monsters in this room: \n " +
+            string.Join("\n ", MonsterNames);
             return monstr;
         }
 
@@ -90,8 +95,8 @@ namespace ZuulRemake.Classes
                 return "This room appears to have no exits...";
 
             IEnumerable<string>? ExitsAvailable = Exits.Select(i => i.Direction);
-            string exitstr = "Exits: " +
-            string.Join("\n", ExitsAvailable);
+            string exitstr = "Exits: \n > " +
+            string.Join("\n > ", ExitsAvailable);
             return exitstr;
         }
 
