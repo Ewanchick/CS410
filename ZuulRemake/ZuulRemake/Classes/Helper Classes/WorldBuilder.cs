@@ -61,8 +61,8 @@ namespace ZuulRemake.Classes
 
 
             // create the monsters
-            var dragon = new Monster("dragon", 100, 50, key);
-            var ghoul = new Monster("ghoul", 100, 30, potion);
+            var dragon = new Monster("Dragon", 100, 50, key);
+            var ghoul = new Monster("Ghoul", 100, 30, potion);
 
             dungeon.AddMonster(dragon);
             bathroom.AddMonster(ghoul);

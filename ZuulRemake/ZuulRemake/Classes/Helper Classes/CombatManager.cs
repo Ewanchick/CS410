@@ -18,16 +18,13 @@ namespace ZuulRemake.Classes
             if (p == null) throw new ArgumentNullException(nameof(p), "Player cannot be null.");
             if (m == null) throw new ArgumentNullException(nameof(m), "Monster cannot be null.");
 
-            Console.WriteLine("____________________________________________");
-            Console.WriteLine("____________________________________________");
-            Console.WriteLine($"You have entered combat with the {m.Name}!");
+            Console.WriteLine($"\nYou have entered combat with the {m.Name}!");
+            Thread.Sleep(1000);
             while (p.IsAlive && m.IsAlive)
             {
                 PrintCombatantStats(p, m);
 
-                Console.WriteLine($"Would you like to Attack or Flee the {m.Name}? (A/F)");
-                Console.WriteLine("____________________________________________");
-                Console.WriteLine("____________________________________________");
+                Console.WriteLine($"\nWould you like to attack or attempt to flee the {m.Name}? (A/F) \n");
                 string? action = Console.ReadLine()?.ToLower();
 
                 if (action == "a".ToLower())
@@ -43,18 +40,22 @@ namespace ZuulRemake.Classes
                     bool escaped = Flee(p, m);
                     if (escaped)
                     {
+                        Thread.Sleep(500);
                         Console.WriteLine($"You escaped from the {m.Name}!");
                         return;
                     }
                     else
                     {
+                        Thread.Sleep(500);
                         MonsterAttack(p, m);
                     }
                     
                 }
                 else
                 {
+                    Thread.Sleep(500);
                     Console.WriteLine("You chose not to attack. The monster seizes the opportunity!");
+                    Thread.Sleep(500);
                 }
             }
 
@@ -69,15 +70,12 @@ namespace ZuulRemake.Classes
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
             if (m == null) throw new ArgumentNullException(nameof(m));
-            Console.WriteLine("____________________________________________");
-            Console.WriteLine("____________________________________________");
-            Console.WriteLine($"You attack the {m.Name} for {p.Level} damage!");
+            Thread.Sleep(500);
+            Console.WriteLine($"\nYou attack the {m.Name} for {p.Level} damage!\n");
+            Thread.Sleep(1000);
             m.TakeDamage(p.Level);
-
             if (!m.IsAlive)
-                Console.WriteLine($"Your blow was lethal — the {m.Name} collapses!");
-            Console.WriteLine("____________________________________________");
-            Console.WriteLine("____________________________________________");
+                Console.WriteLine($"Your blow was lethal — the {m.Name} collapses!\n");
         }
 
         /// <summary>
@@ -89,7 +87,8 @@ namespace ZuulRemake.Classes
             if (p == null) throw new ArgumentNullException(nameof(p));
             if (m == null) throw new ArgumentNullException(nameof(m));
 
-            Console.WriteLine($"The {m.Name} attacks you for {m.Level} damage!");
+            Console.WriteLine($"The {m.Name} attacks you for {m.Level} damage!\n");
+            Thread.Sleep(1000);
             p.TakeDamage(m.Level);
 
             if (!p.IsAlive)
@@ -104,12 +103,13 @@ namespace ZuulRemake.Classes
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
             if (m == null) throw new ArgumentNullException(nameof(m));
-
-            Console.WriteLine("--- Combat Status ---");
+            Console.WriteLine("\n--- Combat Status ---");
             Console.WriteLine($"{p.Name} | HP: {p.HP} | Level: {p.Level}");
+            Thread.Sleep(500);
             // FIX: was p.HP — now correctly m.HP
             Console.WriteLine($"{m.Name}  | HP: {m.HP} | Level: {m.Level}");
             Console.WriteLine("---------------------");
+            Thread.Sleep(1000);
         }
         /*
          *Player should have the option to flee combat
@@ -121,7 +121,7 @@ namespace ZuulRemake.Classes
             Random random = new Random();
 
             //base flee chance is 75
-            //harder to flee from higher level monsrters
+            //harder to flee from higher level monsters
             int fleeChance = 75 - (m.Level * 5);
 
             //keep the chance within a reasonable range
@@ -133,15 +133,27 @@ namespace ZuulRemake.Classes
 
             int roll = random.Next(1, 101);//roll from 1 - 100
 
-            Console.WriteLine($"You try to flee from the {m.Name}...");
-            Console.WriteLine($"Escape chance: {fleeChance}%");
-            Console.WriteLine($"You Rolled: {roll}");
+            Console.WriteLine($"\nYou decide to try and run from the {m.Name}!");
+            Thread.Sleep(1000);
+            Console.WriteLine($"Escape chance: {fleeChance}% \n");
+            Thread.Sleep(550);
+            Console.Write("Attempting escape");
+            for (int i = 0; i < 3; i++)
+            {
+                Thread.Sleep(1000);
+                Console.Write(".");
+            }
+            Thread.Sleep(1000);
 
             if (roll <= fleeChance)
             {
                 return true;
             }
-            Console.WriteLine("You failed to escape!");
+
+            Console.WriteLine("ATTEMPT UNSUCCESFUL!");
+            Thread.Sleep(500);
+            Console.WriteLine("You failed to escape! \n");
+            Thread.Sleep(2000);
             return false;
                 }
 
@@ -167,22 +179,26 @@ namespace ZuulRemake.Classes
             }
 
             Console.WriteLine($"You have defeated the {m.Name}!");
-            Console.WriteLine($"{p.Name}'s remaining HP: {p.HP}");
+            Thread.Sleep(500);
 
             if (m.Drop != null)
             {
                 try
                 {
                     p.CurrentRoom!.AddItem(m.Drop);
-                    Console.WriteLine($"The {m.Name} dropped: {m.Drop.Name}!");
-                    Console.WriteLine("Room now contains:");
-                    Console.WriteLine(p.GetCurrentRoom().GetItems());
+                    Console.Write("Wait a second... ");
+                    Thread.Sleep(1000);
+                    Console.Write("There's something on the floor now.\n");
+                    Thread.Sleep(500);
+                    Console.WriteLine($"The {m.Name} dropped a {m.Drop.Name}!");
                 }
                 catch (NoCurrentRoomException ex)
                 {
                     Console.WriteLine($"(Could not drop loot: {ex.Message})");
                 }
             }
+            Thread.Sleep(500);
+            Console.WriteLine($"\n{p.Name}'s remaining HP: {p.HP}\n");
 
             try
             {
