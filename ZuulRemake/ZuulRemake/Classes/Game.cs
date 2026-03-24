@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -49,6 +50,7 @@ namespace ZuulRemake.Classes
         {
             parser = new Parser();
             player = new Player("Player", 100, 50);
+            
             Room startRoom = WorldBuilder.Build(
                 out entryway,
                 out dininghall,
@@ -175,6 +177,12 @@ namespace ZuulRemake.Classes
             Console.WriteLine("               _.' '._");
             Thread.Sleep(50);
             Console.WriteLine("              `'''''''`\n");
+        }
+
+        private static void SaveObjectToFile(Product product)
+        {
+            string jsonString = JsonSerializer.Serialize(product);
+            File.WriteAllText(FilePath, jsonString);
         }
     }
 }

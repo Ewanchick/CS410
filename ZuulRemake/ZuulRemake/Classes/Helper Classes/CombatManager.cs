@@ -150,9 +150,9 @@ namespace ZuulRemake.Classes
                 return true;
             }
 
-            Console.WriteLine("ATTEMPT UNSUCCESFUL!");
+            Console.WriteLine("\nATTEMPT UNSUCCESFUL!");
             Thread.Sleep(500);
-            Console.WriteLine("You failed to escape! \n");
+            Console.WriteLine("\nYou failed to escape!");
             Thread.Sleep(2000);
             return false;
                 }
