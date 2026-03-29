@@ -1,4 +1,6 @@
 ﻿using System;
+using ZuulRemake.Classes.Helper_Classes;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ZuulRemake.Classes
 {
@@ -85,6 +87,10 @@ namespace ZuulRemake.Classes
                         Attack(command);
                         return false;
 
+                    case CommandWord.SAVE:
+                        Save();
+                        return false;
+
                     default:
                         Console.WriteLine("Unrecognised command.");
                         return false;
@@ -102,10 +108,11 @@ namespace ZuulRemake.Classes
 
         private void PrintHelp()
         {
-            Console.WriteLine("You are lost. You are alone. You wander around the castle.");
+            Console.WriteLine("\nYou are lost. You are alone. You wander around the castle.");
             Console.WriteLine();
             Console.WriteLine("Your command words are:");
             _parser.ShowCommands();
+            Console.WriteLine("\n");
         }
 
         /* ------------------------------ NAVIGATION ------------------------------ */
@@ -119,7 +126,7 @@ namespace ZuulRemake.Classes
         {
             if (command.HasSecondWord())
             {
-                Console.WriteLine("Back where? Just type 'back'.");
+                Console.WriteLine("To use the 'back' command, only type 'back'.");
                 return;
             }
 
@@ -151,7 +158,7 @@ namespace ZuulRemake.Classes
 
         private void Inventory()
         {
-            Console.WriteLine("You are currently holding: " + _player.ReadInventory());
+            Console.WriteLine("You are currently holding: " + _player.ReadInventory() + "\n");
         }
 
         /// <summary>
@@ -190,7 +197,7 @@ namespace ZuulRemake.Classes
             }
             else if (!_player.CanCarry(item))
                 {
-                Console.WriteLine("You're carrying too many items! Use 'drop' followed by an item you no longer need.");
+                Console.WriteLine("You're carrying too many items! \nUse 'drop' followed by an item you no longer need.\n");
             }
         }
 
@@ -237,7 +244,7 @@ namespace ZuulRemake.Classes
         {
             if (!command.HasSecondWord())
             {
-                Console.WriteLine("Use what? Please specify an item name.");
+                Console.WriteLine("Use what? Please specify an item name.\n");
                 return;
             }
 
@@ -248,26 +255,26 @@ namespace ZuulRemake.Classes
                 case "armour": UseArmour(); break;
                 case "potion": UsePotion(); break;
                 default:
-                    Console.WriteLine($"You don't know how to use '{command.GetSecondWord()}'.");
+                    Console.WriteLine($"You don't know how to use '{command.GetSecondWord()}'.\n");
                     break;
             }
         }      
         private void UseKey()
         {
             Item? key = _player.GetItem("key");
-            if (key == null) { Console.WriteLine("You don't have a key."); return; }
+            if (key == null) { Console.WriteLine("You don't have a key.\n"); return; }
 
             try
             {
                 if (_player.GetCurrentRoom() != _entryway)
                 {
-                    Console.WriteLine("You can't use the key here.");
+                    Console.WriteLine("You can't use the key here.\n");
                     return;
                 }
                 Exit? south = _player.GetCurrentRoom().GetExit("south");
-                if (south == null) { Console.WriteLine("There's no locked exit to unlock here."); return; }
+                if (south == null) { Console.WriteLine("There's no locked exit to unlock here.\n"); return; }
                 south.Unlock();
-                Console.WriteLine("You unlocked the door. Go south to leave.");
+                Console.WriteLine("You unlocked the door. Go south to leave.\n");
             }
             catch (NoCurrentRoomException ex) { Console.WriteLine($"Error: {ex.Message}"); }
         }
@@ -284,7 +291,7 @@ namespace ZuulRemake.Classes
                     Console.WriteLine("You can't use the lantern here.");
                     return;
                 }
-                Console.WriteLine("You light the lantern — a sword is revealed on the ground!");
+                Console.WriteLine("You light the lantern — a sword is revealed on the ground!\n");
                 _kitchen.AddItem(new Item("Sword", "Heavy and sharp, capable of slaying the mightiest beast.", 1, 50));
                 _kitchen.UpdateNarrativeDescription("Still damp and dim, but now visibly filthy... yuck.");
             }
@@ -294,21 +301,21 @@ namespace ZuulRemake.Classes
         private void UseArmour()
         {
             Item? armour = _player.GetItem("armour");
-            if (armour == null) { Console.WriteLine("You don't have any armour."); return; }
+            if (armour == null) { Console.WriteLine("You don't have any armour.\n"); return; }
             int boost = armour.StatIncrease ?? 0;
             _player.RemoveItem(armour);
             _player.AddHP(boost);
-            Console.WriteLine($"You put on the armour. It grants you {boost} HP. HP is now {_player.HP}.");
+            Console.WriteLine($"You put on the armour. It grants you {boost} HP. HP is now {_player.HP}.\n");
         }
 
         private void UsePotion()
         {
             Item? potion = _player.GetItem("potion");
-            if (potion == null) { Console.WriteLine("You don't have a potion."); return; }
+            if (potion == null) { Console.WriteLine("You don't have a potion.\n"); return; }
             int heal = potion.StatIncrease ?? 0;
             _player.RemoveItem(potion);
             _player.AddHP(heal);
-            Console.WriteLine($"You drink the potion and restore {heal} HP. HP is now {_player.HP}.");
+            Console.WriteLine($"You drink the potion and restore {heal} HP. HP is now {_player.HP}.\n");
         }
 
         /* ------------------------------ COMBAT ------------------------------ */
@@ -339,6 +346,7 @@ namespace ZuulRemake.Classes
                 if (!monster.IsAlive)
                 {
                     currentRoom.RemoveMonster(monster);
+                    Save();
                 }
             }
             catch (NoCurrentRoomException ex)
@@ -347,11 +355,17 @@ namespace ZuulRemake.Classes
             }
            }
 
-        /* ------------------------------ QUIT ------------------------------ */
+        /* ------------------------------ SAVE / QUIT ------------------------------ */
+
+        private void Save()
+        {
+            SaveManager.Save(_player);
+            Console.WriteLine("\n(!) Your progress has been saved.\n");
+        }
 
         private bool Quit(Command command)
         {
-            if (command.HasSecondWord()) { Console.WriteLine("Please only type 'quit' to quit game."); return false; }
+            if (command.HasSecondWord()) { Console.WriteLine("Please only type 'quit' to quit game.\n"); return false; }
             return true;
         }
     }

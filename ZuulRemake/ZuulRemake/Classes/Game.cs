@@ -10,29 +10,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using ZuulRemake.Classes.Helper_Classes;
 
 namespace ZuulRemake.Classes
 {
-    /**
-    * --------------------  NOTES:  --------------------     
-    * 
-    *
-    * Exit room should not print its details since the game is over
-    *
-    * combat (maybe?) should start automatically if a monster is present in the room
-    * alternate room description/entry message if there is a monster for auto combat
-    * maybe make descriptions nullable so they don't print at all?
-    * we should be able to customize what prints & when for a given room
-    */
     public class Game
     {
         private readonly Parser parser;
-        private readonly Player player;
-        
-        private Room entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit;
-
-
-        private CommandHandler ch;
+        private Player? player;        
+        private Room? entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit;
+        private CommandHandler? ch;
         private NavigationManager nav = new NavigationManager();
 
         public static void Main(string[] args)
@@ -41,14 +28,13 @@ namespace ZuulRemake.Classes
             game.Play();            
         }
 
-        /**
-         * Create the game and initialise its internal map. :3
-         * I like turtles a lot
-         */
         public Game()
         {
             parser = new Parser();
-            player = new Player("Player", 100, 50);
+        }
+
+        private void InitializeGame(Player player)
+        {                       
             Room startRoom = WorldBuilder.Build(
                 out entryway,
                 out dininghall,
@@ -69,8 +55,10 @@ namespace ZuulRemake.Classes
          */
         public void Play()
         {
+            player = MainMenu();
+            InitializeGame(player);
             PrintWelcome();
-            
+
             while (true)
             {
                 Command command = parser.GetCommand();
@@ -98,48 +86,95 @@ namespace ZuulRemake.Classes
             Console.WriteLine("Thank you for playing. Goodbye!");
         }
 
-        /**
-         * Print out the opening message for the player.
-         */
-        private void PrintWelcome()
+        private Player MainMenu()
         {
-            Console.WriteLine();
             Console.WriteLine("Welcome to the World of Zuul!\n");
-            Thread.Sleep(500);
-            string? name = null;
-            while (string.IsNullOrWhiteSpace(name))
+            Console.WriteLine("Please choose an option: ");
+            Console.WriteLine("1. New Game");
+            Console.WriteLine("2. Continue");
+            Console.WriteLine("3. Quit\n");
+
+            string x = Console.ReadLine()!;
+            var p = new Player("Player");
+
+            switch (x)
             {
-                Console.Write("Please enter your name: ");
-                name = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(name))
-                    Console.WriteLine("Invalid input. Please enter your name:");
+                case "1":
+                    string? name = null;
+                    while (string.IsNullOrWhiteSpace(name))
+                    {
+                        Console.Write("\nPlease enter your name: ");
+                        name = Console.ReadLine();
+                        if (string.IsNullOrWhiteSpace(name))
+                            Console.WriteLine("Invalid input. Please enter your name:");
+                    }
+                    p.Name = name.Trim();
+                    return p;
+
+                case "2":
+                    var data = SaveManager.Load();
+
+                    if (data == null)
+                    {
+                        Console.WriteLine("\n(!) No save file found.\n");
+                        return MainMenu();
+                    }
+
+                    p.LoadSaveData(data.Name!, data.HP, data.Level, data.MaxWeight);
+
+                    Console.WriteLine("\nSave loaded.");
+                    return p;
+
+                case "3":
+                    Environment.Exit(0);
+                    return p;
+
+                default:
+                    Console.WriteLine("Invalid option.\n");
+                    return MainMenu();
             }
+        }
 
-            // FIX: apply the typed name to the player
-            player.Name = name.Trim();
-
-            Console.WriteLine($"Greetings, {player.Name}!");
+        private void PrintWelcome()
+        {           
+            Console.WriteLine($"\nGreetings, {player.Name}!\n");
             Thread.Sleep(1000);
+
             Console.WriteLine("You have awoken in a very dark castle with no memory of how you got here.");
             Thread.Sleep(2000);
-            Console.WriteLine("Upon attempting to leave, you find that the front door is locked.");
+
+            Console.Write("\nUpon attempting to leave, you find that the front door is locked");
+            for (int i = 0; i < 3; i++)
+            {
+                Thread.Sleep(500);
+                Console.Write(".");
+            }
             Thread.Sleep(2000);
-            Console.WriteLine("You need to find its key in order to escape... but beware!");
-            Thread.Sleep(1000);
-            Console.WriteLine("Danger lurks around every corner.");
+
+            Console.Write("\nYou need to find its key in order to escape");
+            for (int i = 0; i < 3; i++)
+            {
+                Thread.Sleep(500);
+                Console.Write(".");
+            }
+            Thread.Sleep(500);
+            Console.Write(" but beware!\n");
+            Thread.Sleep(1500);
+            Console.WriteLine("Danger lurks around every corner.\n");
             Thread.Sleep(2000);
             Console.WriteLine("(Type 'help' at any time to display available commands.) \n");
             Thread.Sleep(2000);
 
             try
             {
-                Console.WriteLine(player.GetCurrentRoom().GetLongDescription());
+                Console.WriteLine(player.GetCurrentRoom().GetLongDescription() + "\n");
             }
             catch (NoCurrentRoomException ex)
             {
                 Console.WriteLine($"Error loading starting room: {ex.Message}");
             }
         }
+
         
         /**
          * Print a game over message.
