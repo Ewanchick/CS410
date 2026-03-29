@@ -14,7 +14,7 @@ namespace ZuulRemake.Classes
     {
         public string Direction { get; }
         public Room TargetRoom { get; }
-        public bool IsLocked { get; private set; }
+        public bool IsLocked { get; set; }
 
         public Exit(string direction, Room targetRoom, bool isLocked = false)
         {
