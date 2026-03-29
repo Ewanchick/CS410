@@ -45,6 +45,16 @@ namespace ZuulRemake.Classes
             }
         }
 
+        /* ------------------------------ LOAD SAVE ------------------------------ */
+        public void LoadSaveData(string name, int hp, int level, int max)
+        {
+            Name = name;
+            HP = hp;
+            Level = level;
+            MaxWeight = max;
+        }
+
+
         /* ------------------------------ LEVEL HP ------------------------------ */
 
         /**

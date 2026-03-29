@@ -9,22 +9,24 @@ using ZuulRemake.Models;
 
 namespace ZuulRemake.Classes.Helper_Classes
 {
-    class SaveManager
+    public static class SaveManager
     {
-        private class SaveData
+        public class SaveData
         {
             public string? Name { get; set; }
             public int HP { get; set; }
             public int Level { get; set; }
+            public int MaxWeight { get; set; }
         }
 
-        private static SaveData ToSaveData(Player p)
+        public static SaveData ToSaveData(Player p)
         {
             return new SaveData
             {
                 Name = p.Name,
                 HP = p.HP,
-                Level = p.Level
+                Level = p.Level,
+                MaxWeight = p.MaxWeight
             };
         }
 
@@ -32,18 +34,20 @@ namespace ZuulRemake.Classes.Helper_Classes
         {
             string basePath = AppContext.BaseDirectory;
             string folder = Path.Combine(basePath, "Saves");
+
             Directory.CreateDirectory(folder);
             return Path.Combine(folder, "savegame.json");
         }
 
-        public void Save(Player p) 
+        public static void Save(Player p) 
         {
+            var data = ToSaveData(p);
             var options = new JsonSerializerOptions {  WriteIndented = true };
             string json = JsonSerializer.Serialize(p, options);
             File.WriteAllText(GetPath(), json);
         }
 
-        public Player? Load()
+        public static SaveData? Load()
         {
             string path = GetPath();
             if (!File.Exists(path)) return null;
@@ -51,7 +55,7 @@ namespace ZuulRemake.Classes.Helper_Classes
             string json = File.ReadAllText(path);            
             try
             {
-                return JsonSerializer.Deserialize<Player>(json);
+                return JsonSerializer.Deserialize<SaveData>(json);
             }
             catch
             {

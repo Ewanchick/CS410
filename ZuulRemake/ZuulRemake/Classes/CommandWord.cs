@@ -19,6 +19,7 @@ namespace ZuulRemake.Classes
         DROP,
         USE,
         ATTACK,
+        SAVE,
         QUIT
     }
 }

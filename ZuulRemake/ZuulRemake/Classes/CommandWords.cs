@@ -29,6 +29,8 @@ namespace ZuulRemake.Classes
                 },
                 { "attack", CommandWord.ATTACK
                 },
+                {"save", CommandWord.SAVE
+                },
                 { "quit", CommandWord.QUIT
                 }
             };
