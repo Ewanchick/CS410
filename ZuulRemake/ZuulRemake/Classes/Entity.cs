@@ -8,12 +8,13 @@ namespace ZuulRemake.Classes
 {
     public abstract class Entity
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int HP { get; protected set; }
         public int Level { get; protected set; }
 
         public bool IsAlive => HP > 0;
 
+        protected Entity() { }
         protected Entity(string name, int hp, int level)
         {
             if (name == null)
@@ -22,6 +23,7 @@ namespace ZuulRemake.Classes
                 throw new ArgumentException("Entity name cannot be empty or whitespace.", nameof(name));
             if (level < 1)
                 throw new ArgumentOutOfRangeException(nameof(level), "Level must be at least 1.");
+            if (HP < 0) HP = 0;
 
             Name = name;
             HP = hp;
@@ -33,6 +35,7 @@ namespace ZuulRemake.Classes
             if (damage < 0)
                 throw new ArgumentOutOfRangeException(nameof(damage), "Damage cannot be negative.");
             HP -= damage;
+            if (HP < 0) HP = 0;
         }
 
         public virtual void AddHP(int amount)

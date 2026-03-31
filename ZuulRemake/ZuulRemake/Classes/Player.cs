@@ -28,6 +28,7 @@ namespace ZuulRemake.Classes
         /**
          * Constructors for objects of class Player
          */
+        public Player() { }
         public Player(string name) : base(name, hp: 100, level: 100)
         { }
         public Player(string name, int hp, int level) : base(name, 100, 50)
