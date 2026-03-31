@@ -20,6 +20,7 @@ namespace ZuulRemake.Classes
         /**
          * Constructor for objects of class Monster.
          */
+        public Monster() { }
         public Monster(string name, int hp, int level, Item? drop = null)
               : base(name, hp, level)
         {

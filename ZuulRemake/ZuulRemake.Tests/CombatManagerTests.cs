@@ -3,12 +3,23 @@ using System.Collections.Generic;
 using System.Text;
 using ZuulRemake.Classes;
 using Xunit;
+using Bogus;
 
 namespace ZuulRemake.Tests
 {
 
     public class CombatManagerTests
     {
+        Faker<Player> playerFaker = new Faker<Player>()
+                .RuleFor(p => p.Name, f => f.Name.FirstName())
+                .RuleFor(p => p.HP, f => f.Random.Number(50, 100))
+                .RuleFor(p => p.Level, f => f.Random.Number(50, 100));
+
+        Faker<Monster> monsterFaker = new Faker<Monster>()
+            .RuleFor(p => p.Name, f => f.Name.FirstName())
+            .RuleFor(p => p.HP, f => f.Random.Number(50, 100))
+            .RuleFor(p => p.Level, f => f.Random.Number(50, 100));
+
         /**
          * Ensure that when a player attacks a monster, the monster's HP
          * is reduced by subtracting the player's level from the monster's HP
@@ -17,8 +28,11 @@ namespace ZuulRemake.Tests
         public void PlayerAttackReducesMonsterHP()
         {
             //Arrange
-            var p = new Player("Test", hp: 100, level: 10);
-            var m = new Monster("Ghoul", hp: 100, level: 10);
+            var players = playerFaker.Generate(1);
+            var monsters = monsterFaker.Generate(1);
+            var p = players.First();
+            var m = monsters.First();
+
             int startingHP = m.HP;
 
             //Act
@@ -37,8 +51,10 @@ namespace ZuulRemake.Tests
         public void MonsterAttackReducesPlayerHP()
         {
             //Arrange
-            var p = new Player("Test", hp: 100, level: 10);
-            var m = new Monster("Ghoul", hp: 100, level: 10);
+            var players = playerFaker.Generate(1);
+            var monsters = monsterFaker.Generate(1);
+            var p = players.FirstOrDefault();
+            var m = monsters.FirstOrDefault();
             int startingHP = p.HP;
 
             //Act
@@ -57,7 +73,8 @@ namespace ZuulRemake.Tests
         public void EntityHPDoesNotGoBelowZero()
         {
             //Arrange
-            var e = new Player("Test", 10, 1);
+            var players = playerFaker.Generate(1);
+            var e = players.FirstOrDefault();
 
             //Act
             e.TakeDamage(100);
@@ -70,12 +87,9 @@ namespace ZuulRemake.Tests
         public void MonsterDropsItemOnDeath()
         {
             // Arrange
-            var room = new Room("TestRoom","This Room is a test", "This room is a test");
-            var monster = new Monster("Goblin", hp: 10, level: 1, drop: new Item("Gold","Shiny", 1,0));
+            var room = new Room("TestRoom", "This Room is a test", "This room is a test");
+            var monster = new Monster("Goblin", hp: 10, level: 1, drop: new Item("Gold", "Shiny", 1, 0));
             room.AddMonster(monster);
-
-            var player = new Player("Hero");
-            player.GoNewRoom(room);
 
             // Act - simulate killing monster
             monster.TakeDamage(20); // More than HP so it dies
