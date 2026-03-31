@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 
 namespace ZuulRemake.Classes
 {
@@ -143,14 +143,55 @@ namespace ZuulRemake.Classes
             }
             Console.WriteLine("You failed to escape!");
             return false;
-                }
+        }
+        public static bool Steal(Player p, Monster m)
+        {
+            Random random = new Random();
+
+            //base steal chance is 50
+            //harder to flee from higher level monsters
+            int stealChance = 50 - (m.Level * 5);
+
+            //keep the chance within a reasonable range
+            if (stealChance < 20)
+                stealChance = 20;
+
+            if (stealChance > 90)
+                stealChance = 90;
+
+            int roll = random.Next(1, 101);//roll from 1 - 100
+
+            Console.WriteLine($"\nYou decide to try steal from the {m.Name}!");
+            Thread.Sleep(1000);
+            Console.WriteLine($"Steal chance: {stealChance}% \n");
+            Thread.Sleep(550);
+            Console.Write("Attempting escape");
+            for (int i = 0; i < 3; i++)
+            {
+                Thread.Sleep(1000);
+                Console.Write(".");
+            }
+            Thread.Sleep(1000);
+
+            if (roll <= stealChance)
+            {
+                p.AddItem(m.Drop);
+                return true;
+            }
+
+            Console.WriteLine("ATTEMPT UNSUCCESFUL!");
+            Thread.Sleep(500);
+            Console.WriteLine("You failed to escape! \n");
+            Thread.Sleep(2000);
+            return false;
+        }
 
         /**
          * End combat between a Player and Monster. If the Player has lost all HP, print a message informing 
          * them of their defeat. If the monster has lost all HP, inform the player of their success. 
          * Print the Player's remaining HP.
          */
-          
+
         /// <summary>
         /// Concludes the battle. If the monster was defeated and had a drop, it is placed in the room.
         /// </summary>
