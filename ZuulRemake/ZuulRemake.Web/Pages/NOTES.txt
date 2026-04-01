@@ -1,0 +1,15 @@
+PAGE / UI STRUCTURE
+
+MAIN BOX - centered horizontally, decent amount of top padding
+	> HUD - anchored to bottom of MAIN BOX
+		> ITEM BOXES - centered horizontally, spaced out
+			> ITEM SPRITES - shrink to fit box
+
+	> BACKGROUND IMAGE - stacked vertically on top of HUD, same width, no bottom padding
+		> elements on top of background:
+		   > item sprites - appear BEHIND monsters
+		   > monster srites - appear BEHIND hands
+		   > player hands - appear BEHIND text boxes
+		   > text boxes - TOP element
+
+
