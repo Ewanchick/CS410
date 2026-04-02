@@ -20,15 +20,15 @@ if (!app.Environment.IsDevelopment())
 }
 
 // Register Repos
-builder.Services.AddScoped<RoomRepo>();
-builder.Services.AddScoped<MonsterRepo>();
-builder.Services.AddScoped<ItemRepo>();
+//builder.Services.AddScoped<RoomRepo>();
+//builder.Services.AddScoped<MonsterRepo>();
+//builder.Services.AddScoped<ItemRepo>();
 
-// Register Services
-builder.Services.AddScoped<RoomService>();
-builder.Services.AddScoped<MonsterService>();
-builder.Services.AddScoped<ItemService>();
-builder.Services.AddScoped<GameService>();
+//// Register Services
+//builder.Services.AddScoped<RoomService>();
+//builder.Services.AddScoped<MonsterService>();
+//builder.Services.AddScoped<ItemService>();
+//builder.Services.AddScoped<GameService>();
 
 app.UseHttpsRedirection();
 
