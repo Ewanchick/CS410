@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.NetworkInformation;
+using static ZuulRemake.Models.Model;
 
 namespace ZuulRemake.Classes
 {
@@ -8,12 +10,12 @@ namespace ZuulRemake.Classes
     /// </summary>
     internal class CommandHandler
     {
-        private readonly Player _player;
+        private  Player _player;
         private readonly Parser _parser;
         private readonly NavigationManager _navigationManager = new();
-
-        private readonly Room _entryway;
-        private readonly Room _kitchen;
+        private  Room _entryway;
+        private  Room _kitchen;
+        private int ringCount;
         private readonly Room _exit;
 
         /// <exception cref="ArgumentNullException">If any required argument is null.</exception>
@@ -229,6 +231,43 @@ namespace ZuulRemake.Classes
                 }
             }
         }
+        /// <summary>
+        ///  Sleep command will do a roll based on the rooms danger level
+        /// Then do a roll to see if the sleep goes off successfully
+        /// </summary>
+        /// <param name="command"></param>
+        private void Sleep(Command command)
+        {
+            Random rn = new Random();
+            int numberInRange = rn.Next(1, 51);
+            var ring = new Item("Ring", "It doesn't seem to do anything...", 0, 0);
+            var nightmare = new Monster("nightmare", 100, 30, ring);
+            if (numberInRange <= 20)
+            {
+                Console.WriteLine($"As your eyes drift to sleep you start to hear the fient sound of laughing... \n");
+                Thread.Sleep(2000);
+                Console.WriteLine("With each passing moment the laughter grows louder and more malicious... \n");
+                Thread.Sleep(3000);
+                Console.WriteLine("What started as an impish giggle turned into a maniancal bloodcurling cackle as you see the feint outline of a humanlike figure standing in front of you... \n");
+                Thread.Sleep(3000);
+                Console.WriteLine("It creeps closer, you are able to see a figure fully covered in robes and a face covered by a featureless white mask... \n");
+                Thread.Sleep(2000);
+                Console.WriteLine("The figure attacks!!! \n");
+                Thread.Sleep(3000);
+                CombatManager.StartBattle(_player, nightmare);
+                Console.WriteLine("The figure fades away... \n");
+            }
+            else
+            {
+                Console.WriteLine($"As your eyes drift to sleep you start to hear the fient sound of laughing... \n");
+                Thread.Sleep(2000);
+                Console.WriteLine("With each passing moment the laughter grows louder and more malicious... \n");
+                Thread.Sleep(3000);
+                Console.WriteLine("You bolt awake feeling a sense of panic but you just realize it was all a bad dream... You are fully healed. \n");
+                Thread.Sleep(3000);
+                _player.AddHP(100 - _player.HP);
+            }
+        }
 
         /// <summary>
         /// All item lookups are now null-checked before use.
@@ -309,6 +348,46 @@ namespace ZuulRemake.Classes
             _player.RemoveItem(potion);
             _player.AddHP(heal);
             Console.WriteLine($"You drink the potion and restore {heal} HP. HP is now {_player.HP}.");
+        }
+        private void UseRing()
+        {
+
+            Item? ring = _player.GetItem("ring");
+            if (ring == null) { Console.WriteLine("You don't have a ring."); return; }
+            if (ringCount < 1)
+            {
+                Console.WriteLine($"You put the ring on and nothing happens... Maybe if you rub it?");
+                ringCount++;
+            }
+           if(ringCount < 3)
+            {
+                Console.WriteLine($"You rub the ring, nothing happens... But maybe if you rub it again?");
+                ringCount++;
+            }
+           if(ringCount == 4)
+            {
+                Console.WriteLine($"The ring's luster starts to tarnish from all the rubbing, but you see the start of a message hidden under the rings gold plating..." +
+                $"Though all you are able to see right now is the letter L.");
+                ringCount++;
+            }
+           if(ringCount == 5)
+            {
+                Console.WriteLine($"As you keep picking away at the plating another letter starts to appear... The letter O is now visible.");
+                ringCount++;
+            }
+           if(ringCount == 6)
+            {
+                Console.WriteLine($"As the last part of the gold plating falls away you are greeted with the last letter of the message, L." +
+                    $" L...O...L \n");
+                Console.WriteLine(".");
+                Thread.Sleep(1000);
+                Console.WriteLine(".");
+                Thread.Sleep(1000);
+                Console.WriteLine(".");
+                Thread.Sleep(1000);
+                Console.WriteLine($"You don't know what this message means but for some reason you feel extremely annoyed. You take 1 psychic Damage.");
+                _player.HP = _player.HP - 1;
+            }
         }
 
         /* ------------------------------ COMBAT ------------------------------ */
