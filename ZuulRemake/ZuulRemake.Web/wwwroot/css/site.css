@@ -17,14 +17,21 @@ input, button, textarea, select {
 
 /* ==================== BASE ELEMENTS ==================== */
 .background {
-    background-color: #008B8B;
+    /*background-color: #008B8B;*/
+    background-image: url("../images/stormyskybg.png");
     display: flex;
     justify-content: center;
     align-items: flex-start;
     width: 100%;
     min-height: 100vh;
     padding-top: 30px;
+    background-size: 100% auto;
+    background-repeat: repeat-y;
+    background-attachment: scroll;
+    background-position: top center;
 }
+
+
 
 .game-container {
     display: flex;
@@ -47,22 +54,23 @@ input, button, textarea, select {
     overflow: hidden;
 }
 
-.footer {
+/*.footer {
     background-color: grey;
     height: 20%;
     width: 100%;
-}
+}*/
 
 /* ==================== HUD ==================== */
 .hud {
-    background-color: #B0E0E6;
+    background-color: #64285d;
     padding: 15px;
     border: 4px solid;
-    border-top-color: #fff;
-    border-left-color: #fff;
-    border-bottom-color: #7aaeb3;
-    border-right-color: #7aaeb3;
+    border-top-color: #823b7a;
+    border-left-color: #823b7a;
+    border-bottom-color: #40153b;
+    border-right-color: #40153b;
 }
+
 
 .inventory {
     display: flex;
@@ -80,13 +88,17 @@ input, button, textarea, select {
     justify-content: center;
     width: 60px;
     aspect-ratio: 1 / 1;
-    background-color: #d8f4f7;
+    background-color: #660033;
     border: 5px solid;
-    border-top-color: #7aaeb3;
-    border-left-color: #7aaeb3;
-    border-bottom-color: #fff;
-    border-right-color: #fff;
+    border-top-color: #330000;
+    border-left-color: #330000;
+    border-bottom-color: #800040;
+    border-right-color: #800040;
 }
+
+    .item-box:hover {
+        background: radial-gradient(circle 25px, #d93285, #660033);
+    }
 
     .item-box img {
         max-width: 80%;
@@ -158,7 +170,35 @@ input, button, textarea, select {
     font-size: 16px;
     color: black;
 }
-g
+
+/* ==================== BUTTONS ==================== */
+.context-menu {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    z-index: 100;
+    min-width: 150px;
+}
+
+    .context-menu ul {
+        list-style: none;
+        margin: 0;
+        padding: 5px 0;
+    }
+
+        .context-menu ul li a {
+            display: block;
+            padding: 8px 15px;
+            text-decoration: none;
+            color: #333;
+        }
+
+            .context-menu ul li a:hover {
+                background-color: #f0f0f0;
+            }
+
 
 
 
@@ -185,7 +225,6 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {

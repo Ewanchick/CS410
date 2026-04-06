@@ -13,7 +13,7 @@ MAIN BOX - centered horizontally, decent amount of top padding
 		   > text boxes - TOP element
 
 IMPORTANT !
-dyanimcally changing hands: 
+dynamically changing hands: 
 	> click on item in HUD
 	   > highlight item in HUD
 	   > update hand sprite
