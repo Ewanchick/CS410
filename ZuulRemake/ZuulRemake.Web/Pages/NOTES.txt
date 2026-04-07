@@ -15,15 +15,15 @@ MAIN BOX - centered horizontally, decent amount of top padding
 IMPORTANT !
 dynamically changing hands: 
 	> click on item in HUD
-	   > highlight item in HUD
-	   > update hand sprite
-	   > choose from menu what to do with item > follow menu to complete action
+	   > light up item in HUD
+	   > update hand sprite with image based on value of image in HUD item box
+
+	   > based on value of item in the box, context menu options change:
+			> player clicks on action from menu (ATTACK, USE, DROP ITEM, etc)
+				> action affects other visual elements: 
+				   > ATTACK makes hand bounce once, enemy bounce once as it takes damage
+				   > DROP ITEM removes image from HUD, places image in room
+				   > USE LANTERN changes background image of current view (ONLY if room = dark)
+
 	   > after action is complete (battle) item remains in hand unless HUD is clicked on again (as part of toggle)
-	> if ITEM = LANTERN:
-	   > lantern remains in hand as long as it is toggled HELD
-	   > does not update background image except in dark room and only if it is used
-	   > but this should be fine because clicking on it for the first time means:
-	    > pop-up menu prompts USE action
-		> hand sprite updates to hold lantern
-		> USE action completes -> background png updates
-		> lantern remains in hand until toggled UNHELD
+	> 
