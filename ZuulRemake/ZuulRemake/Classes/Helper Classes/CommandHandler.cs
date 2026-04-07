@@ -234,9 +234,10 @@ namespace ZuulRemake.Classes
         /// <summary>
         ///  Sleep command will do a roll based on the rooms danger level
         /// Then do a roll to see if the sleep goes off successfully
+        /// If the sleep roll fails they are attacked by a nightmare
         /// </summary>
         /// <param name="command"></param>
-        private void Sleep(Command command)
+        private void Sleep()
         {
             Random rn = new Random();
             int numberInRange = rn.Next(1, 51);
@@ -268,7 +269,6 @@ namespace ZuulRemake.Classes
                 _player.AddHP(100 - _player.HP);
             }
         }
-
         /// <summary>
         /// All item lookups are now null-checked before use.
         /// </summary>
@@ -386,7 +386,7 @@ namespace ZuulRemake.Classes
                 Console.WriteLine(".");
                 Thread.Sleep(1000);
                 Console.WriteLine($"You don't know what this message means but for some reason you feel extremely annoyed. You take 1 psychic Damage.");
-                _player.HP = _player.HP - 1;
+                _player.TakeDamage(1);
             }
         }
 
