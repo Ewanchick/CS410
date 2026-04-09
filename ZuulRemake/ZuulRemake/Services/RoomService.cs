@@ -9,9 +9,9 @@ namespace ZuulRemake.Services
 {
     public class RoomService
     {
-        private readonly RoomRepo roomRepo;
+        private readonly IRoomRepo roomRepo;
 
-        public RoomService(RoomRepo roomRepo)
+        public RoomService(IRoomRepo roomRepo)
         {
             this.roomRepo = roomRepo ?? throw new ArgumentNullException(nameof(roomRepo));
         }
@@ -32,7 +32,7 @@ namespace ZuulRemake.Services
                 Exits = new List<Model.ExitEntity>()
             };
 
-            roomRepo.AddRoom(roomEntity);
+            roomRepo.Add(roomEntity);
             RoomMapper.RegisterRoomId(name, roomEntity.Id);
         }
 

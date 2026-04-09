@@ -25,7 +25,7 @@ namespace ZuulRemake.Services
         {
             var saveData = new SaveData
             {
-                Name = player.Name,
+                Name = player.Name!,
                 HP = player.HP,
                 Level = player.Level
             };

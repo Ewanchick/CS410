@@ -120,14 +120,10 @@ namespace ZuulRemake.Services
                 .Select(RoomMapper.MapToEntity)
                 .ToList();
 
-            roomRepo.AddRooms(roomEntities);
+            roomRepo.AddRange(roomEntities);
             return entryway;
         }
 
-        public void SaveGame()
-        {
-            // Save player stats, current room, inventory to DB
-            // TODO: Create PlayerRepo
-        }
+        
     }
 }
