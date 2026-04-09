@@ -9,9 +9,9 @@ namespace ZuulRemake.Services
 {
     public class MonsterService
     {
-        private readonly MonsterRepo monsterRepo;
+        private readonly IMonsterRepo monsterRepo;
 
-        internal MonsterService(MonsterRepo monsterRepo)
+        public MonsterService(IMonsterRepo monsterRepo)
         {
             this.monsterRepo = monsterRepo ?? throw new ArgumentNullException(nameof(monsterRepo));
         }

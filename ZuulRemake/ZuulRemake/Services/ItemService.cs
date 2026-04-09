@@ -9,9 +9,9 @@ namespace ZuulRemake.Services
 {
     public class ItemService
     {
-        private readonly ItemRepo itemRepo;
+        private readonly IItemRepo itemRepo;
 
-        public ItemService(ItemRepo itemRepo)
+        public ItemService(IItemRepo itemRepo)
         {
             this.itemRepo = itemRepo ?? throw new ArgumentNullException(nameof(itemRepo));
         }
