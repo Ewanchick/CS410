@@ -1,4 +1,5 @@
 ﻿    using System;
+    using System.Threading;
 
 namespace ZuulRemake.Classes
 {
@@ -51,6 +52,20 @@ namespace ZuulRemake.Classes
                         MonsterAttack(p, m);
                     }
                     
+                }
+                else if (action == "s".ToLower())
+                {
+                    bool Succeeded = Steal(p, m);
+                    if (Succeeded)
+                    {
+                        Console.WriteLine($"You stole from the {m.Name}!");
+                        return;
+                    }
+                    else
+                    {
+                        MonsterAttack(p, m);
+                    }
+
                 }
                 else
                 {
@@ -118,7 +133,14 @@ namespace ZuulRemake.Classes
          */
         public static bool Flee(Player p, Monster m)
         {
-            Random random = new Random();
+            return Flee(p, m, new Random());
+        }
+
+        // Overload used for deterministic testing
+        public static bool Flee(Player p, Monster m, Random random)
+        {
+            if (p == null) throw new ArgumentNullException(nameof(p));
+            if (m == null) throw new ArgumentNullException(nameof(m));
 
             //base flee chance is 75
             //harder to flee from higher level monsrters
@@ -146,10 +168,17 @@ namespace ZuulRemake.Classes
         }
         public static bool Steal(Player p, Monster m)
         {
-            Random random = new Random();
+            return Steal(p, m, new Random(), skipSleep: false);     
+        }
+
+        // Overload used for deterministic testing; skipSleep avoids delays
+        public static bool Steal(Player p, Monster m, Random random, bool skipSleep)
+        {
+            if (p == null) throw new ArgumentNullException(nameof(p));
+            if (m == null) throw new ArgumentNullException(nameof(m));
 
             //base steal chance is 50
-            //harder to flee from higher level monsters
+            //harder to steal from higher level monsters
             int stealChance = 50 - (m.Level * 5);
 
             //keep the chance within a reasonable range
@@ -162,27 +191,31 @@ namespace ZuulRemake.Classes
             int roll = random.Next(1, 101);//roll from 1 - 100
 
             Console.WriteLine($"\nYou decide to try steal from the {m.Name}!");
-            Thread.Sleep(1000);
+            if (!skipSleep) Thread.Sleep(1000);
             Console.WriteLine($"Steal chance: {stealChance}% \n");
-            Thread.Sleep(550);
-            Console.Write("Attempting escape");
+            if (!skipSleep) Thread.Sleep(550);
+            Console.Write("Attempting Theft");
             for (int i = 0; i < 3; i++)
             {
-                Thread.Sleep(1000);
+                if (!skipSleep) Thread.Sleep(1000);
                 Console.Write(".");
             }
-            Thread.Sleep(1000);
+            if (!skipSleep) Thread.Sleep(1000);
 
             if (roll <= stealChance)
             {
-                p.AddItem(m.Drop);
+                // Only add item if the monster actually has one
+                if (m.Drop != null)
+                {
+                    p.AddItem(m.Drop);
+                }
                 return true;
             }
 
             Console.WriteLine("ATTEMPT UNSUCCESFUL!");
-            Thread.Sleep(500);
-            Console.WriteLine("You failed to escape! \n");
-            Thread.Sleep(2000);
+            if (!skipSleep) Thread.Sleep(500);
+            Console.WriteLine($"You failed to Steal from the {m.Name}! \n");
+            if (!skipSleep) Thread.Sleep(2000);
             return false;
         }
 

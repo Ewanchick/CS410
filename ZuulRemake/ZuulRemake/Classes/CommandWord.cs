@@ -19,6 +19,9 @@ namespace ZuulRemake.Classes
         DROP,
         USE,
         ATTACK,
+        SLEEP,
+        STEAL,
+
         QUIT
     }
 }

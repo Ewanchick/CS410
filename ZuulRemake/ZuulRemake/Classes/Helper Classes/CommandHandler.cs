@@ -87,6 +87,11 @@ namespace ZuulRemake.Classes
                         Attack(command);
                         return false;
 
+                    case CommandWord.SLEEP:
+                        Sleep();
+                        return false;
+
+
                     default:
                         Console.WriteLine("Unrecognised command.");
                         return false;

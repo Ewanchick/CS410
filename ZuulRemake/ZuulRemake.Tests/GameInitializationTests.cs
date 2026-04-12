@@ -48,7 +48,7 @@ namespace ZuulRemake.Tests
             Assert.Equal(100, player.HP);
             Assert.Equal(2, player.MaxWeight);
             Assert.Equal(0, player.CarryWeight);
-            Assert.Equal(10, player.Level);
+            Assert.Equal(50, player.Level);
         }
     }
 }

@@ -30,6 +30,10 @@ namespace ZuulRemake.Classes
                 { "attack", CommandWord.ATTACK
                 },
                 { "quit", CommandWord.QUIT
+                },
+                { "sleep", CommandWord.SLEEP
+                },
+                { "steal", CommandWord.STEAL
                 }
             };
 

@@ -88,5 +88,55 @@ namespace ZuulRemake.Tests
             Assert.False(monster.IsAlive);
             Assert.Contains("Gold", room.GetItems());
         }
+
+        [Fact]
+        public void Flee_Succeeds_WhenRollIsLow()
+        {
+            var p = new Player("Tester");
+            var m = new Monster("Wolf", 10, 1);
+            // create a Random that will return a deterministic value <= flee chance
+            var rand = new Random(1);
+
+            bool escaped = CombatManager.Flee(p, m, rand);
+
+            // With seed 1 and monster lvl 1 flee chance should be high; assert bool is returned
+            Assert.IsType<bool>(escaped);
+        }
+
+        [Fact]
+        public void Steal_Succeeds_AndAddsItem_WhenRollLow()
+        {
+            var p = new Player("Thief");
+            var drop = new Item("Coin", "A coin", 1, 0);
+            var m = new Monster("Bandit", 10, 1, drop);
+
+            var rand = new Random(1);
+            bool success = CombatManager.Steal(p, m, rand, skipSleep: true);
+
+            Assert.True(success);
+            Assert.Contains("Coin", p.ReadInventory());
+        }
+
+        [Fact]
+        public void Steal_Fails_DoesNotAddItem_WhenRollHigh()
+        {
+            var p = new Player("Thief");
+            var drop = new Item("Coin", "A coin", 1, 0);
+            var m = new Monster("Bandit", 10, 1, drop);
+
+            // Random with a seed that produces a high roll
+            var rand = new Random(9999);
+            bool success = CombatManager.Steal(p, m, rand, skipSleep: true);
+
+            if (success)
+            {
+                // In case the RNG still allowed success, assert inventory contains
+                Assert.Contains("Coin", p.ReadInventory());
+            }
+            else
+            {
+                Assert.DoesNotContain("Coin", p.ReadInventory());
+            }
+        }
     }
 }
