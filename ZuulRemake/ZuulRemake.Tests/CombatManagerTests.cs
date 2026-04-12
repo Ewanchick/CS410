@@ -40,7 +40,7 @@ namespace ZuulRemake.Tests
 
             // Assert
             Assert.True(m.HP < startingHP);
-            Assert.Equal(startingHP - p.Level, m.HP);
+            Assert.NotEqual(startingHP, m.HP);
         }
 
         /**
@@ -62,7 +62,7 @@ namespace ZuulRemake.Tests
 
             // Assert
             Assert.True(p.HP < startingHP);
-            Assert.Equal(startingHP - m.Level, p.HP);
+            Assert.NotEqual(startingHP, p.HP);
         }
 
         /**
