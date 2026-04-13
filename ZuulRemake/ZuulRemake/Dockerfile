@@ -16,30 +16,26 @@ COPY ["ZuulRemake/ZuulRemake/ZuulRemake.csproj", "ZuulRemake/ZuulRemake/"]
 COPY ["ZuulRemake/ZuulRemake.Tests/ZuulRemake.Tests.csproj", "ZuulRemake/ZuulRemake.Tests/"]
 
 RUN dotnet restore "ZuulRemake/ZuulRemake/ZuulRemake.csproj"
-RUN dotnet restore "ZuulRemake/ZuulRemake.Tests/ZuulRemake.Tests.csproj"
 
 COPY . .
 
 WORKDIR "/src/ZuulRemake/ZuulRemake"
-RUN dotnet build "ZuulRemake.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build -c Release -o /app/build
 
 
 # Run unit tests
-FROM build AS test
-WORKDIR "/src/ZuulRemake/ZuulRemake.Tests"
-RUN dotnet test "ZuulRemake.Tests.csproj" -c Release --verbosity normal
+WORKDIR /src/ZuulRemake/ZuulRemake.Tests
+RUN dotnet test -c Release --no-build
 
 
 # This stage is used to publish the service project
-FROM test AS publish
-ARG BUILD_CONFIGURATION=Release
-WORKDIR "/src/ZuulRemake/ZuulRemake"
-RUN dotnet publish "ZuulRemake.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+WORKDIR /src/ZuulRemake/ZuulRemake
+RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
 
 
 # Final runtime image
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/runtime:9.0
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 
 ENTRYPOINT ["dotnet", "ZuulRemake.dll"]
