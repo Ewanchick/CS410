@@ -1,4 +1,17 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function toggleMenu(event) {
+    // This stops the click from hitting the window.onclick function
+    event.stopPropagation();
+    document.getElementById("myDropup").classList.toggle("show");
+}
 
-// Write your JavaScript code.
+window.onclick = function (event) {
+    // This now only runs if you click truly "outside"
+    var dropups = document.getElementsByClassName("dropup-content");
+    for (var i = 0; i < dropups.length; i++) {
+        var openDropup = dropups[i];
+        if (openDropup.classList.contains('show')) {
+            openDropup.classList.remove('show');
+        }
+    }
+}
+
