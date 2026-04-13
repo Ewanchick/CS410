@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Bogus.DataSets;
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using ZuulRemake.Classes;
 
@@ -11,7 +13,7 @@ namespace ZuulRemake.Tests
         public void NewGame_PlayerStartsInEntryway()
         {
             //Arrange
-            var game = new Game();
+            var game = new Game(new Player("Test"));
 
             //Act
             var dininghall = game.GetType()
@@ -39,16 +41,12 @@ namespace ZuulRemake.Tests
         [Fact]
         public void NewGame_PlayerStatsAreDefault()
         {
-            var game = new Game();
-            var player = new Game().GetType()
-                                   .GetField("player", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                                   .GetValue(game) as Player;
+            var game = new Game(new Player("Test"));
 
-            // Assert default stats
-            Assert.Equal(100, player.HP);
-            Assert.Equal(2, player.MaxWeight);
-            Assert.Equal(0, player.CarryWeight);
-            Assert.Equal(10, player.Level);
+            Assert.Equal(100, game.Player.HP);
+            Assert.Equal(2, game.Player.MaxWeight);
+            Assert.Equal(0, game.Player.CarryWeight);
+            Assert.Equal(50, game.Player.Level);
         }
     }
 }
