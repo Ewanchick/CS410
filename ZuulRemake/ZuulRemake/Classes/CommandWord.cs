@@ -20,6 +20,9 @@ namespace ZuulRemake.Classes
         USE,
         ATTACK,
         SAVE,
+        SLEEP,
+        STEAL,
+
         QUIT
     }
 }

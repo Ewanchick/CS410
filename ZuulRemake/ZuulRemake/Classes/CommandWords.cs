@@ -32,6 +32,10 @@ namespace ZuulRemake.Classes
                 {"save", CommandWord.SAVE
                 },
                 { "quit", CommandWord.QUIT
+                },
+                { "sleep", CommandWord.SLEEP
+                },
+                { "steal", CommandWord.STEAL
                 }
             };
 

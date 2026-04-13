@@ -54,7 +54,7 @@ namespace ZuulRemake.Classes
             var armour = new Item("Armour", "Protect yourself from the lurking dangers!", 1, 20);
             var potion = new Item("Potion", "Use this to increase your health!", 1, 50);
             var key = new Item("Key", "This looks like it should fit the lock in the Entryway...", 0, 0);
-
+           
             // initialize items
             dininghall.AddItem(lantern);
             ballroom.AddItem(armour);
