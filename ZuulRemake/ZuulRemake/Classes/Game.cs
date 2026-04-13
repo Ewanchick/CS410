@@ -17,6 +17,7 @@ namespace ZuulRemake.Classes
     public class Game
     {
         private readonly Parser parser;
+        public Player Player => player!;
         private Player? player;        
         private Room? entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit;
         private CommandHandler? ch;
@@ -31,6 +32,13 @@ namespace ZuulRemake.Classes
         public Game()
         {
             parser = new Parser();
+        }
+        //Added for testing purposes, allows for dependency injection of a player object with custom stats
+        public Game(Player player)
+        {
+            parser = new Parser();
+            this.player = player;
+            InitializeGame(player);
         }
 
         private void InitializeGame(Player player)
