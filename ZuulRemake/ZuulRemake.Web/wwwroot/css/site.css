@@ -44,7 +44,6 @@ h1 {
 
 /* ==================== BASE ELEMENTS ==================== */
 .background {
-    /*background-color: #008B8B;*/
     background-image: url("../images/stormyskybg.png");
     display: flex;
     justify-content: center;
@@ -90,7 +89,7 @@ h1 {
 /* ==================== HUD ==================== */
 .hud {
     background-color: #64285d;
-    padding: 15px;
+    padding: 10px;
     border: 4px solid;
     border-top-color: #823b7a;
     border-left-color: #823b7a;
@@ -98,6 +97,30 @@ h1 {
     border-right-color: #40153b;
 }
 
+.healthbar-container {
+    border: 1px solid;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    max-width: 200px;
+}
+.hp-label {
+    font-family: 'BrightLinger';
+    margin-left: 5px;
+    color: black;
+    font-size: 2rem;
+    overflow: hidden;
+}
+
+.health-bar p {
+    color:white;
+    font-size: 2rem;
+}
+
+/*  HUD should be arranged like a nav bar; no vertical stacking. Health bar is first, 
+    aligned Left, then Items aligned Center. Healthbar percentage should be aligned 
+    to center of health bar container, not center of HUD.
+*/
 
 .inventory {
     display: flex;
@@ -171,7 +194,7 @@ h1 {
     top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 200px;
+    max-width: 12vw;
     height: auto;
 }
 
@@ -180,10 +203,13 @@ h1 {
 .text-box {
     position: absolute;
     bottom: 0px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    border: 4px solid black;
+    transform: translate(20%, -15%);
+    background: #cfb696;
+    border: 4px solid;
+    border-top-color: #9c7b4f;
+    border-left-color: #806541;
+    border-bottom-color: #4d3b23;
+    border-right-color: #4d3b23;
     padding: 12px;
     font-family: 'BrightLinger';
     cursor: pointer;
@@ -195,8 +221,8 @@ h1 {
 }
 
 .text-content {
-    font-size: 2rem;
-    color: black;
+    font-size: 1.7vw;
+    color: #440E03;
 }
 
 /* ==================== BUTTONS ==================== */
