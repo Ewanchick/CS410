@@ -30,8 +30,7 @@
                         <div class="text-box" id="textBox">
                             <div class="text-content" id="textContent">
                                 <p>
-                                    What could be in that briefcase? Money, gold, diamonds? I don't think this is about money...
-                                    Is it a bomb? If it was, he wouldn't hit me over the head with one. What if it's Archibald's severed head?
+                                    @Model.GameState.RoomDescription
                                 </p>
                             </div>
                         </div>
@@ -39,44 +38,47 @@
                 </div>
 
                 <div class="hud">
-                    <div class="healthbar-container">
-                        <!--
-                        <label asp-for="Player.HP" class="hp-label"></label>
-                        <input asp-for="Player.HP" readonly />
-                        -->
-                    </div>
-                    <div class="inventory">
-                        <div class="item-boxes">
 
-
-                            <div class="item-box">
-                                <details class="dropdown">
-                                    <summary style="list-style: none;">
-                                        <img src="~/images/sword.png" />
-                                    </summary>
-                                    <div class="content">
-                                        <a href="#">ATTACK</a>
-                                        <a href="#">DROP ITEM</a>
-                                    </div>
-                                </details>
-                            </div>
-
-
-
-
-                            <div class="item-box">
-                                <details class="dropdown">
-                                    <summary style="list-style: none;">
-                                        <img src="~/images/lantern.png" />
-                                    </summary>
-                                    <div class="content">
-                                        <a href="#">USE</a>
-                                        <a href="#">DROP ITEM</a>
-                                    </div>
-                                </details>
-                            </div>
+                    <!-- LEFT -->
+                    <div class="hud-left">
+                        <div class="healthbar-container">
+                            HP: @Model.GameState.PlayerHP
                         </div>
                     </div>
+
+                    <!-- CENTER -->
+                    <div class="hud-center">
+                        <div class="inventory">
+
+
+                            <div class="item-boxes">
+                               
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="hud-right">
+                        <details class="dropdown">
+                            <summary>Move</summary>
+                            <div class="content">
+                                <form method="post" asp-page-handler="Move">
+                                    <input type="hidden" name="direction" value="north" />
+                                    <button type="submit">North</button>
+                                </form>
+                                <form method="post" asp-page-handler="Move">
+                                    <input type="hidden" name="direction" value="east" />
+                                    <button type="submit">East</button>
+                                </form>
+                            </div>
+                        </details>
+                    </div>
+
+
+
+
                 </div>
             </div>
         </div>

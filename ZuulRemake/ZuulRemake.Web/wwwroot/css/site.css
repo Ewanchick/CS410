@@ -161,30 +161,39 @@ h1 {
     border-right-color: #40153b;
     width: 100%;
     min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hud-left,
+.hud-center,
+.hud-right {
+    display: flex;
+    align-items: center;
+}
+
+.hud-left {
+    justify-content: flex-start;
+}
+
+.hud-center {
+    justify-content: center;
+    flex: 1;
+}
+
+.hud-right {
+    justify-content: flex-end;
 }
 
 .healthbar-container {
-    border: 1px solid;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     max-width: 200px;
     color: #fff;
-    font-size: 2rem;
+    font-size: 2.5rem;
 }
-.hp-label {
-    font-family: 'BrightLinger';
-    margin-left: 5px;
-    color: black;
-    font-size: 2rem;
-    overflow: hidden;
-}
-
-
-/*  HUD should be arranged like a nav bar; no vertical stacking. Health bar is first, 
-    aligned Left, then Items aligned Center. Healthbar percentage should be aligned 
-    to center of health bar container, not center of HUD.
-*/
 
 .inventory {
     display: flex;
@@ -194,6 +203,16 @@ h1 {
 .item-boxes {
     display: flex;
     gap: 30px;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    aspect-ratio: 1 / 1;
+    background-color: #660033;
+    border: 5px solid;
+    border-top-color: #330000;
+    border-left-color: #330000;
+    border-bottom-color: #800040;
+    border-right-color: #800040;
 }
 
 .item-box {
@@ -210,11 +229,11 @@ h1 {
     border-right-color: #800040;
 }
 
-    .item-box:hover {
+    .item-boxes:hover {
         background: radial-gradient(circle 25px, #d93285, #660033);
     }
 
-    .item-box img {
+    .item-boxes img {
         max-width: 80%;
         max-height: 80%;
         object-fit: contain;
@@ -267,7 +286,7 @@ h1 {
 .text-box {
     position: absolute;
     bottom: 0px;
-    transform: translate(20%, -15%);
+    transform: translate(33%, -15%);
     background: #cfb696;
     border: 4px solid;
     border-top-color: #9c7b4f;
@@ -277,7 +296,7 @@ h1 {
     padding: 12px;
     font-family: 'BrightLinger';
     cursor: pointer;
-    max-width: 70%;
+    max-width: 60%;
 }
 
 .hidden {
@@ -305,6 +324,7 @@ summary {
     height: 100%;
     list-style: none;
 }
+
 
     summary img {
         max-width: 80%;
