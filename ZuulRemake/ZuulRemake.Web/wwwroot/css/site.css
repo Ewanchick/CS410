@@ -286,7 +286,7 @@ h1 {
 .text-box {
     position: absolute;
     bottom: 0px;
-    transform: translate(33%, -15%);
+    transform: translate(50%, -15%);
     background: #cfb696;
     border: 4px solid;
     border-top-color: #9c7b4f;

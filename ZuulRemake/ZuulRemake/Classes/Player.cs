@@ -22,7 +22,7 @@ namespace ZuulRemake.Classes
         public int CarryWeight => Inventory.Sum(i => i.Weight);
         public int MaxWeight { get; private set; } = 2;
 
-        public Room? CurrentRoom { get; private set; }
+        public Room CurrentRoom { get; private set; } = new Room("default name", "default short", "defalt long");
         private Room? ChargeRoom { get; set; }
 
         /**

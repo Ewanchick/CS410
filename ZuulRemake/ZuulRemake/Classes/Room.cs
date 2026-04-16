@@ -70,6 +70,11 @@ namespace ZuulRemake.Classes
             return itemstr;
         }
 
+        public List<Item> GetItemsOb()
+        {
+            return Items;
+        }
+
         /**
          * Check if the room contains any Monsters. If not, print a message explaining so. 
          * Otherwise, list each Monster in the room on a new line and return as a string.
@@ -82,6 +87,11 @@ namespace ZuulRemake.Classes
             string monstr = "Monsters in this room: \n " +
             string.Join("\n ", MonsterNames);
             return monstr;
+        }
+
+        public List<Monster> GetMonstersOb()
+        {
+            return Monsters;
         }
 
         /**
@@ -97,6 +107,11 @@ namespace ZuulRemake.Classes
             string exitstr = "Exits: \n > " +
             string.Join("\n > ", ExitsAvailable);
             return exitstr;
+        }
+
+        public List<Exit> GetExitsOb()
+        {
+            return Exits;
         }
 
         /* ----------------------- EXITS ----------------------- */
