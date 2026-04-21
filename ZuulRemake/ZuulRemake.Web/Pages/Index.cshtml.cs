@@ -5,16 +5,20 @@ namespace ZuulRemake.Web.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
-
-        public IndexModel(ILogger<IndexModel> logger)
+        public IActionResult OnPostNewGame()
         {
-            _logger = logger;
+            return RedirectToPage("PlayGame");
         }
 
-        public void OnGet()
+        public IActionResult OnPostContinue()
         {
+            // TO DO: load save data 
+            return RedirectToPage("PlayGame");
+        }
 
+        public IActionResult OnPostQuit()
+        {
+            return RedirectToPage("Index");
         }
     }
 }

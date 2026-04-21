@@ -16,21 +16,14 @@ namespace ZuulRemake.Tests
             var game = new Game(new Player("Test"));
 
             //Act
-            var dininghall = game.GetType()
-                                  .GetField("dininghall", System.Reflection.BindingFlags.NonPublic
-                                                        | System.Reflection.BindingFlags.Instance)
+            var dininghall = game.GetType().GetField("dininghall", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                                   .GetValue(game) as Room;
-            var ballroom = game.GetType()
-                               .GetField("ballroom", System.Reflection.BindingFlags.NonPublic
-                                                     | System.Reflection.BindingFlags.Instance)
+            var ballroom = game.GetType().GetField("ballroom", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                                .GetValue(game) as Room;
-            var dungeon = game.GetType()
-                              .GetField("dungeon", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            var dungeon = game.GetType().GetField("dungeon", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                               .GetValue(game) as Room;
 
-            var bathroom = game.GetType()
-                               .GetField("bathroom", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                               .GetValue(game) as Room;
+            var bathroom = game.GetType().GetField("bathroom", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(game) as Room;
 
             //Act & Assert
             Assert.Contains("lantern", dininghall.GetItems().ToLower());

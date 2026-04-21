@@ -1,0 +1,99 @@
+﻿@page
+@model ZuulRemake.Web.Pages.PlayGameModel
+@{
+    ViewData["Title"] = "Play Game";
+}
+<div class="background">
+    <div class="game-container">
+        <h1>World of Zuul</h1>
+        <div class="game-frame">
+            <div class="game-frame-b">
+                <div class="viewbox">
+                    <img src="~/images/currentviewplaceholder2.png" /> <!--- CURRENT ROOM VIEW --->
+                    <div class="item-layer">
+                        <img src="" /> <!--- ITEMS IN THIS ROOM --->
+                    </div>
+
+
+                    <div class="monster-layer">
+                        <img class="monster" src="~/images/wmjs.png" />
+                    </div>
+
+
+                    <div class="player-layer">
+                        <img class="left-hand" src="~/images/lhand.png" />
+                        <img class="right-hand" src="~/images/rhand_sword.png" />
+                    </div>
+
+
+                    <div class="ui-layer">
+                        <div class="text-box" id="textBox">
+                            <div class="text-content" id="textContent">
+                                <p>
+                                   kms
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hud">
+
+                    <!-- LEFT -->
+                    <div class="hud-left">
+                        <div class="healthbar-container">
+                            HP: @Model.GameState.player.HP 
+                        </div>
+                    </div>
+
+                    <!-- CENTER -->
+                    <div class="hud-center">
+                        <div class="inventory">
+
+
+                            <div class="item-boxes">
+                               
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="hud-right">
+                        <details class="dropdown">
+                            <summary>Move</summary>
+                            <div class="content">
+                                <form method="post" asp-page-handler="Move">
+                                    <input type="hidden" name="direction" value="north" />
+                                    <button type="submit">North</button>
+                                </form>
+                                <form method="post" asp-page-handler="Move">
+                                    <input type="hidden" name="direction" value="east" />
+                                    <button type="submit">East</button>
+                                </form>
+                            </div>
+                        </details>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+                document.addEventListener('click', function (e) {
+            const openDropdowns = document.querySelectorAll('details.dropdown[open]');
+
+            openDropdowns.forEach(dropdown => {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.removeAttribute('open');
+                }
+            });
+        });
+
+    </script>
+</div>

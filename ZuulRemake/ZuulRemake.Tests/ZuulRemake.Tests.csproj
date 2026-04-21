@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ZuulRemake.Web\ZuulRemake.Web.csproj" />
     <ProjectReference Include="..\ZuulRemake\ZuulRemake.csproj" />
   </ItemGroup>
 

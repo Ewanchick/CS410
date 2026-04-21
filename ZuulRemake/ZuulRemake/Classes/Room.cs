@@ -70,6 +70,11 @@ namespace ZuulRemake.Classes
             return itemstr;
         }
 
+        public List<Item> GetItemsOb()
+        {
+            return Items;
+        }
+
         /**
          * Check if the room contains any Monsters. If not, print a message explaining so. 
          * Otherwise, list each Monster in the room on a new line and return as a string.
@@ -82,6 +87,11 @@ namespace ZuulRemake.Classes
             string monstr = "Monsters in this room: \n " +
             string.Join("\n ", MonsterNames);
             return monstr;
+        }
+
+        public List<Monster> GetMonstersOb()
+        {
+            return Monsters;
         }
 
         /**
@@ -99,18 +109,23 @@ namespace ZuulRemake.Classes
             return exitstr;
         }
 
+        public List<Exit> GetExitsOb()
+        {
+            return Exits;
+        }
+
         /* ----------------------- EXITS ----------------------- */
 
         /**
          * Add an exit to this room, including its Direction, the Room it leads to, 
          * and whether or not it is locked.
          */
-        public void AddExit(string direction, Room targetRoom, bool isLocked = false)
+        public void AddExit(Exit exit)
         {
-            if (string.IsNullOrWhiteSpace(direction)) throw new ArgumentException("Direction required.");
-            if (targetRoom == null) throw new ArgumentNullException(nameof(targetRoom));
+            if (string.IsNullOrWhiteSpace(exit.Direction)) throw new ArgumentException("Direction required.");
+            if (exit.TargetRoom == null) throw new ArgumentNullException(nameof(exit.TargetRoom));
 
-            Exits.Add(new Exit(direction.ToLower(), targetRoom, isLocked));
+            Exits.Add(exit);
         }
 
         /**

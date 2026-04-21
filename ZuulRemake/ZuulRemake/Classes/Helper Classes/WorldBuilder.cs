@@ -31,22 +31,37 @@ namespace ZuulRemake.Classes
             exit = new Room("Exit", "The door swings open, the light of the sunrise creeping in. You've made it out!"," ");
 
             // initialise room exits
-            entryway.AddExit("north", dininghall, false);
-            entryway.AddExit("east", kitchen, false);
-            entryway.AddExit("west", bedroom, false);
-            entryway.AddExit("down", dungeon, false);
-            entryway.AddExit("south", exit, true);
 
-            dininghall.AddExit("east", ballroom, false);
-            dininghall.AddExit("south", entryway, false);
-            ballroom.AddExit("west", dininghall, false);
+            Exit ex0 = new Exit("north", dininghall, false);
+            Exit ex1 = new Exit("east", kitchen, false);
+            Exit ex2 = new Exit("west", bedroom, false);
+            Exit ex3 = new Exit("down", dungeon, false);
+            Exit ex4 = new Exit("south", exit, true);
 
-            kitchen.AddExit("west", entryway, false);
+            Exit ex5 = new Exit("east", ballroom, false);
+            Exit ex6 = new Exit("south", entryway, false);
+            Exit ex8 = new Exit("west", dininghall, false);
 
-            dungeon.AddExit("up", entryway, false);
-            bedroom.AddExit("east", entryway, false);
-            bedroom.AddExit("south", bathroom, false);
-            bathroom.AddExit("north", bedroom, false);
+            Exit ex9 = new Exit("west", entryway, false);
+
+            Exit ex10 = new Exit("up", entryway, false);
+            Exit ex11 = new Exit("east", entryway, false);
+            Exit ex12 = new Exit("south", bathroom, false);
+            Exit ex13 = new Exit("north", bedroom, false);
+
+            entryway.AddExit(ex0);
+            entryway.AddExit(ex1);
+            entryway.AddExit(ex2);
+            entryway.AddExit(ex3);
+            entryway.AddExit(ex4);
+            dininghall.AddExit(ex5);
+            dininghall.AddExit(ex6);
+            ballroom.AddExit(ex8);
+            kitchen.AddExit(ex9);
+            dungeon.AddExit(ex10);
+            bedroom.AddExit(ex11);
+            bedroom.AddExit(ex12);
+            bathroom.AddExit(ex13);
 
             // create the items
             var sword = new Item("Sword", "Heavy and sharp, capable of slaying the mightiest beast.", 1, 50);

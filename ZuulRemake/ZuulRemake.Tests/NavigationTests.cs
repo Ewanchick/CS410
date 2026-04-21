@@ -23,11 +23,15 @@ namespace ZuulRemake.Tests
             roomA = new Room("Room A", "", "");
             roomB = new Room("Room B", "", "");
             roomC = new Room("Room C", "", "");
+            Exit exitA = new Exit("north", roomB, false);
+            Exit exitB = new Exit("south", roomA, false);
+            Exit exitC = new Exit("north", roomC, true);
+            Exit exitD = new Exit("south", roomB, false);
 
-            roomA.AddExit("north", roomB, false);
-            roomB.AddExit("south", roomA, false);
-            roomB.AddExit("north", roomC, true);
-            roomC.AddExit("south", roomB, false);
+            roomA.AddExit(exitA);
+            roomB.AddExit(exitB);
+            roomB.AddExit(exitC);
+            roomC.AddExit(exitD);
         }
 
         [Fact]
