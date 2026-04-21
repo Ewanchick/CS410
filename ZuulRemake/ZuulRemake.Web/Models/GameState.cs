@@ -15,27 +15,20 @@ namespace ZuulRemake.Web.Models
         public Room currentRoom;
         public string roomUrl = "~/images/currentviewplaceholder2.png"; // fallback
 
-        public List<Monster>? monsters;
-        public List<Item>? items;
-        public List<Exit>? exits;
+        public List<Monster> monsters = new();
+        public List<Item> items = new();
+        public List<Exit>? exits = new();
 
         public List<string> monsterUrls = new();
         public List<string> itemUrls = new();
         public List<string> exitNames = new();
 
-        /* Access some properties directly for display purposes (Monster name, Exit direction, ?)
-         * We must be able to update properties whenever GameState changes - need methods for that
-         * When are they going to be called? - every time game state changes (button pressed)
-         * 
-         */
 
         public GameState(Player p)
         {
             player = p;
             currentRoom = player.CurrentRoom;
-            monsters = currentRoom.GetMonstersOb();
-            items = currentRoom.GetItemsOb();
-            exits = currentRoom.GetExitsOb();
+            UpdateRoomObjects(currentRoom);
 
             roomUrl = SetBackgroundState(currentRoom);
             SetMonsterImageUrls(monsters);
@@ -43,6 +36,18 @@ namespace ZuulRemake.Web.Models
             SetExitNames(exits);
         }
 
+        public void UpdateGameState()
+        {
+            UpdateRoomObjects(currentRoom);
+        }
+
+        // OBJECT HANDLING 
+        public void UpdateRoomObjects(Room cr)
+        {
+            monsters = cr.GetMonstersOb();
+            items = cr.GetItemsOb();
+            exits = cr.GetExitsOb();
+        }
         public List<Monster> UpdateMonsters(Room cr)
         {
             monsters = cr.GetMonstersOb();
@@ -59,6 +64,20 @@ namespace ZuulRemake.Web.Models
             return exits;
         }
 
+        // VISUAL HANDLING
+        public void UpdateAllImages(GameState gs)
+        {
+            if (gs.monsters != null) { SetMonsterImageUrls(gs.monsters); }
+            if (gs.items != null) { SetItemImageUrls(gs.items); }
+            SetBackgroundState(gs.currentRoom);
+        }
+
+        public List<string> SetExitNames(List<Exit> exits)
+        {
+            foreach (Exit e in exits) { exitNames.Add(e.Direction); }
+            return exitNames;
+        }
+
         public List<string> SetMonsterImageUrls(List<Monster> monsters)
         {
             foreach (Monster m in monsters) { monsterUrls.Add("~/images/" + m.Name + ".png"); }
@@ -68,19 +87,13 @@ namespace ZuulRemake.Web.Models
         {
             foreach (Item i in items) { itemUrls.Add("~/images/" + i.Name + ".png"); }
             return itemUrls;
-        }
-        public List<string> SetExitNames(List<Exit> exits)
-        {
-            foreach (Exit e in exits) { exitNames.Add(e.Direction); }
-            return exitNames;
-        }
+        }        
 
         public string SetBackgroundState(Room cr)
         {
             roomUrl = "~/images/" + cr.Name + ".png";
             return roomUrl;
         }
-
 
         public string SetRHandUrl(string condition)
         {

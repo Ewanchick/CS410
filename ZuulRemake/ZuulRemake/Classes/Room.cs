@@ -120,12 +120,12 @@ namespace ZuulRemake.Classes
          * Add an exit to this room, including its Direction, the Room it leads to, 
          * and whether or not it is locked.
          */
-        public void AddExit(string direction, Room targetRoom, bool isLocked = false)
+        public void AddExit(Exit exit)
         {
-            if (string.IsNullOrWhiteSpace(direction)) throw new ArgumentException("Direction required.");
-            if (targetRoom == null) throw new ArgumentNullException(nameof(targetRoom));
+            if (string.IsNullOrWhiteSpace(exit.Direction)) throw new ArgumentException("Direction required.");
+            if (exit.TargetRoom == null) throw new ArgumentNullException(nameof(exit.TargetRoom));
 
-            Exits.Add(new Exit(direction.ToLower(), targetRoom, isLocked));
+            Exits.Add(exit);
         }
 
         /**

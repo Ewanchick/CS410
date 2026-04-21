@@ -8,8 +8,7 @@ namespace ZuulRemake.Web.Pages
     public class PlayGameModel : PageModel
     {
         public GameState GameState { get; set; }
-
-        // init here or constructor?
+        
         public void OnGet()
         {
             var game = new Game(new Player("Test Player"));
