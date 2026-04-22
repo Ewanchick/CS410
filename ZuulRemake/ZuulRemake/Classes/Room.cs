@@ -83,7 +83,7 @@ namespace ZuulRemake.Classes
         {
             if (Monsters.Count == 0) return "";
 
-            IEnumerable<string>? MonsterNames = Monsters.Select(m => m.Name);
+            IEnumerable<string> MonsterNames = Monsters.Select(m => m.Name);
             string monstr = "Monsters in this room: \n " +
             string.Join("\n ", MonsterNames);
             return monstr;
