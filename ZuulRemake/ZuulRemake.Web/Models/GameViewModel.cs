@@ -22,18 +22,18 @@ namespace ZuulRemake.Web.Models
             return new GameViewModel
             {
                 currentRoomName = state.currentRoom?.Name ?? "",
-                backgroundImageUrl = $"~/images/[state.currentRoom?.Name].png" ?? "",
+                backgroundImageUrl = $"~/images/[state.currentRoom?.Name].png" ?? $"~/images/currentviewplaceholder/.png",
                 playerName = state.player?.Name ?? "",
                 playerHP = state.player?.HP ?? 0,
                 playerLevel = state.player?.Level ?? 0,
                 RHandUrl = "",
                 LHandUrl = "",
-                messages = new List<string>(state.messages),
+                messages = new List<string>(state.messages) ?? new(),
                 items = state.player?.Inventory?.Select(i => i.Name).ToList() ?? new(),
                 monsters = state.currentRoom?.GetMonstersOb().Select(i => i.Name).ToList() ?? new(),
                 exits = state.currentRoom?.GetExitsOb().Select(i => i.Direction).ToList() ?? new(),
                 gameOver = state.player?.HP <= 0
             };
         }
-}
+    }
 }
