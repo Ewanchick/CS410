@@ -11,6 +11,7 @@ namespace ZuulRemake.Web.Models
         public Player player { get; set; } = null!;
         public Room currentRoom { get; set; } = null!;
 
+
         public List<Monster> monsters => currentRoom.GetMonstersOb();
         public List<Item> items => currentRoom.GetItemsOb();
         public List<Exit> exits => currentRoom.GetExitsOb();

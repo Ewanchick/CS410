@@ -26,14 +26,14 @@ namespace ZuulRemake.Web.Models
                 playerName = state.player?.Name ?? "",
                 playerHP = state.player?.HP ?? 0,
                 playerLevel = state.player?.Level ?? 0,
-                RHandUrl = state.RHand,
-                LHandUrl = state.LHand,
+                RHandUrl = "",
+                LHandUrl = "",
                 messages = new List<string>(state.messages),
                 items = state.player?.Inventory?.Select(i => i.Name).ToList() ?? new(),
                 monsters = state.currentRoom?.GetMonstersOb().Select(i => i.Name).ToList() ?? new(),
-                exits = state.currentRoom?.GetExitsOb().Select(i => i.Direction).ToList() ?? new()
-
-            }
+                exits = state.currentRoom?.GetExitsOb().Select(i => i.Direction).ToList() ?? new(),
+                gameOver = state.player?.HP <= 0
+            };
         }
 }
 }
