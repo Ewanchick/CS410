@@ -1,42 +1,33 @@
 ﻿using System;
 using ZuulRemake.Classes;
 using ZuulRemake.Repos;
+using ZuulRemake.Models;
 
 namespace ZuulRemake.Services
 {
-    /// <summary>
-    /// Encapsulates all game logic, independent of UI (console or web).
-    /// </summary>
     public class GameService
     {
-        private readonly Player player;
-        private readonly RoomRepo roomRepo;
+        private readonly RoomRepo _roomRepo;
         private readonly Room startingRoom;
 
-        public GameService(RoomRepo roomRepo, Player player)
+        public GameService(RoomRepo roomRepo)
         {
-            this.roomRepo = roomRepo ?? throw new ArgumentNullException(nameof(roomRepo));
-            this.player = player ?? throw new ArgumentNullException(nameof(player));
-
-            // Load starting room from DB or initialize
-            this.startingRoom = GetRoomByName("Entryway") ?? InitializeWorld();
-            player.GoNewRoom(this.startingRoom);
+            _roomRepo = roomRepo;
         }
 
-        // Game State
-        public Player Player => player;
-        public Room CurrentRoom => player.GetCurrentRoom();
-        public bool IsGameOver => !player.IsAlive || CurrentRoom?.Name == "Exit";
-
-        // Game Actions
-        public string Move(string direction)
+        public GameState StartNewGame(string playerName)
         {
-            var exit = CurrentRoom?.GetExit(direction);
-            if (exit == null)
-                return "You can't go that way.";
+            var Player = new Player(playerName);
+            var entryway =  //GetOrBuildWorld();
+            Player.GoNewRoom(entryway);
+        }
 
-            if (exit.IsLocked)
-                return "That exit is locked.";
+        public string Move(GameState state, string direction)
+        {
+            var exit = state.CurrentRoom.GetExit(direction);
+            if (exit == null) return "You can't go that way.";
+
+            if (exit.IsLocked) return "That exit is locked.";
 
             player.GoNewRoom(exit.TargetRoom);
             return GetRoomDescription();
