@@ -1,4 +1,5 @@
-﻿using ZuulRemake.Classes;
+﻿using System.Xml.Linq;
+using ZuulRemake.Classes;
 using ZuulRemake.Web.Models;
 
 namespace ZuulRemake.Web.Helpers
@@ -50,7 +51,6 @@ namespace ZuulRemake.Web.Helpers
                 return state;
             }
 
-
             state.player.GoNewRoom(exit.TargetRoom);
             state.EnterRoom(state.player.CurrentRoom);
 
@@ -59,17 +59,51 @@ namespace ZuulRemake.Web.Helpers
 
         public GameState PickUpItem(GameState state, string itemName)
         {
-            return state; // stubby
+            var item = state.GetRoomItem(itemName);
+
+            if (item == null)
+            {
+                state.messages.Clear();
+                state.messages.Add("Item not found.");
+            }
+            else if (state.player.AddItem(item))
+            {
+                state.messages.Clear();
+                state.messages.Add($"The {item.Name} was added to your inventory.");
+            }
+            else
+            {
+                state.messages.Clear();
+                state.messages.Add("You're carrying too many items.");
+            }
+
+            return state;
         }
 
         public GameState UseItem(GameState state, string itemName)
         {
-            return state; // stubbier
+            var item = state.GetInventoryItem(itemName);
+            if (item == null)
+            {
+                state.messages.Clear();
+                state.messages.Add("Item not found.");
+            }
+            //else if (state.player.UseItem(item))
+            //{
+            //    state.messages.Clear();
+            //    state.messages.Add($"You  used the {item.Name}.");
+            //}
+            //else
+            {
+                state.messages.Clear();
+                state.messages.Add("You can't use this item here.");
+            }
+            return state;
         }
 
         public GameState Attack(GameState state, string target)
         {
-            return state; // stubbiest
+            return state; // 
         }
 
         public GameSaveDto ToSaveDto(GameState state)

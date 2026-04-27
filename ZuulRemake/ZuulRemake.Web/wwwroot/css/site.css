@@ -15,7 +15,6 @@ input, button, textarea, select {
     font: inherit;
 }
 
-
 @font-face {
     font-family: 'BrightLinger';
     src: url('../fonts/BrightLinger.ttf') format('truetype');
@@ -105,6 +104,7 @@ h1 {
         text-align: center;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
     }
+
 .menu-bg {
     position: relative;
     inset: 0;
@@ -271,6 +271,16 @@ h1 {
     height: auto;
 }
 
+/* ==================== ROOM ITEM ==================== */
+.item-layer img {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 8vw;
+    height: auto;
+}
+
 /* ==================== MONSTER ==================== */
 .monster {
     position: absolute;
@@ -336,8 +346,15 @@ summary {
 
 .content {
     position: absolute;
-    background: #1a001b;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    background: #cfb696;
+    border: 4px solid;
+    border-top-color: #9c7b4f;
+    border-left-color: #806541;
+    border-bottom-color: #4d3b23;
+    border-right-color: #4d3b23;
+    padding: 4px;
+    font-family: 'BrightLinger';
+    cursor: pointer;
 }
 
     .content a {
@@ -354,13 +371,6 @@ summary {
         .content a:hover {
             background: #900000;
         }
-
-
-
-
-
-
-
 
 
 html {

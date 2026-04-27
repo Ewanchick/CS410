@@ -12,12 +12,19 @@
                     <img src="@Url.Content(Model.ViewModel.backgroundImageUrl)"
                          onerror="this.src='/images/currentviewplaceholder2.png'" />
                     <div class="item-layer">
-                        <img src="" /> <!--- ITEMS IN THIS ROOM --->
+                        @foreach (var item in Model.ViewModel.items)
+                        {
+                                <img src="~/images/sword.png" />
+                        }
+                        @if (Model.ViewModel.items.Count() == 0)
+                        {
+                            @* hide container completely *@
+                        }
                     </div>
 
 
                     <div class="monster-layer">
-                        <img class="monster" src="~/images/wmjs.png" />
+                        @* <img class="monster" src="~/images/wmjs.png" /> *@
                     </div>
 
 
@@ -51,9 +58,17 @@
                     <!-- CENTER -->
                     <div class="hud-center">
                         <div class="inventory">
-                            <div class="item-boxes">
-
-                            </div>
+                            @foreach (var item in Model.ViewModel.inventory)
+                            {
+                                <div class="item-boxes">
+                                    <img src="~/images/sword.png" />
+                                </div>
+                            }
+                            @if (Model.ViewModel.inventory.Count() == 0)
+                            {
+                                <div class="item-boxes">
+                                </div>
+                            }
                         </div>
                     </div>
 
