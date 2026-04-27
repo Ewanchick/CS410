@@ -1,28 +1,55 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ZuulRemake.Classes;
-using ZuulRemake.Services;
 using ZuulRemake.Web.Models;
+using ZuulRemake.Web.Helpers;
 
 namespace ZuulRemake.Web.Pages
 {
     public class PlayGameModel : PageModel
     {
-        private GameState GameState;
-        private readonly WebGameService _gameService;
+        public GameViewModel ViewModel { get; set; } = new();
 
-        public PlayGameModel()
+        public IGameService _gameService;
+
+        public PlayGameModel(IGameService gameService)
         {
-            var game = new Game(new Player("Test Player"));
-            var player = game.Player;
-            GameState = new(player);
-            _gameService = new WebGameService();
+            _gameService = gameService;
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public IActionResult OnGet()
         {
-            
-            await _gameService.
+            var state = _gameService.CreateNewGame();
+            var save = _gameService.ToSaveDto(state);
+            HttpContext.Session.SetJson("GameSave", save);
+
+            ViewModel = GameViewModel.FromState(state);
+            return Page();
+        }
+
+        public IActionResult OnPostMove(string direction)
+        {
+            var save = HttpContext.Session.GetJson<GameSaveDto>("GameSave");
+            if (save == null)
+                return RedirectToPage();
+
+            var state = _gameService.LoadFromSave(save);
+            state = _gameService.Move(state, direction);
+
+            var updatedSave = _gameService.ToSaveDto(state);
+            HttpContext.Session.SetJson("GameSave", updatedSave);
+
+            ViewModel = GameViewModel.FromState(state);
+            return Page();
+        }
+
+        public IActionResult OnPostAttack(string direction)
+        {
+            return Page();
+        }
+
+        public IActionResult OnPostTakeItem(string direction)
+        {
             return Page();
         }
     }

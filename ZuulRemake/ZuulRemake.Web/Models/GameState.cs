@@ -9,22 +9,36 @@ namespace ZuulRemake.Web.Models
     {
         public List<string> messages { get; set; } = new();
         public Player player { get; set; } = null!;
-        public Room currentRoom { get; set; } = null!;
+        public Room currentRoom => player.CurrentRoom;
 
-
-        public List<Monster> monsters => currentRoom.GetMonstersOb();
-        public List<Item> items => currentRoom.GetItemsOb();
-        public List<Exit> exits => currentRoom.GetExitsOb();
+        public List<Monster> monsters => currentRoom?.GetMonstersOb() ?? new();
+        public List<Item> items => currentRoom?.GetItemsOb() ?? new();
+        public List<Exit> exits => currentRoom?.GetExitsOb() ?? new();
 
         public GameState(Player p)
         {
             player = p;
-            currentRoom = player.CurrentRoom;
         }
 
-        public GameState()
+        public void EnterRoom(Room newRoom)
         {
+            messages.Clear();
+            messages.Add(newRoom.NarrativeDescription);
+        }
 
+        public void AddMessage(string message)
+        {
+            messages.Add(message);
+        }
+
+        public string PopMessage()
+        {
+            if (messages.Count == 0)
+                return "";
+
+            var msg = messages[0];
+            messages.RemoveAt(0);
+            return msg;
         }
     }
 }
