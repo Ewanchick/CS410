@@ -9,9 +9,19 @@
         <div class="game-frame">
             <div class="game-frame-b">
                 <div class="viewbox">
-                    <img src="~/images/currentviewplaceholder2.png" /> <!--- CURRENT ROOM VIEW --->
+                    <img src="@Url.Content(Model.ViewModel.backgroundImageUrl)"
+                         onerror="this.src='/images/currentviewplaceholder2.png'" />
                     <div class="item-layer">
-                        <img src="" /> <!--- ITEMS IN THIS ROOM --->
+                        @foreach (var item in Model.ViewModel.items)
+                        {
+                            <form method="post" asp-page-handler="TakeItem">
+                                <input type="hidden" name="itemName" value="@item" />
+                                <button type="submit" style="border:none; background:none;">
+                                    <img src="/images/items/@(item.ToLower()).png" />
+                                </button>
+                            </form>
+                        }
+
                     </div>
 
 
@@ -20,18 +30,19 @@
                     </div>
 
 
-                    <div class="player-layer">
+                    <div class="player-layer"> <!-- change how this is set -->
                         <img class="left-hand" src="~/images/lhand.png" />
                         <img class="right-hand" src="~/images/rhand_sword.png" />
                     </div>
 
 
                     <div class="ui-layer">
-                        <div class="text-box" id="textBox">
+                        <div class="text-box" id="textBox" onclick="advanceMessage()">
                             <div class="text-content" id="textContent">
-                                <p>
-                                   kms
-                                </p>
+                                @foreach (var msg in Model.ViewModel.messages)
+                                {
+                                    <p>@msg</p>
+                                }
                             </div>
                         </div>
                     </div>
@@ -42,20 +53,24 @@
                     <!-- LEFT -->
                     <div class="hud-left">
                         <div class="healthbar-container">
-                            HP: @Model.GameState.player.HP 
+                            HP: @Model.ViewModel.playerHP
                         </div>
                     </div>
 
                     <!-- CENTER -->
                     <div class="hud-center">
                         <div class="inventory">
-
-
-                            <div class="item-boxes">
-                               
-                            </div>
-
-
+                            @foreach (var item in Model.ViewModel.inventory)
+                            {
+                                <div class="item-boxes">
+                                    <img src="~/images/sword.png" />
+                                </div>
+                            }
+                            @if (Model.ViewModel.inventory.Count() == 0)
+                            {
+                                <div class="item-boxes">
+                                </div>
+                            }
                         </div>
                     </div>
 
@@ -64,21 +79,16 @@
                         <details class="dropdown">
                             <summary>Move</summary>
                             <div class="content">
-                                <form method="post" asp-page-handler="Move">
-                                    <input type="hidden" name="direction" value="north" />
-                                    <button type="submit">North</button>
-                                </form>
-                                <form method="post" asp-page-handler="Move">
-                                    <input type="hidden" name="direction" value="east" />
-                                    <button type="submit">East</button>
-                                </form>
+                                @foreach (var exit in Model.ViewModel.exits)
+                                {
+                                    <form method="post" asp-page-handler="Move">
+                                        <input type="hidden" name="direction" value="@exit" />
+                                        <button type="submit" style="border:none; background:none;">@exit</button>
+                                    </form>
+                                }
                             </div>
                         </details>
                     </div>
-
-
-
-
                 </div>
             </div>
         </div>
@@ -96,4 +106,10 @@
         });
 
     </script>
+    <script>
+        function advanceMessage() {
+            // hook this to a POST later
+        }
+    </script>
+
 </div>

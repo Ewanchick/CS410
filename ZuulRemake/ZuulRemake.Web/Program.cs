@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ZuulRemake.Models;
 using ZuulRemake.Repos;
 using ZuulRemake.Services;
+using ZuulRemake.Web.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,15 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 // Adds controller services
 builder.Services.AddControllersWithViews();
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
 
 // Register Repos
 //builder.Services.AddScoped<RoomRepo>();
@@ -29,6 +21,20 @@ if (!app.Environment.IsDevelopment())
 //builder.Services.AddScoped<MonsterService>();
 //builder.Services.AddScoped<ItemService>();
 //builder.Services.AddScoped<GameService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddSession(); // for saving
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseSession(); // for saving
 
 app.UseHttpsRedirection();
 

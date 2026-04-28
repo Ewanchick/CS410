@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ZuulRemake.Classes
 {
-    internal class WorldBuilder
+    public class WorldBuilder
     {
         public static Room Build(
                 out Room entryway,
@@ -18,50 +18,46 @@ namespace ZuulRemake.Classes
                 out Room bathroom,
                 out Room dungeon,
                 out Room bedroom,
-                out Room exit)
-        {
-            // create the rooms
+                out Room freedom)
+        {            
+            // ROOMS            
             entryway = new Room("Entryway", "You're surrounded by tall, old stone walls, and a chandelier flickers overhead.", " ");
-            dininghall = new Room("Dining Hall", "A long table sits empty, some chairs overturned... A layer of dust has settled on the dishes." ," ");
+            dininghall = new Room("Dining Hall", "A long table sits empty, some chairs overturned... A layer of dust has settled on the dishes.", " ");
             ballroom = new Room("Ballroom", "Another massive, empty room. The floor was once beautiful, but now is cracked and unpolished.", " ");
-            kitchen = new Room("Kicthen","It is very dark and damp; it is far too dark to see without some torch, lantern, or candle...", " ");
+            kitchen = new Room("Kitchen", "It is very dark and damp; it is far too dark to see without some torch, lantern, or candle...", " ");
             bathroom = new Room("Bathroom", "Something is lurking here... a pair of eyes stares out at you from the darkness!", " ");
             dungeon = new Room("Dungeon", "A massive beast rises to greet you, sharp teeth catching the light of the few torches lining the walls.", " ");
-            bedroom = new Room("Bedroom", "Musty, empty, and coated with a layer of dust."," ");
-            exit = new Room("Exit", "The door swings open, the light of the sunrise creeping in. You've made it out!"," ");
-
-            // initialise room exits
-
-            Exit ex0 = new Exit("north", dininghall, false);
-            Exit ex1 = new Exit("east", kitchen, false);
-            Exit ex2 = new Exit("west", bedroom, false);
-            Exit ex3 = new Exit("down", dungeon, false);
-            Exit ex4 = new Exit("south", exit, true);
-
-            Exit ex5 = new Exit("east", ballroom, false);
-            Exit ex6 = new Exit("south", entryway, false);
-            Exit ex8 = new Exit("west", dininghall, false);
-
-            Exit ex9 = new Exit("west", entryway, false);
-
-            Exit ex10 = new Exit("up", entryway, false);
-            Exit ex11 = new Exit("east", entryway, false);
-            Exit ex12 = new Exit("south", bathroom, false);
-            Exit ex13 = new Exit("north", bedroom, false);
-
-            entryway.AddExit(ex0);
-            entryway.AddExit(ex1);
-            entryway.AddExit(ex2);
-            entryway.AddExit(ex3);
-            entryway.AddExit(ex4);
-            dininghall.AddExit(ex5);
-            dininghall.AddExit(ex6);
-            ballroom.AddExit(ex8);
-            kitchen.AddExit(ex9);
-            dungeon.AddExit(ex10);
-            bedroom.AddExit(ex11);
-            bedroom.AddExit(ex12);
-            bathroom.AddExit(ex13);
+            bedroom = new Room("Bedroom", "Musty, empty, and coated with a layer of dust.", " ");
+            freedom = new Room("Exit", "The door swings open, the light of the sunrise creeping in. You've made it out!", " ");
+            
+            // ENTRYWAY EXITS            
+            entryway.AddExit(new Exit("north", dininghall, false));
+            entryway.AddExit(new Exit("south", freedom, true)); // locked
+            entryway.AddExit(new Exit("east", ballroom, false));
+            entryway.AddExit(new Exit("west", bedroom, false));
+            entryway.AddExit(new Exit("down", dungeon, false));
+            
+            // DINING HALL EXITS            
+            dininghall.AddExit(new Exit("south", entryway, false));
+            dininghall.AddExit(new Exit("east", kitchen, false));
+            
+            // KITCHEN EXITS            
+            kitchen.AddExit(new Exit("west", dininghall, false));
+            kitchen.AddExit(new Exit("south", ballroom, false));
+            
+            // BALLROOM EXITS            
+            ballroom.AddExit(new Exit("north", kitchen, false));
+            ballroom.AddExit(new Exit("west", entryway, false));
+            
+            // BEDROOM EXITS            
+            bedroom.AddExit(new Exit("east", entryway, false));
+            bedroom.AddExit(new Exit("south", bathroom, false));
+            
+            // BATHROOM EXITS            
+            bathroom.AddExit(new Exit("north", bedroom, false));
+            
+            // DUNGEON EXITS            
+            dungeon.AddExit(new Exit("up", entryway, false));
 
             // create the items
             var sword = new Item("Sword", "Heavy and sharp, capable of slaying the mightiest beast.", 1, 50);
@@ -73,7 +69,6 @@ namespace ZuulRemake.Classes
             // initialize items
             dininghall.AddItem(lantern);
             ballroom.AddItem(armour);
-
 
             // create the monsters
             var dragon = new Monster("Dragon", 100, 50, key);
