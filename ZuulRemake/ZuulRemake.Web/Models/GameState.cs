@@ -20,11 +20,7 @@ namespace ZuulRemake.Web.Models
         public GameState(Player p)
         {
             player = p;
-            p.AddItem(new Item("sword", "", 1, 0));
-            p.AddItem(new Item("dffd", "", 1, 0));
-            p.AddItem(new Item("dfdf", "", 1, 0));
-            p.AddItem(new Item("swofdrd", "", 1, 0));
-            p.AddItem(new Item("lantfgern", "", 1, 0));
+            p.AddItem(new Item("sword", "", 1, 0)); // REMOVE LATER
             currentRoom.AddItem(new Item("sword", "", 1, 0));
         }
 

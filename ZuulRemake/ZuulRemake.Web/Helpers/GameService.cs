@@ -90,10 +90,12 @@ namespace ZuulRemake.Web.Helpers
             }
             //else if (state.player.UseItem(item))
             //{
+            //    switch and call helper.UseSword, UseLantern etc.
+
             //    state.messages.Clear();
             //    state.messages.Add($"You  used the {item.Name}.");
             //}
-            //else
+            else
             {
                 state.messages.Clear();
                 state.messages.Add("You can't use this item here.");

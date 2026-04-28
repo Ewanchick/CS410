@@ -12,6 +12,7 @@ namespace ZuulRemake.Web.Models
         public int playerLevel { get; set; }
         public string RHandUrl { get; set; } = "";
         public string LHandUrl { get; set; } = "";
+        public string roomItemUrl { get; set; } = "";
         public List<string> inventory { get; set; } = new();
         public List<string> items { get; set; } = new();
         public List<string> monsters { get; set; } = new();
@@ -25,7 +26,7 @@ namespace ZuulRemake.Web.Models
                 currentRoomName = state.currentRoom?.Name ?? "",
                 backgroundImageUrl = state.currentRoom != null ? $"~/images/{state.currentRoom.Name.Replace(" ", "").ToLower()}.png" 
                 : "~/images/currentviewplaceholder2.png",
-
+                
                 playerName = state.player?.Name ?? "",
                 playerHP = state.player?.HP ?? 0,
                 playerLevel = state.player?.Level ?? 0,
@@ -36,6 +37,9 @@ namespace ZuulRemake.Web.Models
                 messages = state.messages != null ? new List<string>(state.messages) : new List<string>(),
 
                 items = state.currentRoom?.GetItemsOb()?.Select(i => i.Name).ToList() ?? new(),
+                //roomItemUrl = state.currentRoom != null ? $"~/images/{state.items.FirstOr.Replace(" ", "").ToLower()}.png"
+                //: "~/images/currentviewplaceholder2.png",
+
                 inventory = state.player?.Inventory?.Select(i => i.Name).ToList() ?? new(),
                 monsters = state.currentRoom?.GetMonstersOb().Select(i => i.Name).ToList() ?? new(),
                 exits = state.currentRoom?.GetExitsOb().Select(i => i.Direction).ToList() ?? new(),

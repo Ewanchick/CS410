@@ -14,21 +14,23 @@
                     <div class="item-layer">
                         @foreach (var item in Model.ViewModel.items)
                         {
-                                <img src="~/images/sword.png" />
+                            <form method="post" asp-page-handler="TakeItem">
+                                <input type="hidden" name="itemName" value="@item" />
+                                <button type="submit" style="border:none; background:none;">
+                                    <img src="/images/items/@(item.ToLower()).png" />
+                                </button>
+                            </form>
                         }
-                        @if (Model.ViewModel.items.Count() == 0)
-                        {
-                            @* hide container completely *@
-                        }
+
                     </div>
 
 
                     <div class="monster-layer">
-                        @* <img class="monster" src="~/images/wmjs.png" /> *@
+                        <img class="monster" src="~/images/wmjs.png" />
                     </div>
 
 
-                    <div class="player-layer">
+                    <div class="player-layer"> <!-- change how this is set -->
                         <img class="left-hand" src="~/images/lhand.png" />
                         <img class="right-hand" src="~/images/rhand_sword.png" />
                     </div>
@@ -81,7 +83,7 @@
                                 {
                                     <form method="post" asp-page-handler="Move">
                                         <input type="hidden" name="direction" value="@exit" />
-                                        <button type="submit">@exit</button>
+                                        <button type="submit" style="border:none; background:none;">@exit</button>
                                     </form>
                                 }
                             </div>
