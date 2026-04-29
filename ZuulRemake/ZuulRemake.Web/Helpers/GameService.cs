@@ -18,10 +18,12 @@ namespace ZuulRemake.Web.Helpers
     public class GameService : IGameService
     {
         public ILogger<GameService> _logger;
+        public ItemService _itemService;
 
-        public GameService(ILogger<GameService> logger)
+        public GameService(ILogger<GameService> logger, ItemService itemService)
         {
             _logger = logger;
+            _itemService = itemService;
         }
 
         public GameState CreateNewGame()
@@ -82,30 +84,127 @@ namespace ZuulRemake.Web.Helpers
 
         public GameState UseItem(GameState state, string itemName)
         {
-            var item = state.GetInventoryItem(itemName);
+            var player = state.player;
+            var item = player.GetItem(itemName);
+
             if (item == null)
             {
                 state.messages.Clear();
                 state.messages.Add("Item not found.");
+                return state;
             }
-            //else if (state.player.UseItem(item))
-            //{
-            //    switch and call helper.UseSword, UseLantern etc.
 
-            //    state.messages.Clear();
-            //    state.messages.Add($"You  used the {item.Name}.");
-            //}
-            else
+            else if (_itemService.CanUseItem(item, player))
             {
-                state.messages.Clear();
-                state.messages.Add("You can't use this item here.");
+                string name = item.Name.ToLowerInvariant();               
+
+                // SHOULD WE BE GETTING BOOLS FOR ALL OF THESE?
+                // OR LET THEM MODIFY STATE AND RETURN STATE?
+                switch (name)
+                {
+                    case "lantern":
+                        if (_itemService.UseLantern(item, state.player))
+                        // ^ we provide the lantern and player
+                        // var room = player.currentRoom
+                        // check isLit value (default is true)
+                        // if false (dark), change isLit to true, then return true
+                        // otherwise return false
+                        {
+                            // update state, change background image of room to lit version
+                            state.messages.Clear();
+                            state.messages.Add($"You used the {name}; now you can see!");
+                        }
+                        else
+                        {
+                            state.messages.Clear();
+                            state.messages.Add($"This room is already lit. No need for the {name} here.");
+                        }
+                        break;
+
+                    case "armour":
+                        if (_itemService.UseArmour(item, state.player))
+                        // ^ we provide the armour & player
+                        // int buff = armour.StatIncrease
+                        // if buff != null, return true
+                        // else return false 
+                        {
+                            // update state
+                            state.messages.Clear();
+                            state.messages.Add($"You used the {name}; your health has increased by {item.StatIncrease}");
+                        }                        
+                        break;
+
+                    case "sword":
+                        _itemService.UseSword(item, player);
+                        state.messages.Clear();
+                        state.messages.Add($"You used the {name}.");
+                        break;
+
+                    case "potion":
+                        _itemService.UsePotion(1, 2);
+                        state.messages.Clear();
+                        state.messages.Add($"You used the {name}.");
+                        break;
+
+                    case "ring":
+                        _itemService.UseRing(1, 2);
+                        state.messages.Clear();
+                        state.messages.Add($"You used the {name}.");
+                        break;
+
+                    default:
+                        state.messages.Add("Unknown item.");
+                        break;
+                }                
             }
-            return state;
-        }
+            else
+                {
+                    state.messages.Clear();
+                    state.messages.Add("You can't use this item here.");
+                }
+                return state;
+            }
 
         public GameState Attack(GameState state, string target)
         {
-            return state; // 
+            if (state.currentRoom == null) return state;
+            var p = state.player;
+            var m = state.currentRoom.GetMonster(target);
+
+            if (m == null)
+            {
+                state.messages.Clear();
+                state.messages.Add("There is no monster in this room.");
+                return state;
+            }
+
+            if (!p.Inventory.Any(i => i.Name.Equals("sword", StringComparison.OrdinalIgnoreCase)))
+            {
+                state.messages.Clear();
+                state.messages.Add("You need a sword in order to attack.");
+                return state;
+            }
+
+            m.TakeDamage(p.Level);
+            state.messages.Clear();
+            state.messages.Add($"You attack the {m.Name} for {p.Level} damage!");
+
+            if (!m.IsAlive)
+            {
+                var drop = m.Drop;
+                if (drop != null) state.currentRoom.AddItem(drop);
+
+                state.messages.Clear();
+                state.messages.Add($"You have defeated the {m.Name}!");
+                return state;
+            }
+            else
+            {
+                p.TakeDamage(m.Level);
+                state.messages.Clear();
+                state.messages.Add($"The {m.Name} attacks you for {m.Level} damage!");
+                return state;
+            }
         }
 
         public GameSaveDto ToSaveDto(GameState state)
@@ -156,8 +255,7 @@ namespace ZuulRemake.Web.Helpers
             foreach (var itemName in save.InventoryItemNames)
             {
                 var item = room.GetItem(itemName);
-                if (item != null)
-                    state.player.AddItem(item);
+                if (item != null) state.player.AddItem(item);
             }
 
             return state;
