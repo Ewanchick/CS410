@@ -12,20 +12,19 @@ namespace ZuulRemake.Web.Helpers
         GameState Attack(GameState state, string target);
         GameSaveDto ToSaveDto(GameState state);
         GameState LoadFromSave(GameSaveDto save);
+        GameState UseItem(GameState state, string itemName);
     }
 
 
     public class GameService : IGameService
     {
         public ILogger<GameService> _logger;
-        public ItemService _itemService;
 
-        public GameService(ILogger<GameService> logger, ItemService itemService)
+        public GameService(ILogger<GameService> logger)
         {
             _logger = logger;
-            _itemService = itemService;
         }
-
+        
         public GameState CreateNewGame()
         {
             var player = new Player("Player");
@@ -84,86 +83,51 @@ namespace ZuulRemake.Web.Helpers
 
         public GameState UseItem(GameState state, string itemName)
         {
-            var player = state.player;
-            var item = player.GetItem(itemName);
+            var item = state.player.GetItem(itemName);
+            state.messages.Clear();
 
             if (item == null)
             {
-                state.messages.Clear();
-                state.messages.Add("Item not found.");
+                state.AddMessage("You don't have that item.");
                 return state;
             }
 
-            else if (_itemService.CanUseItem(item, player))
+            switch (itemName.ToLower())
             {
-                string name = item.Name.ToLowerInvariant();               
+                case "potion":
+                    state.player.AddHP(20);
+                    state.player.RemoveItem(item);
+                    state.AddMessage($"You drank a healing potion and healed yourself to {state.player.HP} HP!");
+                    break;
 
-                // SHOULD WE BE GETTING BOOLS FOR ALL OF THESE?
-                // OR LET THEM MODIFY STATE AND RETURN STATE?
-                switch (name)
-                {
-                    case "lantern":
-                        if (_itemService.UseLantern(item, state.player))
-                        // ^ we provide the lantern and player
-                        // var room = player.currentRoom
-                        // check isLit value (default is true)
-                        // if false (dark), change isLit to true, then return true
-                        // otherwise return false
-                        {
-                            // update state, change background image of room to lit version
-                            state.messages.Clear();
-                            state.messages.Add($"You used the {name}; now you can see!");
-                        }
-                        else
-                        {
-                            state.messages.Clear();
-                            state.messages.Add($"This room is already lit. No need for the {name} here.");
-                        }
-                        break;
+                case "armour":
+                    state.player.LevelUp(10);
+                    state.player.RemoveItem(item);
+                    state.AddMessage($"You equipped the armour and leveled up to {state.player.Level}.");
+                    break;
 
-                    case "armour":
-                        if (_itemService.UseArmour(item, state.player))
-                        // ^ we provide the armour & player
-                        // int buff = armour.StatIncrease
-                        // if buff != null, return true
-                        // else return false 
-                        {
-                            // update state
-                            state.messages.Clear();
-                            state.messages.Add($"You used the {name}; your health has increased by {item.StatIncrease}");
-                        }                        
-                        break;
+                case "lantern":
+                    state.roomLit = true;
+                    state.AddMessage("You light the lantern, and now you can see.");
+                    break;
 
-                    case "sword":
-                        _itemService.UseSword(item, player);
-                        state.messages.Clear();
-                        state.messages.Add($"You used the {name}.");
-                        break;
+                case "sword":
+                    state.swordHeld = !state.swordHeld;
+                    state.AddMessage(state.swordHeld ? "You draw your sword." : "You sheathe your sword.");
+                    break;
 
-                    case "potion":
-                        _itemService.UsePotion(1, 2);
-                        state.messages.Clear();
-                        state.messages.Add($"You used the {name}.");
-                        break;
-
-                    case "ring":
-                        _itemService.UseRing(1, 2);
-                        state.messages.Clear();
-                        state.messages.Add($"You used the {name}.");
-                        break;
-
-                    default:
-                        state.messages.Add("Unknown item.");
-                        break;
-                }                
+                case "key":
+                    // bad bad bad
+                    state.currentRoom?.GetExit("south")?.Unlock();
+                    state.AddMessage("You use the key and unlock the exit.");
+                    break;
+                default:
+                    state.AddMessage($"You can't use {itemName} here.");
+                    break;
             }
-            else
-                {
-                    state.messages.Clear();
-                    state.messages.Add("You can't use this item here.");
-                }
-                return state;
-            }
+
+            return state;
+        }
 
         public GameState Attack(GameState state, string target)
         {

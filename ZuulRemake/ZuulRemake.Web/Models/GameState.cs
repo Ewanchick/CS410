@@ -2,7 +2,6 @@
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using ZuulRemake.Classes;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ZuulRemake.Web.Models
 {
@@ -17,11 +16,16 @@ namespace ZuulRemake.Web.Models
         public List<Item> items => currentRoom?.GetItemsOb() ?? new();
         public List<Exit> exits => currentRoom?.GetExitsOb() ?? new();
 
+        public bool roomLit { get; set; } = true;
+        public bool swordHeld { get; set; } = false;
+
+
         public GameState(Player p)
         {
             player = p;
-            p.AddItem(new Item("sword", "", 1, 0)); // REMOVE LATER
-            currentRoom.AddItem(new Item("sword", "", 1, 0));
+            //player.Inventory.Add(new Item("wmjs", "", 1, 0));       <------- TESTED, WORKS; REMOVE
+            player.CurrentRoom.AddItem(new Item("wmjs", "", 1, 0)); //<------- TESTED, WORKS; REMOVE
+            //player.CurrentRoom.AddMonster(new Monster("wmjs", 5, 5, null));  //<------- TESTED, WORKS; REMOVE
         }
 
         public Item GetInventoryItem(string itemName)

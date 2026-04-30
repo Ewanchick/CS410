@@ -9,30 +9,39 @@
         <div class="game-frame">
             <div class="game-frame-b">
                 <div class="viewbox">
+                    <!-- WHY IS IMAGE NOT WORKING -->
                     <img src="@Url.Content(Model.ViewModel.backgroundImageUrl)"
                          onerror="this.src='/images/currentviewplaceholder2.png'" />
+
                     <div class="item-layer">
+                        <!--  hide this entire layer if !state.isLit or if state.items is/becomes empty
+                            click on item = OnPostPickUpItem()
+                        -->
                         @foreach (var item in Model.ViewModel.items)
                         {
-                            <form method="post" asp-page-handler="TakeItem">
+                            <form method="post" asp-page-handler="PickUpItem">
                                 <input type="hidden" name="itemName" value="@item" />
                                 <button type="submit" style="border:none; background:none;">
-                                    <img src="/images/items/@(item.ToLower()).png" />
+                                    <img src="/images/@(item.ToLower()).png" />
                                 </button>
                             </form>
                         }
-
                     </div>
 
 
                     <div class="monster-layer">
-                        <img class="monster" src="~/images/wmjs.png" />
+                        <!--  hide this entire layer if state.monsters is or becomes empty
+                        -->
+                        @foreach (var mon in Model.ViewModel.monsters)
+                        {
+                            <img class="monster" src="~/images/@(mon.ToLower()).png" />
+                        }
                     </div>
 
 
-                    <div class="player-layer"> <!-- change how this is set -->
-                        <img class="left-hand" src="~/images/lhand.png" />
-                        <img class="right-hand" src="~/images/rhand_sword.png" />
+                    <div class="player-layer">
+                        <img class="left-hand" src="@Url.Content(Model.ViewModel.LHandUrl)" />
+                        <img class="right-hand" src="@Url.Content(Model.ViewModel.RHandUrl)" />
                     </div>
 
 
@@ -49,7 +58,6 @@
                 </div>
 
                 <div class="hud">
-
                     <!-- LEFT -->
                     <div class="hud-left">
                         <div class="healthbar-container">
@@ -63,7 +71,7 @@
                             @foreach (var item in Model.ViewModel.inventory)
                             {
                                 <div class="item-boxes">
-                                    <img src="~/images/sword.png" />
+                                    <img src="~/images/@(item.ToLower()).png" />
                                 </div>
                             }
                             @if (Model.ViewModel.inventory.Count() == 0)
@@ -107,8 +115,10 @@
 
     </script>
     <script>
-        function advanceMessage() {
+        function advanceMessage() 
+        {
             // hook this to a POST later
+            // should advance to the next message if there is one OR if it is the last message, state.messages.Clear()
         }
     </script>
 

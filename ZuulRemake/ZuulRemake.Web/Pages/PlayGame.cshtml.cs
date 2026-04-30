@@ -61,7 +61,7 @@ namespace ZuulRemake.Web.Pages
             if (save == null) return RedirectToPage();
 
             var state = _gameService.LoadFromSave(save);
-            //state = _gameService.UseItem(state, itemName);
+            state = _gameService.UseItem(state, itemName);
 
             var updatedSave = _gameService.ToSaveDto(state);
             HttpContext.Session.SetJson("GameSave", updatedSave);
@@ -69,8 +69,17 @@ namespace ZuulRemake.Web.Pages
             return Page();
         }
 
-        public IActionResult OnPostAttack(string direction)
+        public IActionResult OnPostAttack(string target)
         {
+            var save = HttpContext.Session.GetJson<GameSaveDto>("GameSave");
+            if (save == null) return RedirectToPage();
+
+            var state = _gameService.LoadFromSave(save);
+            state = _gameService.Attack(state, target);
+
+            var updatedSave = _gameService.ToSaveDto(state);
+            HttpContext.Session.SetJson("GameSave", updatedSave);
+            ViewModel = GameViewModel.FromState(state);
             return Page();
         }
     }

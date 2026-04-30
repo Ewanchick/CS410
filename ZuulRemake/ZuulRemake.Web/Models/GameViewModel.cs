@@ -18,32 +18,44 @@ namespace ZuulRemake.Web.Models
         public List<string> monsters { get; set; } = new();
         public List<string> exits { get; set; } = new();
         public bool gameOver { get; set; }
+        public bool isLit { get; set; }
+
 
         public static GameViewModel FromState(GameState state)
         {
+            // START: why is background image not working
+            var roomName = state.currentRoom?.Name.ToLower() ?? "entryway";
+
+            string backgroundUrl = state.roomLit ? $"~/images/{roomName}.png" 
+                : $"~/images/{roomName}_dark.png";
+            // END
+
+            List<string> roomItems = (!state.roomLit) ? new List<string>() 
+                : (state.currentRoom?.GetItemsOb()?.Select(i => i.Name).ToList() ?? new());
+
             return new GameViewModel
             {
                 currentRoomName = state.currentRoom?.Name ?? "",
-                backgroundImageUrl = state.currentRoom != null ? $"~/images/{state.currentRoom.Name.Replace(" ", "").ToLower()}.png" 
-                : "~/images/currentviewplaceholder2.png",
-                
+
+
+                backgroundImageUrl = state.currentRoom?.Name ?? "",
                 playerName = state.player?.Name ?? "",
                 playerHP = state.player?.HP ?? 0,
                 playerLevel = state.player?.Level ?? 0,
 
-                RHandUrl = "",
-                LHandUrl = "",
+                RHandUrl = state.swordHeld ? "~/images/rhand_sword.png" : "~/images/rhand.png",
+                LHandUrl = "~/images/lhand.png",
 
                 messages = state.messages != null ? new List<string>(state.messages) : new List<string>(),
 
                 items = state.currentRoom?.GetItemsOb()?.Select(i => i.Name).ToList() ?? new(),
-                //roomItemUrl = state.currentRoom != null ? $"~/images/{state.items.FirstOr.Replace(" ", "").ToLower()}.png"
-                //: "~/images/currentviewplaceholder2.png",
+                roomItemUrl = state.currentRoom != null ? $"~/images/{state.items?.FirstOrDefault()?.Name.Replace(" ", "").ToLower()}.png" : "",
 
                 inventory = state.player?.Inventory?.Select(i => i.Name).ToList() ?? new(),
                 monsters = state.currentRoom?.GetMonstersOb().Select(i => i.Name).ToList() ?? new(),
                 exits = state.currentRoom?.GetExitsOb().Select(i => i.Direction).ToList() ?? new(),
 
+                isLit = state.roomLit,
                 gameOver = state.player?.HP <= 0
             };
         }
