@@ -82,5 +82,17 @@ namespace ZuulRemake.Web.Pages
             ViewModel = GameViewModel.FromState(state);
             return Page();
         }
+
+        public IActionResult OnPostAdvanceMessage()
+        {
+            var save = HttpContext.Session.GetJson<GameSaveDto>("GameSave");
+            var state = _gameService.LoadFromSave(save);
+
+            state.PopMessage();
+
+            HttpContext.Session.SetJson("GameSave", _gameService.ToSaveDto(state));
+            ViewModel = GameViewModel.FromState(state);
+            return Page();
+        }
     }
 }

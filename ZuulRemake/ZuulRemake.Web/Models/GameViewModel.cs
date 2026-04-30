@@ -23,12 +23,11 @@ namespace ZuulRemake.Web.Models
 
         public static GameViewModel FromState(GameState state)
         {
-            // START: why is background image not working
             var roomName = state.currentRoom?.Name.ToLower() ?? "entryway";
 
             string backgroundUrl = state.roomLit ? $"~/images/{roomName}.png" 
                 : $"~/images/{roomName}_dark.png";
-            // END
+            
 
             List<string> roomItems = (!state.roomLit) ? new List<string>() 
                 : (state.currentRoom?.GetItemsOb()?.Select(i => i.Name).ToList() ?? new());
@@ -38,7 +37,7 @@ namespace ZuulRemake.Web.Models
                 currentRoomName = state.currentRoom?.Name ?? "",
 
 
-                backgroundImageUrl = state.currentRoom?.Name ?? "",
+                backgroundImageUrl = backgroundUrl ?? "",
                 playerName = state.player?.Name ?? "",
                 playerHP = state.player?.HP ?? 0,
                 playerLevel = state.player?.Level ?? 0,
@@ -48,7 +47,7 @@ namespace ZuulRemake.Web.Models
 
                 messages = state.messages != null ? new List<string>(state.messages) : new List<string>(),
 
-                items = state.currentRoom?.GetItemsOb()?.Select(i => i.Name).ToList() ?? new(),
+                items = roomItems,
                 roomItemUrl = state.currentRoom != null ? $"~/images/{state.items?.FirstOrDefault()?.Name.Replace(" ", "").ToLower()}.png" : "",
 
                 inventory = state.player?.Inventory?.Select(i => i.Name).ToList() ?? new(),

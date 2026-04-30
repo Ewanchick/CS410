@@ -19,13 +19,13 @@ namespace ZuulRemake.Web.Models
         public bool roomLit { get; set; } = true;
         public bool swordHeld { get; set; } = false;
 
+        public List<string> InventoryItemNames { get; set; } = new();
+        public List<string> CollectedItemNames { get; set; } = new();
+        public List<string> DefeatedMonsterNames { get; set; } = new();
 
         public GameState(Player p)
         {
             player = p;
-            //player.Inventory.Add(new Item("wmjs", "", 1, 0));       <------- TESTED, WORKS; REMOVE
-            player.CurrentRoom.AddItem(new Item("wmjs", "", 1, 0)); //<------- TESTED, WORKS; REMOVE
-            //player.CurrentRoom.AddMonster(new Monster("wmjs", 5, 5, null));  //<------- TESTED, WORKS; REMOVE
         }
 
         public Item GetInventoryItem(string itemName)

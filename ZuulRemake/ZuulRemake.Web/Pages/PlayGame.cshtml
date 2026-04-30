@@ -9,29 +9,36 @@
         <div class="game-frame">
             <div class="game-frame-b">
                 <div class="viewbox">
-                    <!-- WHY IS IMAGE NOT WORKING -->
                     <img src="@Url.Content(Model.ViewModel.backgroundImageUrl)"
-                         onerror="this.src='/images/currentviewplaceholder2.png'" />
+                         onerror="this.src='/images/currentviewplaceholder2.png'" /> 
 
-                    <div class="item-layer">
-                        <!--  hide this entire layer if !state.isLit or if state.items is/becomes empty
-                            click on item = OnPostPickUpItem()
-                        -->
-                        @foreach (var item in Model.ViewModel.items)
-                        {
-                            <form method="post" asp-page-handler="PickUpItem">
-                                <input type="hidden" name="itemName" value="@item" />
-                                <button type="submit" style="border:none; background:none;">
-                                    <img src="/images/@(item.ToLower()).png" />
-                                </button>
-                            </form>
-                        }
-                    </div>
+                    <!--  NOT WORKING:
+                        1. tried moving form tag to outside of item-layer div, this didn't fix it.
+                           hit F12 to check network, OnPost method is not even being called.
+                           there is no pointer cursor so that's one clue i guess
+                        2. clicking on item should:
+                            A) remove the item from the room -> updated state should reflect a room with no items in it
+                            B) add the item to the player inventory -> updated state should reflect an item in the inventory HUD
+                    -->
+                    <form method="post" asp-page-handler="TakeItem">
+                        <div class="item-layer">
+                            @if (Model.ViewModel.isLit)
+                            {
+                                @foreach (var item in Model.ViewModel.items)
+                                {
+                                    <input type="hidden" name="itemName" value="@item" />
+                                    <button type="submit" class="action-button">
+                                        <img src="@Url.Content($"~/images/{item.ToLower()}.png")" alt="@item" />
+                                    </button>
+
+                                }
+                            }
+                        </div>
+                    </form>
 
 
                     <div class="monster-layer">
-                        <!--  hide this entire layer if state.monsters is or becomes empty
-                        -->
+                        <!--  hide this entire layer if state.monsters is or becomes empty -->
                         @foreach (var mon in Model.ViewModel.monsters)
                         {
                             <img class="monster" src="~/images/@(mon.ToLower()).png" />
@@ -114,11 +121,14 @@
         });
 
     </script>
+
     <script>
-        function advanceMessage() 
-        {
-            // hook this to a POST later
-            // should advance to the next message if there is one OR if it is the last message, state.messages.Clear()
+             document.getElementById('textBox').addEventListener('click', function() {
+            this.classList.add('hidden');
+            advanceMessage();
+        });
+        function advanceMessage() {
+            document.getElementById('advanceForm').submit();
         }
     </script>
 

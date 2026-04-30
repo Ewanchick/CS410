@@ -60,7 +60,7 @@ namespace ZuulRemake.Web.Helpers
 
         public GameState PickUpItem(GameState state, string itemName)
         {
-            var item = state.GetRoomItem(itemName);
+            var item = state.items.FirstOrDefault(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
 
             if (item == null)
             {
@@ -69,6 +69,8 @@ namespace ZuulRemake.Web.Helpers
             }
             else if (state.player.AddItem(item))
             {
+                state.currentRoom.RemoveItem(item);
+                state.CollectedItemNames.Add(itemName);
                 state.messages.Clear();
                 state.messages.Add($"The {item.Name} was added to your inventory.");
             }
@@ -171,6 +173,18 @@ namespace ZuulRemake.Web.Helpers
             }
         }
 
+        private Item CreateItemByName(string name)
+        {
+            return name.ToLower() switch
+            {
+                "potion" => new Item("potion", "A healing potion", 1, 20),
+                "sword" => new Item("sword", "A sharp sword", 1, 0),
+                "lantern" => new Item("lantern", "A bright lantern", 1, 0),
+                "armour" => new Item("armour", "Heavy armour", 1, 10),
+                _ => new Item(name, "Unknown item", 1, 0)
+            };
+        }
+
         public GameSaveDto ToSaveDto(GameState state)
         {
             return new GameSaveDto
@@ -182,7 +196,10 @@ namespace ZuulRemake.Web.Helpers
                 CurrentRoomName = state.currentRoom.Name,
                 InventoryItemNames = state.player.Inventory
                     .Select(i => i.Name)
-                    .ToList()
+                    .ToList(),
+                CollectedItemNames = state.player.Inventory
+                    .Select(i => i.Name)
+                    .ToList(),
             };
         }
 
@@ -199,6 +216,7 @@ namespace ZuulRemake.Web.Helpers
 
             Room entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit;
             WorldBuilder.Build(out entryway, out dininghall, out ballroom, out kitchen, out bathroom, out dungeon, out bedroom, out exit);
+            var allRooms = new List<Room> { entryway, dininghall, ballroom, kitchen, bathroom, dungeon, bedroom, exit };
 
             var room = save.CurrentRoomName.ToLower() switch
             {
@@ -216,12 +234,21 @@ namespace ZuulRemake.Web.Helpers
             state.player.GoNewRoom(room);
             state.EnterRoom(room);
 
-            foreach (var itemName in save.InventoryItemNames)
+            foreach (var itemName in save.CollectedItemNames)
             {
-                var item = room.GetItem(itemName);
-                if (item != null) state.player.AddItem(item);
+                foreach (var r in allRooms)
+                {
+                    var item = r.GetItem(itemName);
+                    if (item != null) r.RemoveItem(item);
+                }
             }
 
+            foreach (var itemName in save.InventoryItemNames)
+            {
+                var item = CreateItemByName(itemName);
+                state.player.AddItem(item);
+            }
+            
             return state;
         }
     }
