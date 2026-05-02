@@ -320,6 +320,12 @@ h1 {
 }
 
 /* ==================== BUTTONS ==================== */
+.action-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
 .dropdown {
     position: relative;
     display: inline-block;
@@ -371,6 +377,9 @@ summary {
         .content a:hover {
             background: #900000;
         }
+
+
+
 
 
 html {

@@ -21,14 +21,14 @@ namespace ZuulRemake.Classes
                 out Room freedom)
         {            
             // ROOMS            
-            entryway = new Room("Entryway", "You're surrounded by tall, old stone walls, and a chandelier flickers overhead.", " ");
-            dininghall = new Room("Dining Hall", "A long table sits empty, some chairs overturned... A layer of dust has settled on the dishes.", " ");
+            entryway = new Room("Entryway", "You're surrounded by tall, old stone walls. All around you are doors to other rooms. Who knows what lies ahead...", " ");
+            dininghall = new Room("Dining Hall", "A lone table sits empty, some chairs overturned... A layer of dust has settled on the dishes.", " ");
             ballroom = new Room("Ballroom", "Another massive, empty room. The floor was once beautiful, but now is cracked and unpolished.", " ");
-            kitchen = new Room("Kitchen", "It is very dark and damp; it is far too dark to see without some torch, lantern, or candle...", " ");
-            bathroom = new Room("Bathroom", "Something is lurking here... a pair of eyes stares out at you from the darkness!", " ");
-            dungeon = new Room("Dungeon", "A massive beast rises to greet you, sharp teeth catching the light of the few torches lining the walls.", " ");
+            kitchen = new Room("Kitchen", "The smell of charred wood hangs in the air, and it is very dark. A lantern would be useful here...", " ");
+            bathroom = new Room("Bathroom", "There's a terrible smell in here. Surely, evil lurks nearby...", " ");
+            dungeon = new Room("Dungeon", "This must be the lair of the beast!", " ");
             bedroom = new Room("Bedroom", "Musty, empty, and coated with a layer of dust.", " ");
-            freedom = new Room("Exit", "The door swings open, the light of the sunrise creeping in. You've made it out!", " ");
+            freedom = new Room("Exit", "The door has been opened. Freedom awaits!", " ");
             
             // ENTRYWAY EXITS            
             entryway.AddExit(new Exit("north", dininghall, false));
@@ -65,8 +65,9 @@ namespace ZuulRemake.Classes
             var armour = new Item("Armour", "Protect yourself from the lurking dangers!", 1, 20);
             var potion = new Item("Potion", "Use this to increase your health!", 1, 50);
             var key = new Item("Key", "This looks like it should fit the lock in the Entryway...", 0, 0);
-           
+
             // initialize items
+            entryway.AddItem(sword);
             dininghall.AddItem(lantern);
             ballroom.AddItem(armour);
 
@@ -76,7 +77,6 @@ namespace ZuulRemake.Classes
 
             dungeon.AddMonster(dragon);
             bathroom.AddMonster(ghoul);
-            //update long description 
 
             // start room
             return entryway;
