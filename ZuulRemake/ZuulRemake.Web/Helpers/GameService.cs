@@ -1,5 +1,6 @@
 ﻿using System.Xml.Linq;
 using ZuulRemake.Classes;
+using ZuulRemake.Services;
 using ZuulRemake.Web.Models;
 
 namespace ZuulRemake.Web.Helpers
@@ -19,10 +20,12 @@ namespace ZuulRemake.Web.Helpers
     public class GameService : IGameService
     {
         public ILogger<GameService> _logger;
+        private readonly ItemServices _itemServices;
 
-        public GameService(ILogger<GameService> logger)
+        public GameService(ILogger<GameService> logger, ItemServices itemServices)
         {
             _logger = logger;
+            _itemServices = itemServices;
         }
         
         public GameState CreateNewGame()
@@ -70,7 +73,7 @@ namespace ZuulRemake.Web.Helpers
             else if (state.player.AddItem(item))
             {
                 state.currentRoom.RemoveItem(item);
-                state.CollectedItemNames.Add(itemName);
+                state.CollectedItemNames.Add(item.Name);
                 state.messages.Clear();
                 state.messages.Add($"The {item.Name} was added to your inventory.");
             }
@@ -79,108 +82,97 @@ namespace ZuulRemake.Web.Helpers
                 state.messages.Clear();
                 state.messages.Add("You're carrying too many items.");
             }
-
+            _logger.LogInformation("PickUpItem: itemName={Name}, CarryWeight={Carry}, MaxWeight={Max}, CanCarry={Can}",
+    itemName, state.player.CarryWeight, state.player.MaxWeight, state.player.CanCarry(item));
             return state;
         }
 
         public GameState UseItem(GameState state, string itemName)
         {
-            var item = state.player.GetItem(itemName);
-            state.messages.Clear();
-
-            if (item == null)
-            {
-                state.AddMessage("You don't have that item.");
-                return state;
-            }
-
-            switch (itemName.ToLower())
-            {
-                case "potion":
-                    state.player.AddHP(20);
-                    state.player.RemoveItem(item);
-                    state.AddMessage($"You drank a healing potion and healed yourself to {state.player.HP} HP!");
-                    break;
-
-                case "armour":
-                    state.player.LevelUp(10);
-                    state.player.RemoveItem(item);
-                    state.AddMessage($"You equipped the armour and leveled up to {state.player.Level}.");
-                    break;
-
-                case "lantern":
-                    state.roomLit = true;
-                    state.AddMessage("You light the lantern, and now you can see.");
-                    break;
-
-                case "sword":
-                    state.swordHeld = !state.swordHeld;
-                    state.AddMessage(state.swordHeld ? "You draw your sword." : "You sheathe your sword.");
-                    break;
-
-                case "key":
-                    // bad bad bad
-                    state.currentRoom?.GetExit("south")?.Unlock();
-                    state.AddMessage("You use the key and unlock the exit.");
-                    break;
-                default:
-                    state.AddMessage($"You can't use {itemName} here.");
-                    break;
-            }
-
-            return state;
+            return _itemServices.UseItem(state, itemName);
         }
 
         public GameState Attack(GameState state, string target)
         {
-            if (state.currentRoom == null) return state;
+            state.messages.Clear();
+
+            if (state.currentRoom == null)
+            {
+                state.AddMessage("You're not in a room.");
+                return state;
+            }
+
             var p = state.player;
             var m = state.currentRoom.GetMonster(target);
 
             if (m == null)
             {
-                state.messages.Clear();
-                state.messages.Add("There is no monster in this room.");
+                state.AddMessage("There is no monster in this room.");
                 return state;
             }
 
             if (!p.Inventory.Any(i => i.Name.Equals("sword", StringComparison.OrdinalIgnoreCase)))
             {
-                state.messages.Clear();
-                state.messages.Add("You need a sword in order to attack.");
+                state.AddMessage("You need a sword in order to attack.");
                 return state;
             }
 
+            _logger.LogInformation("Before attack: {Monster} HP={MHp}, Player HP={PHp}",
+                m.Name, m.HP, p.HP);
+
+            // Player attacks
             m.TakeDamage(p.Level);
-            state.messages.Clear();
-            state.messages.Add($"You attack the {m.Name} for {p.Level} damage!");
+
+            _logger.LogInformation("After player attack: {Monster} HP={MHp}, IsAlive={Alive}",
+                m.Name, m.HP, m.IsAlive);
 
             if (!m.IsAlive)
             {
                 var drop = m.Drop;
-                if (drop != null) state.currentRoom.AddItem(drop);
+                if (drop != null)
+                {
+                    state.currentRoom.AddItem(drop);
+                    state.AddMessage($"You have defeated the {m.Name}! It dropped a {drop.Name}.");
+                }
+                else
+                {
+                    state.AddMessage($"You have defeated the {m.Name}!");
+                }
 
-                state.messages.Clear();
-                state.messages.Add($"You have defeated the {m.Name}!");
+                state.currentRoom.RemoveMonster(m);
+                state.DefeatedMonsterNames.Add(m.Name);
+                state.MonsterHpStates.Remove(m.Name);
                 return state;
             }
-            else
+
+            // Monster retaliates
+            p.TakeDamage(m.Level);
+            state.MonsterHpStates[m.Name] = m.HP;
+            if (!p.IsAlive)
             {
-                p.TakeDamage(m.Level);
-                state.messages.Clear();
-                state.messages.Add($"The {m.Name} attacks you for {m.Level} damage!");
+                state.AddMessage(
+                    $"You attack the {m.Name} for {p.Level} damage, but the {m.Name} " +
+                    $"strikes back for {m.Level} and you fall... YOU DIED.");
                 return state;
             }
+
+            state.AddMessage(
+                $"You attack the {m.Name} for {p.Level} damage! " +
+                $"The {m.Name} hits back for {m.Level} damage. " +
+                $"({m.Name} HP: {m.HP}, your HP: {p.HP})");
+
+            return state;
         }
 
         private Item CreateItemByName(string name)
         {
             return name.ToLower() switch
             {
-                "potion" => new Item("potion", "A healing potion", 1, 20),
-                "sword" => new Item("sword", "A sharp sword", 1, 0),
-                "lantern" => new Item("lantern", "A bright lantern", 1, 0),
-                "armour" => new Item("armour", "Heavy armour", 1, 10),
+                "potion" => new Item("Potion", "Use this to increase your health!", 1, 50),
+                "sword" => new Item("Sword", "Heavy and sharp, capable of slaying the mightiest beast.", 1, 50),
+                "lantern" => new Item("Lantern", "This should be able to light up any dark rooms.", 1, 0),
+                "armour" => new Item("Armour", "Protect yourself from the lurking dangers!", 1, 20),
+                "key" => new Item("Key", "This looks like it should fit the lock in the Entryway...", 0, 0),
                 _ => new Item(name, "Unknown item", 1, 0)
             };
         }
@@ -194,17 +186,21 @@ namespace ZuulRemake.Web.Helpers
                 Level = state.player.Level,
                 MaxWeight = state.player.MaxWeight,
                 CurrentRoomName = state.currentRoom.Name,
-                InventoryItemNames = state.player.Inventory
-                    .Select(i => i.Name)
-                    .ToList(),
-                CollectedItemNames = state.player.Inventory
-                    .Select(i => i.Name)
-                    .ToList(),
+                SwordHeld = state.swordHeld,
+                RoomLit = state.roomLit,
+                InventoryItemNames = state.player.Inventory.Select(i => i.Name).ToList(),
+                CollectedItemNames = state.CollectedItemNames.ToList(),
+                DefeatedMonsterNames = state.DefeatedMonsterNames.ToList(),
+                MonsterHpStates = new Dictionary<string, int>(state.MonsterHpStates),
+                UnlockedExits = state.UnlockedExits.ToList()
+
             };
         }
 
         public GameState LoadFromSave(GameSaveDto save)
         {
+            _logger.LogInformation("LoadFromSave CollectedItemNames: {Items}",
+    string.Join(", ", save.CollectedItemNames));
             var state = CreateNewGame();
 
             state.player.LoadSaveData(
@@ -248,7 +244,56 @@ namespace ZuulRemake.Web.Helpers
                 var item = CreateItemByName(itemName);
                 state.player.AddItem(item);
             }
-            
+            state.swordHeld = save.SwordHeld; 
+            state.roomLit = save.RoomLit;
+            state.CollectedItemNames = save.CollectedItemNames.ToList();
+            state.MonsterHpStates = new Dictionary<string, int>(save.MonsterHpStates);
+
+            state.DefeatedMonsterNames = save.DefeatedMonsterNames.ToList();
+            //Checks for defeated monsters
+            foreach (var monsterName in save.DefeatedMonsterNames)
+            {
+                foreach (var r in allRooms)
+                {
+                    var mon = r.GetMonster(monsterName);
+                    if (mon != null)
+                    {
+                        // If the monster had a drop and player hasn't collected it yet, restore it
+                        if (mon.Drop != null && !save.CollectedItemNames
+                                .Contains(mon.Drop.Name, StringComparer.OrdinalIgnoreCase))
+                        {
+                            r.AddItem(mon.Drop);
+                        }
+                        r.RemoveMonster(mon);
+                        break;
+                    }
+                }
+            }
+            //Checks the existing Monsters
+            foreach (var kvp in save.MonsterHpStates)
+            {
+                foreach (var r in allRooms)
+                {
+                    var mon = r.GetMonster(kvp.Key);
+                    if (mon != null)
+                    {
+                        var damage = mon.HP - kvp.Value;
+                        if (damage > 0) mon.TakeDamage(damage);
+                        break;
+                    }
+                }
+            }
+            foreach (var unlockedExit in save.UnlockedExits)
+            {
+                var parts = unlockedExit.Split(':');
+                if (parts.Length != 2) continue;
+                var roomName = parts[0];
+                var direction = parts[1];
+                var targetRoom = allRooms.FirstOrDefault(r =>
+                    r.Name.Equals(roomName, StringComparison.OrdinalIgnoreCase));
+                targetRoom?.GetExit(direction)?.Unlock();
+            }
+            state.UnlockedExits = save.UnlockedExits.ToList();
             return state;
         }
     }

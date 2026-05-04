@@ -11,6 +11,7 @@ namespace ZuulRemake.Web.Pages
         public GameViewModel ViewModel { get; set; } = new();
 
         public IGameService _gameService;
+        private bool IsPlayerDead(GameState state) => state.player.HP <= 0;
 
         public PlayGameModel(IGameService gameService)
         {
@@ -19,9 +20,19 @@ namespace ZuulRemake.Web.Pages
 
         public IActionResult OnGet()
         {
-            var state = _gameService.CreateNewGame();
-            var save = _gameService.ToSaveDto(state);
-            HttpContext.Session.SetJson("GameSave", save);
+            var save = HttpContext.Session.GetJson<GameSaveDto>("GameSave");
+
+            GameState state;
+            if (save == null)
+            {
+                state = _gameService.CreateNewGame();
+                var newSave = _gameService.ToSaveDto(state);
+                HttpContext.Session.SetJson("GameSave", newSave);
+            }
+            else
+            {
+                state = _gameService.LoadFromSave(save);
+            }
 
             ViewModel = GameViewModel.FromState(state);
             return Page();

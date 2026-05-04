@@ -22,6 +22,7 @@ builder.Services.AddControllersWithViews();
 //builder.Services.AddScoped<ItemService>();
 //builder.Services.AddScoped<GameService>();
 builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<ItemServices>();
 builder.Services.AddSession(); // for saving
 
 var app = builder.Build();

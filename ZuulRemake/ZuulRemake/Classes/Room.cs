@@ -17,11 +17,12 @@ namespace ZuulRemake.Classes
         public string Name { get; }
         public string NarrativeDescription { get; set; }
         public string LongDescription { get; }
+        public bool IsDark { get; set; } = false;
 
         private readonly List<Item> Items = new();
         private readonly List<Monster> Monsters = new();
         private readonly List<Exit> Exits = new();
-
+        
         public Room(string name, string narrativeDescription, string longDescription)
         {
             Name = name;
@@ -199,6 +200,17 @@ namespace ZuulRemake.Classes
         {
             if (string.IsNullOrWhiteSpace(name)) return null;
             return Monsters.FirstOrDefault(m => m.Name != null && m.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+        public void ToggleIsDark()
+        {
+            if (IsDark == true) 
+            {
+                IsDark = false;
+            }
+            else
+            {
+                IsDark = true;
+            }
         }
     }
 }

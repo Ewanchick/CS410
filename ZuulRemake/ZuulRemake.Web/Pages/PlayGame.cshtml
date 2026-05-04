@@ -9,87 +9,100 @@
         <div class="game-frame">
             <div class="game-frame-b">
                 <div class="viewbox">
-                    <img src="@Url.Content(Model.ViewModel.backgroundImageUrl)"
-                         onerror="this.src='/images/currentviewplaceholder2.png'" /> 
+                    @if (Model.ViewModel.gameOver)
+                    {
+                        <div class="game-over">
+                            <h1>YOU DIED</h1>
+                            <form method="get" asp-page="Index">
+                                <button type="submit">Return to Menu</button>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <img src="@Url.Content(Model.ViewModel.backgroundImageUrl)"
+                             onerror="this.src='/images/currentviewplaceholder2.png'" />
 
-                    <!--  NOT WORKING:
-                        1. tried moving form tag to outside of item-layer div, this didn't fix it.
-                           hit F12 to check network, OnPost method is not even being called.
-                           there is no pointer cursor so that's one clue i guess
-                        2. clicking on item should:
-                            A) remove the item from the room -> updated state should reflect a room with no items in it
-                            B) add the item to the player inventory -> updated state should reflect an item in the inventory HUD
-                    -->
-                    <form method="post" asp-page-handler="TakeItem">
+                        <!-- ITEM LAYER: pick up items in the room -->
                         <div class="item-layer">
                             @if (Model.ViewModel.isLit)
                             {
                                 @foreach (var item in Model.ViewModel.items)
                                 {
-                                    <input type="hidden" name="itemName" value="@item" />
-                                    <button type="submit" class="action-button">
-                                        <img src="@Url.Content($"~/images/{item.ToLower()}.png")" alt="@item" />
-                                    </button>
-
+                                    <form method="post" asp-page-handler="TakeItem">
+                                        <input type="hidden" name="itemName" value="@item" />
+                                        <button type="submit" class="action-button">
+                                            <img src="@Url.Content($"~/images/{item.ToLower()}.png")" alt="@item" />
+                                        </button>
+                                    </form>
                                 }
                             }
                         </div>
-                    </form>
 
-
-                    <div class="monster-layer">
-                        <!--  hide this entire layer if state.monsters is or becomes empty -->
-                        @foreach (var mon in Model.ViewModel.monsters)
+                        <!-- MONSTER LAYER: click monsters to attack them -->
+                        @if (Model.ViewModel.monsters.Any())
                         {
-                            <img class="monster" src="~/images/@(mon.ToLower()).png" />
-                        }
-                    </div>
-
-
-                    <div class="player-layer">
-                        <img class="left-hand" src="@Url.Content(Model.ViewModel.LHandUrl)" />
-                        <img class="right-hand" src="@Url.Content(Model.ViewModel.RHandUrl)" />
-                    </div>
-
-
-                    <div class="ui-layer">
-                        <div class="text-box" id="textBox" onclick="advanceMessage()">
-                            <div class="text-content" id="textContent">
-                                @foreach (var msg in Model.ViewModel.messages)
+                            <div class="monster-layer">
+                                @foreach (var mon in Model.ViewModel.monsters)
                                 {
-                                    <p>@msg</p>
+                                    <form method="post" asp-page-handler="Attack">
+                                        <input type="hidden" name="target" value="@mon" />
+                                        <button type="submit" class="action-button monster-button">
+                                            <img class="monster" src="~/images/@(mon.ToLower()).png" alt="@mon" />
+                                        </button>
+                                    </form>
                                 }
                             </div>
+                        }
+
+                        <div class="player-layer">
+                            <img class="left-hand" src="@Url.Content(Model.ViewModel.LHandUrl)" />
+                            <img class="right-hand" src="@Url.Content(Model.ViewModel.RHandUrl)" />
                         </div>
-                    </div>
+
+                        <div class="ui-layer">
+                            <form method="post" asp-page-handler="AdvanceMessage" id="advanceForm">
+                                <div class="text-box" id="textBox">
+                                    <div class="text-content" id="textContent">
+                                        @foreach (var msg in Model.ViewModel.messages)
+                                        {
+                                            <p>@msg</p>
+                                        }
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    }
                 </div>
 
                 <div class="hud">
-                    <!-- LEFT -->
+                    <!-- LEFT: HP -->
                     <div class="hud-left">
                         <div class="healthbar-container">
                             HP: @Model.ViewModel.playerHP
                         </div>
                     </div>
 
-                    <!-- CENTER -->
+                    <!-- CENTER: Inventory (click an item to use it) -->
                     <div class="hud-center">
                         <div class="inventory">
                             @foreach (var item in Model.ViewModel.inventory)
                             {
-                                <div class="item-boxes">
-                                    <img src="~/images/@(item.ToLower()).png" />
-                                </div>
+                                <form method="post" asp-page-handler="UseItem" style="margin:0;">
+                                    <input type="hidden" name="itemName" value="@item" />
+                                    <button type="submit" class="item-boxes" title="Use @item">
+                                        <img src="~/images/@(item.ToLower()).png" alt="@item" />
+                                    </button>
+                                </form>
                             }
                             @if (Model.ViewModel.inventory.Count() == 0)
                             {
-                                <div class="item-boxes">
-                                </div>
+                                <div class="item-boxes"></div>
                             }
                         </div>
                     </div>
 
-                    <!-- RIGHT -->
+                    <!-- RIGHT: Move dropdown -->
                     <div class="hud-right">
                         <details class="dropdown">
                             <summary>Move</summary>
@@ -98,7 +111,9 @@
                                 {
                                     <form method="post" asp-page-handler="Move">
                                         <input type="hidden" name="direction" value="@exit" />
-                                        <button type="submit" style="border:none; background:none;">@exit</button>
+                                        <button type="submit" style="border:none; background:none; color:white; cursor:pointer;">
+                                            @exit
+                                        </button>
                                     </form>
                                 }
                             </div>
@@ -110,26 +125,23 @@
     </div>
 
     <script>
-                document.addEventListener('click', function (e) {
-            const openDropdowns = document.querySelectorAll('details.dropdown[open]');
-
-            openDropdowns.forEach(dropdown => {
-                if (!dropdown.contains(e.target)) {
-                    dropdown.removeAttribute('open');
-                }
+            // Close any open dropdown when clicking outside it
+            document.addEventListener('click', function (e) {
+                const openDropdowns = document.querySelectorAll('details.dropdown[open]');
+                openDropdowns.forEach(dropdown => {
+                    if (!dropdown.contains(e.target)) {
+                        dropdown.removeAttribute('open');
+                    }
+                });
             });
-        });
 
+            // Click the text box to advance / dismiss the current message
+            const textBox = document.getElementById('textBox');
+            if (textBox) {
+                textBox.addEventListener('click', function () {
+                    const form = document.getElementById('advanceForm');
+                    if (form) form.submit();
+                });
+            }
     </script>
-
-    <script>
-             document.getElementById('textBox').addEventListener('click', function() {
-            this.classList.add('hidden');
-            advanceMessage();
-        });
-        function advanceMessage() {
-            document.getElementById('advanceForm').submit();
-        }
-    </script>
-
 </div>
