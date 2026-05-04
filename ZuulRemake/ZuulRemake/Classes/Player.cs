@@ -20,7 +20,7 @@ namespace ZuulRemake.Classes
         private readonly NavigationManager navigationManager = new();
 
         public int CarryWeight => Inventory.Sum(i => i.Weight);
-        public int MaxWeight { get; private set; } = 2;
+        public int MaxWeight { get; private set; } = 5;
 
         public Room CurrentRoom { get; private set; } = new Room("default name", "default short", "defalt long");
         private Room? ChargeRoom { get; set; }

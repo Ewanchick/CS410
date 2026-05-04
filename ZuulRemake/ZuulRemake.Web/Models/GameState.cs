@@ -22,6 +22,8 @@ namespace ZuulRemake.Web.Models
         public List<string> InventoryItemNames { get; set; } = new();
         public List<string> CollectedItemNames { get; set; } = new();
         public List<string> DefeatedMonsterNames { get; set; } = new();
+        public Dictionary<string, int> MonsterHpStates { get; set; } = new();
+        public List<string> UnlockedExits { get; set; } = new();
 
         public GameState(Player p)
         {
